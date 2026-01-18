@@ -25,7 +25,7 @@ public class User extends Person {
 
         System.out.println("Please enter your password");
         password = sc.nextLine();
-        checkPassword(password);
+        checkP = checkPassword(password);
         while (!checkP){
             System.out.println("The password you entered is incorrect");
             System.out.println("The password must contain:");
@@ -66,7 +66,7 @@ public class User extends Person {
         int element3 = Integer.parseInt(myArray[2]);
         int year = Year.now().getValue();
 
-        if (element1 > 32 || element1 <0){//check if the day is between 1 and 31
+        if (element1 > 32 || element1 < 0){//check if the day is between 1 and 31
             return false;
         }
         if(  element2 == 4 || element2 == 6 || element2 == 9 ||  element2 == 11 ){//check if it is a 30-day month
@@ -100,6 +100,12 @@ public class User extends Person {
         else {
             return false;
         }
+    }
+
+
+    @Override
+    public String getId(){
+        return id;
     }
 
 }

@@ -1,19 +1,21 @@
 package Access;
-import Person.User;
-
+import Person.*;
+import Utils.Data;
 import java.util.Scanner;
-
 import java.util.ArrayList;
 
 public class AccessScreen {
-    ArrayList<User> users = new ArrayList<User>();
+    Data  writeUsers = new Data();
     Scanner sc = new Scanner(System.in);
+    ArrayList<User> users = new ArrayList<User>();
     String id="";
     User dummyUser = new User(null, null, null, null);
+    Data dataAccess = new Data();
 
     public void menu(){
-
+        users = dataAccess.readUsers();
         int option=0;
+        option = sc.nextInt();
         while(option!=3){
             System.out.println("Welcome to JavaBank ");
             System.out.println("1. Create Account");
@@ -25,16 +27,18 @@ public class AccessScreen {
                 case 1:
                     User newUser = dummyUser.register();
                     users.add(newUser);
-
+                    writeUsers.writeUsers(users);
                     break;
                 case 2:
                     login();
                     break;
                 case 3:
                     return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
-
     }
 
     public void accountMenu(User currentUser){
@@ -47,13 +51,15 @@ public class AccessScreen {
         System.out.println("5. Recharge SIM card");
         System.out.println("6. Log Out");
         System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
+        Scanner scanner = new Scanner(System.in);
+        option = scanner.nextInt();
+
         while(option!=6){
             switch (option){
                 case 1:
                   //bankAccount  newBA = new bankAccount(dummyBankAccount.getEntity(), dummyBankAccount.getOffice(),  dummyBankAccount.calcDC(), null, null, null);
                     break;
                 case 2:
-                    login();
                     break;
                 case 3:
                     return;
@@ -63,6 +69,9 @@ public class AccessScreen {
                     return;
                 case 6:
                     return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
             }
         }
     }
@@ -71,8 +80,8 @@ public class AccessScreen {
         System.out.println("Please enter user id: ");
         id = sc.nextLine();
         User currentUser =  null;
-        for (int i = 0; i < users.size(); i++) {
-            if(users.get(i).id.equals(id)){
+        for(int i = 0; i < users.size(); i++) {
+            if(users.get(i).getId().equals(id)){
                 currentUser =  users.get(i);
             }
         }
@@ -101,10 +110,8 @@ public class AccessScreen {
                             currentUser.active = false;
                         }
                     }
+                }
             }
-
-            }
-
         }
     }
 }

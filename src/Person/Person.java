@@ -14,4 +14,7 @@ public abstract class Person {
     abstract boolean checkPassword(String password);
 
     abstract boolean checkDate(String date);
+
+    public abstract String getId();
+
 }

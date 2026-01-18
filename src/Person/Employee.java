@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Employee extends Person {
     final int employeeId;
-    public static int id =0;
+    public static int id = 0;
 
     public Employee(String id, String name, String password, String birthDate, int employeeId) {
         super( name, password, birthDate);
@@ -112,5 +112,10 @@ public class Employee extends Person {
 
     public BankAccount createBankAccount(){
         return null;
+    }
+
+    @Override
+    public String getId(){
+        return String.valueOf(employeeId);
     }
 }

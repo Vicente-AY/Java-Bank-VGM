@@ -2,6 +2,9 @@ package Account;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
+import Utils.Data;
+
+import static java.lang.Integer.parseInt;
 
 public abstract class BankAccount implements Accounting {
 
@@ -21,8 +24,9 @@ public abstract class BankAccount implements Accounting {
         this.dc = dc;
         this.IBAN = IBAN;
         this.accountAlias = accountAlias;
-        this.balance=0.0;
+        this.balance = 0.0;
     }
+
     public BankAccount(String entity, String office, String accNumber, String dc, String IBAN) {
         this.entity = entity;
         this.office = office;
@@ -34,8 +38,8 @@ public abstract class BankAccount implements Accounting {
     }
 
     public static String calcDC(String entidad, String oficina, String cuenta) {
-        entidad = String.format("%04d", Integer.parseInt(entidad));
-        oficina = String.format("%04d", Integer.parseInt(oficina));
+        entidad = String.format("%04d", parseInt(entidad));
+        oficina = String.format("%04d", parseInt(oficina));
         cuenta  = String.format("%010d", Long.parseLong(cuenta));
 
         int[] w1 = {4,8,5,10,9,7,3,6};
@@ -63,8 +67,8 @@ public abstract class BankAccount implements Accounting {
     public static String calcIBAN(String entity, String office, String accNumber) {
         String dc  = calcDC(entity, office, accNumber);
 
-        entity = String.format("%04d", Integer.parseInt(entity));
-        office = String.format("%04d", Integer.parseInt(office));
+        entity = String.format("%04d", parseInt(entity));
+        office = String.format("%04d", parseInt(office));
         accNumber  = String.format("%010d", Long.parseLong(accNumber));
 
         String bban = entity + office + dc + accNumber;
@@ -86,6 +90,7 @@ public abstract class BankAccount implements Accounting {
 
         entity = getEntity();
         office = getOffice();
+        accNumber = accountNumber();
 
         dc = calcDC(entity, office, accNumber);
         IBAN = calcIBAN(entity, office, accNumber);
@@ -110,6 +115,24 @@ public abstract class BankAccount implements Accounting {
             alias = check;
         }
         return alias;
+    }
+
+    public String accountNumber(){
+        Data bankAccountData = new Data();
+        String accNum = "";
+        ArrayList<BankAccount> bankAccounts = new ArrayList<BankAccount>();
+        bankAccounts = bankAccountData.readBankAccounts();
+        int maxId = 0;
+        if(!bankAccounts.isEmpty()) {
+            for (BankAccount bankAccount : bankAccounts) {
+                int currentNum = Integer.parseInt(bankAccount.accNumber);
+                if (currentNum > maxId) {
+                    maxId = currentNum;
+                }
+            }
+        }
+        maxId++;
+        return String.format("%010d", maxId);
     }
 
 
