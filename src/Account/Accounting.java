@@ -2,6 +2,7 @@ package Account;
 
 import Person.User;
 
+
 interface Accounting
 {
     void deposit(int amount, BankAccount account);
@@ -10,3 +11,11 @@ interface Accounting
     void rechargeSIM(int amount, BankAccount account);
     void selectAccount(User user);
 }
+/**
+ * Interfaz con métodos
+ * @param deposit
+ * @param withdraw
+ * @param transfer
+ * @param rechargeSIM
+ * @param selectAccount
+ */

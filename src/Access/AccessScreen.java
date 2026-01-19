@@ -5,14 +5,31 @@ import java.util.Scanner;
 
 import java.util.ArrayList;
 
+/**
+ * Clase que maneja el funcionamiento del programa
+ */
 public class AccessScreen {
+    /**
+     * @param users ArrayList que almacena los usuarios registrados en el programa
+     * @param sc Variable que llama al escaner
+     * @param id Numero de identificación del usuario
+     * @param dummyUser Constructor de objeto para crear un usuario de prueba
+     * @see User
+     * @see Person
+     */
     ArrayList<User> users = new ArrayList<User>();
     Scanner sc = new Scanner(System.in);
     String id="";
     User dummyUser = new User(null, null, null, null);
 
+    /**
+     * Metodo que muestra la interfaz del menú principal del programa
+     */
     public void menu(){
-
+/**
+ * @param option Entero que almacena la opción seleccionada
+ * @see User
+ */
         int option=0;
         while(option!=3){
             System.out.println("Welcome to JavaBank ");
@@ -37,7 +54,14 @@ public class AccessScreen {
 
     }
 
+    /**
+     * Metodo que muestra la interfaz del menú de cuentas del usuario
+     * @param currentUser Usuario actual que está usando el programa
+     */
     public void accountMenu(User currentUser){
+        /**
+         * @param option Entero que almacena la opción seleccionada
+         */
         int option=0;
         System.out.println("Welcome " + currentUser.name);
         System.out.println("1. Create BankAccount");
@@ -67,7 +91,14 @@ public class AccessScreen {
         }
     }
 
+    /**
+     * Metodo que permite al usuario iniciar sesión en la cuenta
+     */
     public void login(){
+        /**
+         * @param tries Variable que representa el número de intentos que tiene el usuario para iniciar sesión
+         * @param pass Variable que comprueba si la contraseña introducida coincide con la del usuario
+         */
         System.out.println("Please enter user id: ");
         id = sc.nextLine();
         User currentUser =  null;
