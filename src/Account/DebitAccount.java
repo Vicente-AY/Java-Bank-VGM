@@ -1,5 +1,5 @@
 package Account;
-
+import Utils.*;
 import Exceptions.InputNumberException;
 import Person.User;
 
@@ -8,7 +8,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class DebitAccount extends BankAccount {
-
+    Data dataAccess = new Data();
     Scanner sc  = new Scanner(System.in);
 
     public DebitAccount(String entity, String office, String accNumber, String dc, String IBAN, String accountAlias) {
@@ -106,5 +106,24 @@ public class DebitAccount extends BankAccount {
             System.out.println(e.getMessage());
         }
 
+    }
+
+    public DebitAccount  createDebitAccount(DebitAccount newDebitAccount, User currentUser) {
+        String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
+
+        entity = newDebitAccount.getEntity();
+        office = newDebitAccount.getOffice();
+        accNumber = newDebitAccount.accountNumber();
+
+        dc = newDebitAccount.calcDC(entity, office, accNumber);
+        IBAN = newDebitAccount.calcIBAN(entity, office, accNumber);
+        alias = newDebitAccount.accountAlias();
+        System.out.println("Your account has been created");
+
+        newDebitAccount = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
+        currentUser.getBankAccounts().add(newDebitAccount);
+        dataAccess.writeBankAccounts(currentUser.getBankAccounts());
+        System.out.println("Your account has been created");
+        return newDebitAccount;
     }
 }

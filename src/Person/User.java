@@ -108,4 +108,8 @@ public class User extends Person {
         return id;
     }
 
+    public ArrayList getBankAccounts(){
+        return bankAccounts;
+    }
+
 }

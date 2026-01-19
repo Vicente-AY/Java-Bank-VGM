@@ -2,7 +2,9 @@ package Access;
 import Person.*;
 import Utils.Data;
 import java.util.Scanner;
+import Account.*;
 import java.util.ArrayList;
+import Utils.*;
 
 public class AccessScreen {
     Data  writeUsers = new Data();
@@ -11,6 +13,7 @@ public class AccessScreen {
     String id="";
     User dummyUser = new User(null, null, null, null);
     Data dataAccess = new Data();
+
 
     public void menu(){
         users = dataAccess.readUsers();
@@ -57,7 +60,7 @@ public class AccessScreen {
         while(option!=6){
             switch (option){
                 case 1:
-                  //bankAccount  newBA = new bankAccount(dummyBankAccount.getEntity(), dummyBankAccount.getOffice(),  dummyBankAccount.calcDC(), null, null, null);
+                    bankAcoountCreation(currentUser);
                     break;
                 case 2:
                     break;
@@ -114,4 +117,26 @@ public class AccessScreen {
             }
         }
     }
+
+    public BankAccount bankAcoountCreation(User currentUser){
+        CreditAccount dummyCreditAccount = new CreditAccount(null, null, null, null, null, 0.0, 0.0);
+        DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
+        System.out.println("Select the type of bank account you want to create: ");
+        System.out.println("1. Debit Account");
+        System.out.println("2. Credit Account");
+        Scanner scan = new Scanner(System.in);
+        int option = scan.nextInt();
+        while(true){
+            switch (option){
+                case 1:
+                    DebitAccount newDebitAccount = dummyDebitAccount.createDebitAccount(dummyDebitAccount, currentUser);
+                case 2:
+                    CreditAccount newCreditAccount = dummyCreditAccount.createCreditAccount(dummyCreditAccount, currentUser);
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+
+        }
+    }
+
 }

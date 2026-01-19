@@ -94,12 +94,12 @@ public abstract class BankAccount implements Accounting {
 
         dc = calcDC(entity, office, accNumber);
         IBAN = calcIBAN(entity, office, accNumber);
-        alias = changeAccountAlias();
+        alias = accountAlias();
         System.out.println("Your account has been created");
 
     }
 
-    public String changeAccountAlias(){
+    public String accountAlias(){
         String alias ="";
         System.out.println("Do you want to give an alias to your account?");
         String check = sc.nextLine();
@@ -107,12 +107,9 @@ public abstract class BankAccount implements Accounting {
             System.out.println("Introduce the account alias: ");
             alias = sc.nextLine();
         }
-        if(alias.isEmpty()){
-            System.out.println("You have not entered an alias. The account name will default to its number.");
+        else if(alias.isEmpty() || check.equalsIgnoreCase("no")){
+            System.out.println("The account name will default to its number.");
             alias = "Account " + IBAN;
-        }
-        else {
-            alias = check;
         }
         return alias;
     }
