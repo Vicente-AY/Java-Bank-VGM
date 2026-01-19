@@ -6,25 +6,25 @@ import java.time.Year;
 import java.util.Scanner;
 
 public class Employee extends Person {
-    final int employeeId;
+    int employeeId;
     public static int id =0;
 
-    public Employee(String id, String name, String password, String birthDate, int employeeId) {
+    public Employee(String id, String name, String password, String birthDate) {
         super( name, password, birthDate);
         this.employeeId = employeeId;
     }
 
     @Override
-    public User register(){
+    public Employee register(){
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
-        System.out.println("Please enter your name and surnames");
+        System.out.println("Please Employee enter your name and surnames");
         name = sc.nextLine();
 
         System.out.println("Please enter your password");
         password = sc.nextLine();
-        checkPassword(password);
+        checkP = checkPassword(password);
         while (!checkP){
             System.out.println("The password you entered is incorrect");
             System.out.println("The password must contain:");
@@ -33,7 +33,7 @@ public class Employee extends Person {
             System.out.println("* 1 number");
             System.out.println("* 1 special character");
             password = sc.nextLine();
-            checkPassword(password);
+            checkP = checkPassword(password);
         }
 
         System.out.println("Please enter your birthdate (dd/mm/yyyy)");
@@ -47,14 +47,14 @@ public class Employee extends Person {
         }
          id += 1;
         String newId = createId(id);
-        User newUser = new User(name, password, birthdate, newId);
+        Employee newEmployee = new Employee(name, password, birthdate, newId);
         System.out.println("The register process has ended");
         System.out.println("Your data:");
         System.out.println("Name: " + name);
         System.out.println("Birthdate: " + birthdate);
         System.out.println("Password: " + password);
         System.out.println("Id: " + newId);
-        return newUser;
+        return newEmployee;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Employee extends Person {
 
     @Override
     public boolean checkDate(String date){
-        String regex = "[,\\.\\s]";
+        String regex = "[,//.\\s]";
         String[] myArray = date.split(regex);
         int element1 = Integer.parseInt(myArray[0]);
         int element2 = Integer.parseInt(myArray[1]);

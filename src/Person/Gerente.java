@@ -1,26 +1,26 @@
 package Person;
+
 import Account.BankAccount;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-public class User extends Person {
-    public String id = "";
-    public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
+public class Gerente extends Person {
+    int gerenteid;
+    public static int id =0;
 
-    public User( String name, String password, String birthDate, String id) {
+    public Gerente(String name, String password, String birthDate, Object o) {
         super(name, password, birthDate);
-        this.active=true;
-        this.id = id;
+        this.gerenteid = gerenteid;
     }
 
+
     @Override
-    public User register(){
+    public Gerente register() {
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
-        System.out.println("Please enter your name and surnames");
+        System.out.println("Please Gerente enter your name and surnames");
         name = sc.nextLine();
 
         System.out.println("Please enter your password");
@@ -46,15 +46,27 @@ public class User extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        id = id+1;
-        User newUser = new User(name, password, birthdate, id);
+        id += 1;
+        String newId = createId(id);
+        Gerente newGerente = new Gerente(name, password, birthdate, newId);
         System.out.println("The register process has ended");
         System.out.println("Your data:");
         System.out.println("Name: " + name);
         System.out.println("Birthdate: " + birthdate);
         System.out.println("Password: " + password);
-        System.out.println("Id: " + id);
-        return newUser;
+        System.out.println("Id: " + newId);
+        return newGerente;
+    }
+
+    @Override
+    public boolean checkPassword(String password){ //regex password
+        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
+        if(password.matches(pattern)){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override
@@ -91,14 +103,15 @@ public class User extends Person {
         return true;
     }
 
-    @Override
-    public boolean checkPassword(String password){ //regex password
-        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
-        if(password.matches(pattern)){
-            return true;
+    public String createId(int id){
+        String newId ="";
+        for (int i= String.valueOf(id).length(); i < 8; i++){
+            newId = "0" + newId;
         }
-        else {
-            return false;
-        }
+        return newId;
+    }
+
+    public BankAccount createBankAccount(){
+        return null;
     }
 }
