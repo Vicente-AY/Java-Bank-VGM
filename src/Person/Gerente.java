@@ -3,6 +3,7 @@ package Person;
 import Account.BankAccount;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Gerente extends Person {
@@ -113,5 +114,60 @@ public class Gerente extends Person {
 
     public BankAccount createBankAccount(){
         return null;
+    }
+
+    private void unlockAccount(User blockedUser){
+        blockedUser.setActive(true);
+        System.out.println(blockedUser.getName() + " Has been unlocked");
+    }
+
+    private void crateEmployee(){
+
+    }
+
+    private void deleteBankAccount(){
+        ArrayList<User> users = new ArrayList<>();
+        //Aqui cargar datos de usuarios
+        System.out.println("Enter the User ID number you want to select");
+        Scanner sc = new Scanner(System.in);
+        String userSelection = sc.nextLine();
+        User selectedUser = null;
+        BankAccount eraseAccount = null;
+        for(User user : users){
+            if(userSelection.equals(user.getId())){
+                selectedUser = user;
+                break;
+            }
+        }
+        if(selectedUser != null){
+            for(int i = 0; i < selectedUser.getBankAccounts().size(); i++){
+                System.out.println((i + 1) + ". " + selectedUser.getBankAccounts().get(i));
+            }
+            System.out.println("Select the account you want to delete. Type 0 to cancell");
+            Scanner sc2 = new Scanner(System.in);
+            int accountSelection = sc2.nextInt();
+            if(accountSelection == 0){
+                System.out.println("Operation aborted");
+                return;
+            }
+            else {
+                eraseAccount = selectedUser.getBankAccounts().get(accountSelection -1);
+                if (eraseAccount.getBalance() > 0) {
+                    System.out.println("Cancelling operation, the account must be at 0 before deletion");
+                    return;
+                }
+                else {
+                    System.out.println("Are you sure do you want to erase Y/N");
+                    String choice = sc.nextLine().toLowerCase();
+                    if (choice.equals("y") || choice.equals("yes")) {
+                        //borrar cuenta bancaria
+                    }
+                    else{
+                        System.out.println("Operation aborted");
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

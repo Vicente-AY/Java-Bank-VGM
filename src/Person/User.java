@@ -101,4 +101,20 @@ public class User extends Person {
             return false;
         }
     }
+
+    public void setActive(boolean active){
+        this.active = active;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public ArrayList<BankAccount> getBankAccounts(){
+        return bankAccounts;
+    }
+
+    public String getId(){
+        return id;
+    }
 }
