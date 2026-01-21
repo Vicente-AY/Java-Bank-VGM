@@ -4,14 +4,12 @@ package Person;
  * Clase con los atributos de una persona
  */
 public abstract class Person {
-    /**
-     * @param name Cadena con el nombre del usuario
-     * @param birthDate Cadena con la fecha de nacimiento del usuario
-     * @param password Cadena con la contraseña del usuario
-     * @param active Booleano que determina el estado de la cuenta
-     */
+
     public String name="", birthDate ="", password="";
     public boolean active=true;
+
+
+    protected String id;
 
     /**
      * Constructor con parámetros
@@ -19,9 +17,6 @@ public abstract class Person {
      * @param password Contraseña del usuario
      * @param birthDate Fecha de nacimiento del usuario
      */
-    protected String id;
-
-
     public Person( String name, String password, String birthDate) {}
 
     /**

@@ -18,18 +18,11 @@ public class AccessScreen {
     ArrayList<User> usersC = new ArrayList<User>();
     ArrayList<Employee> usersE = new ArrayList<Employee>();
     ArrayList<Gerente> usersG = new ArrayList<Gerente>();
-    Data writeUsers = new Data();
-    /**
-     * @param users ArrayList que almacena los usuarios registrados en el programa
-     * @param sc Variable que llama al escaner
-     * @param id Numero de identificación del usuario
-     * @param dummyUser Constructor de objeto para crear un usuario de prueba
-     * @see User
-     * @see Person
-     */
+    Data  writeUsers = new Data();
     ArrayList<User> users = new ArrayList<User>();
     Scanner sc = new Scanner(System.in);
-    String id = "";
+    ArrayList<User> users = new ArrayList<User>();
+    String id="";
     User dummyUserC = new User(null, null, null, null);
     Employee dummyUserE = new Employee(null, null, null, null);
     Gerente dummyUserG = new Gerente(null, null, null, null);
@@ -40,22 +33,22 @@ public class AccessScreen {
     /**
      * Metodo que muestra la interfaz del menú principal del programa
      */
-    public void menu() {
+    public void menu(){
         users = dataAccess.readUsers();
 /**
  * @param option Entero que almacena la opción seleccionada
  * @see User
  */
-        int option = 0;
+        int option=0;
         option = sc.nextInt();
-        while (option != 3) {
+        while(option!=3){
             System.out.println("Welcome to JavaBank ");
             System.out.println("1. Create Account");
             System.out.println("2. Log In");
             System.out.println("3. Close Application");
             System.out.println("Please enter your numbered choice (1, 2 or 3)");
             option = sc.nextInt();
-            switch (option) {
+            switch (option){
                 case 1:
                     User newUser = dummyUser.register();
                     users.add(newUser);
@@ -119,7 +112,7 @@ public class AccessScreen {
                     loginC();
                     break;
                 case 2:
-                    loginE();
+                    login();
                     break;
                 case 3:
                     loginG();
@@ -369,4 +362,5 @@ public class AccessScreen {
 
         }
     }
+
 }
