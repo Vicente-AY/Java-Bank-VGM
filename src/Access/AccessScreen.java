@@ -21,10 +21,9 @@ public class AccessScreen {
     Data  writeUsers = new Data();
     ArrayList<User> users = new ArrayList<User>();
     Scanner sc = new Scanner(System.in);
-    ArrayList<User> users = new ArrayList<User>();
     String id="";
     User dummyUserC = new User(null, null, null, null);
-    Employee dummyUserE = new Employee(null, null, null, null);
+    Employee dummyUserE = new Employee(null, null, null, 0);
     Gerente dummyUserG = new Gerente(null, null, null, null);
     User dummyUser = new User(null, null, null, null);
     Data dataAccess = new Data();
@@ -112,7 +111,7 @@ public class AccessScreen {
                     loginC();
                     break;
                 case 2:
-                    login();
+                    loginE();
                     break;
                 case 3:
                     loginG();

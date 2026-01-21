@@ -9,28 +9,22 @@ import java.util.Scanner;
  * Clase con los atributos de un empleado del banco
  */
 public class Employee extends Person {
-    /**
-     * @param employeeId Número identificador del empleado
-     * @param id Número identificador
-     */
-    final int employeeId;
+
+    int employeeId;
     public static int id = 0;
 
     /**
      * Constructor con parámetros
-     * @param id Cadena que almacena el número de identificación
+     * @param name que almacena el número de identificación
      * @param employeeId Entero que establece el número identificador propio del empleado
+     * param
      * @see Person
      */
-    public Employee(String id, String name, String password, String birthDate, int employeeId) {
-        super( name, password, birthDate);
+    public Employee(String name, String password, String birthDate, int employeeId) {
+        super(name, password, birthDate);
         this.employeeId = employeeId;
+        this.active = true;
     }
-
-    public Employee(Object id, Object name, Object password, Object birthDate) {
-        super();
-    }
-
 
     /**
      * Metodo que permite al empleado registrar usuarios
@@ -38,7 +32,7 @@ public class Employee extends Person {
      * @see User
      */
     @Override
-    public User register(){
+    public Employee register(){
         /**
          * @param newId Variable que crea un nuevo número identificador
          */

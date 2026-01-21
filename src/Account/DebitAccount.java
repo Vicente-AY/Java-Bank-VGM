@@ -1,9 +1,7 @@
 package Account;
-
+import Utils.Data;
 import Exceptions.InputNumberException;
 import Person.User;
-
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -11,9 +9,7 @@ import java.util.Scanner;
  * Clase que permite interactuar con la cuenta bancaria en débito
  */
 public class DebitAccount extends BankAccount {
-    /**
-     * @param sc Variable para llamar al escaner
-     */
+    Data dataAccess = new Data();
     Scanner sc  = new Scanner(System.in);
     /**
      * Constructores de la clase con parámetros

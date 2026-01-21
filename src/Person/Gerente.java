@@ -180,7 +180,7 @@ public class Gerente extends Person {
         }
 
         System.out.println("[MANAGER] Creating new employee...");
-        Employee dummyEmployee = new Employee(null, null, null, null);
+        Employee dummyEmployee = new Employee(null, null, null, 0);
         Employee newEmployee = dummyEmployee.register();
 
         if (newEmployee != null) {
