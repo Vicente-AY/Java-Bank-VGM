@@ -19,14 +19,6 @@ public class AccessScreen {
     ArrayList<Employee> usersE = new ArrayList<Employee>();
     ArrayList<Gerente> usersG = new ArrayList<Gerente>();
     Data  writeUsers = new Data();
-    /**
-     * @param users ArrayList que almacena los usuarios registrados en el programa
-     * @param sc Variable que llama al escaner
-     * @param id Numero de identificación del usuario
-     * @param dummyUser Constructor de objeto para crear un usuario de prueba
-     * @see User
-     * @see Person
-     */
     ArrayList<User> users = new ArrayList<User>();
     Scanner sc = new Scanner(System.in);
     ArrayList<User> users = new ArrayList<User>();
@@ -386,5 +378,4 @@ public class AccessScreen {
 
         }
     }
-
 }
