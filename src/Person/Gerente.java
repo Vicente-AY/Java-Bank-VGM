@@ -3,7 +3,9 @@ package Person;
 import Account.BankAccount;
 
 import java.time.Year;
+import java.util.Objects;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Gerente extends Person {
     int gerenteid;
@@ -113,5 +115,105 @@ public class Gerente extends Person {
 
     public BankAccount createBankAccount(){
         return null;
+    }
+
+    // PERMISOS DE GERENTE - ACCESO TOTAL
+    public boolean canCreateAccount() {
+        return true; // Los gerentes SÍ pueden crear cuentas
+    }
+
+    public boolean canDeleteAccount() {
+        return true; // Los gerentes SÍ pueden borrar cuentas
+    }
+
+    public double getWithdrawalLimit() {
+        return Double.MAX_VALUE; // Sin límite
+    }
+
+    public boolean canManageEmployees() {
+        return true; // Los gerentes SÍ pueden gestionar empleados
+    }
+
+    public boolean canUnblockAccounts() {
+        return true; // Los gerentes SÍ pueden desbloquear cuentas
+    }
+
+    // MÉTODOS ESPECÍFICOS DE GERENTE
+
+    // Crear cuenta bancaria para un cliente
+    public BankAccount createBankAccountForClient(User client) {
+        if (!canCreateAccount()) {
+            System.out.println("You don't have permission to create accounts");
+            return null;
+        }
+        System.out.println("[MANAGER] Creating bank account for client: " + client.name);
+        // Aquí iría la lógica real de creación
+        return null;
+    }
+
+    // Borrar cuenta bancaria
+    public boolean deleteBankAccount(BankAccount account) {
+        if (!canDeleteAccount()) {
+            System.out.println("You don't have permission to delete accounts");
+            return false;
+        }
+        System.out.println("[MANAGER] Deleting account: " + account.getAccNumber());
+        System.out.println("Account successfully deleted");
+        return true;
+    }
+
+    // Desbloquear usuario
+    public boolean unblockUser(Person user) {
+        if (!canUnblockAccounts()) {
+            System.out.println("You don't have permission to unblock accounts");
+            return false;
+        }
+
+        if (user.active) {
+            System.out.println("User " + user.name + " is not blocked");
+            return false;
+        }
+
+        user.active = true;
+        System.out.println("[MANAGER] User " + user.name + " (ID: " + user.id + ") has been unblocked");
+        return true;
+    }
+
+    // Crear empleado
+    public Employee createEmployee(ArrayList<Employee> employeeList) {
+        if (!canManageEmployees()) {
+            System.out.println("You don't have permission to create employees");
+            return null;
+        }
+
+        System.out.println("[MANAGER] Creating new employee...");
+        Employee dummyEmployee = new Employee(null, null, null, null);
+        Employee newEmployee = dummyEmployee.register();
+
+        if (newEmployee != null) {
+            employeeList.add(newEmployee);
+            System.out.println("[MANAGER] Employee created successfully!");
+        }
+
+        return newEmployee;
+    }
+
+    // Eliminar empleado
+    public boolean deleteEmployee(ArrayList<Employee> employeeList, String employeeId) {
+        if (!canManageEmployees()) {
+            System.out.println("You don't have permission to delete employees");
+            return false;
+        }
+
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (Objects.equals(employeeList.get(i).id, employeeId)) {
+                Employee removed = employeeList.remove(i);
+                System.out.println("[MANAGER] Employee " + removed.name + " (ID: " + employeeId + ") has been removed");
+                return true;
+            }
+        }
+
+        System.out.println("Employee with ID " + employeeId + " not found");
+        return false;
     }
 }

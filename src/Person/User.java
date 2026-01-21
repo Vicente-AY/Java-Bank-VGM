@@ -101,4 +101,17 @@ public class User extends Person {
             return false;
         }
     }
+    public boolean canCreateAccount() {
+        return false; // Los clientes NO pueden crear cuentas
+    }
+
+
+    public boolean canDeleteAccount() {
+        return false; // Los clientes NO pueden borrar cuentas
+    }
+
+
+    public double getWithdrawalLimit() {
+        return 1000.0; // Máximo 1000€
+    }
 }

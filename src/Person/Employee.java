@@ -113,4 +113,35 @@ public class Employee extends Person {
     public BankAccount createBankAccount(){
         return null;
     }
+    // PERMISOS DE EMPLEADO
+    public boolean canCreateAccount() {
+        return true; // Los empleados SÍ pueden crear cuentas
+    }
+
+    public boolean canDeleteAccount() {
+        return false; // Los empleados NO pueden borrar cuentas
+    }
+
+    public double getWithdrawalLimit() {
+        return Double.MAX_VALUE; // Sin límite
+    }
+
+    public boolean canManageEmployees() {
+        return false; // Solo gerentes pueden gestionar empleados
+    }
+
+    public boolean canUnblockAccounts() {
+        return false; // Solo gerentes pueden desbloquear
+    }
+
+    // Método para crear cuenta bancaria para un cliente
+    public BankAccount createBankAccountForClient(User client) {
+        if (!canCreateAccount()) {
+            System.out.println("You don't have permission to create accounts");
+            return null;
+        }
+        System.out.println("Creating bank account for client: " + client.name);
+        // Aquí iría la lógica real de creación
+        return null;
+    }
 }
