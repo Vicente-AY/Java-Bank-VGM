@@ -306,3 +306,8 @@ public abstract class BankAccount implements Accounting {
         this.balance = balance;
     }
 }
+
+    public int getBalance() {
+        return getBalance();
+    }
+}

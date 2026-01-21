@@ -27,6 +27,11 @@ public class Employee extends Person {
         this.employeeId = employeeId;
     }
 
+    public Employee(Object id, Object name, Object password, Object birthDate) {
+        super();
+    }
+
+
     /**
      * Metodo que permite al empleado registrar usuarios
      * @see Person

@@ -105,6 +105,11 @@ public class Gerente extends Person {
         return true;
     }
 
+    @Override
+    public String getId() {
+        return "";
+    }
+
     public String createId(int id){
         String newId ="";
         for (int i= String.valueOf(id).length(); i < 8; i++){
@@ -202,5 +207,9 @@ public class Gerente extends Person {
 
         System.out.println("Employee with ID " + employeeId + " not found");
         return false;
+    }
+
+    private boolean canManageEmployees() {
+        return canManageEmployees();
     }
 }

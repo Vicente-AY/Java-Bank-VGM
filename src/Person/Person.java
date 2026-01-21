@@ -28,7 +28,7 @@ public abstract class Person {
      * Metodo que registra al usuario
      * @return Nuevo usuario creado
      */
-    abstract Person register();
+    public abstract Person register();
 
     /**
      * Metodo que revisa la validez de la contraseña
