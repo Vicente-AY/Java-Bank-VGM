@@ -5,17 +5,38 @@ import Account.BankAccount;
 import java.time.Year;
 import java.util.Scanner;
 
+/**
+ * Clase con los atributos de un empleado del banco
+ */
 public class Employee extends Person {
+    /**
+     * @param employeeId Número identificador del empleado
+     * @param id Número identificador
+     */
     final int employeeId;
     public static int id = 0;
 
+    /**
+     * Constructor con parámetros
+     * @param id Cadena que almacena el número de identificación
+     * @param employeeId Entero que establece el número identificador propio del empleado
+     * @see Person
+     */
     public Employee(String id, String name, String password, String birthDate, int employeeId) {
         super( name, password, birthDate);
         this.employeeId = employeeId;
     }
 
+    /**
+     * Metodo que permite al empleado registrar usuarios
+     * @see Person
+     * @see User
+     */
     @Override
     public User register(){
+        /**
+         * @param newId Variable que crea un nuevo número identificador
+         */
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
@@ -57,6 +78,11 @@ public class Employee extends Person {
         return newUser;
     }
 
+    /**
+     * Metodo que comprueba la validez de la contraseña introducida
+     * @see User
+     * @see Person
+     */
     @Override
     public boolean checkPassword(String password){ //regex password
         String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
@@ -68,6 +94,11 @@ public class Employee extends Person {
         }
     }
 
+    /**
+     * Metodo que comprueba la validez de la fecha introducida
+     * @see User
+     * @see Person
+     */
     @Override
     public boolean checkDate(String date){
         String regex = "[,\\.\\s]";
@@ -102,7 +133,15 @@ public class Employee extends Person {
         return true;
     }
 
+    /**
+     * Metodo que permite al empleado crear un nuevo número identificador
+     * @param id Entero con el número identificador
+     * @return Número identificador nuevo
+     */
     public String createId(int id){
+        /**
+         * @param newId Número identificador nuevo
+         */
         String newId ="";
         for (int i= String.valueOf(id).length(); i < 8; i++){
             newId = "0" + newId;
@@ -110,6 +149,10 @@ public class Employee extends Person {
         return newId;
     }
 
+    /**
+     * Metodo para acceder a la creación de la cuenta bancaria
+     * @return
+     */
     public BankAccount createBankAccount(){
         return null;
     }
