@@ -224,6 +224,14 @@ public class Gerente extends Person {
         System.out.println(blockedUser.getName() + " Has been unlocked");
     }
 
+    public void listOfClients(){
+        ArrayList<Person> persons = dataAccess.chargeData();
+        for(Person person : persons){
+            System.out.println("- - - -");
+            System.out.println(person);
+            System.out.println("- - - -");
+        }
+    }
     /*
     private Employee createEmployee(ArrayList<Employee> employeeList) {
         if (!canManageEmployees()) {

@@ -52,7 +52,7 @@ public class UsersMenu {
      * @param currentUser El usuario al que se le asignará la nueva cuenta creada.
      */
     public BankAccount bankAcoountCreation(Person currentUser) {
-        CreditAccount dummyCreditAccount = new CreditAccount(null, null, null, null, null, 0.0, 0.0);
+        CreditAccount dummyCreditAccount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);
         DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
         System.out.println("Select the type of bank account you want to create: ");
         System.out.println("1. Debit Account");

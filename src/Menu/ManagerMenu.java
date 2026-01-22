@@ -1,6 +1,6 @@
 package Menu;
 
-import Person.Person;
+import Person.*;
 
 /**
  * Clase encargada de gestionar la interfaz de usuario y las operaciones
@@ -18,7 +18,7 @@ public class ManagerMenu {
 
         int option = 0;
         System.out.println("Welcome " + currentManager.name);
-        System.out.println("1. Create BankAccount");
+        System.out.println("1. See list of persons");
         System.out.println("2. Make a deposit");
         System.out.println("3. Withdraw");
         System.out.println("4. Transfer Money");
@@ -28,10 +28,9 @@ public class ManagerMenu {
         while (option != 6) {
             switch (option) {
                 case 1:
-                    //bankAccount  newBA = new bankAccount(dummyBankAccount.getEntity(), dummyBankAccount.getOffice(),  dummyBankAccount.calcDC(), null, null, null);
+                    ((Gerente) currentManager).listOfClients();
                     break;
                 case 2:
-
                     break;
                 case 3:
                     return;

@@ -35,7 +35,6 @@ public class AccessScreen {
         //Carga los datos en un ArrayList
         personsArray = dataAccess.chargeData();
         int option=0;
-        option = sc.nextInt();
         while(option!=3){
             System.out.println("Welcome to JavaBank ");
             System.out.println("1. Create Account");
@@ -43,6 +42,7 @@ public class AccessScreen {
             System.out.println("3. Close Application");
             System.out.println("Please enter your numbered choice (1, 2 or 3)");
             option = sc.nextInt();
+            sc.nextLine();
             switch (option){
                 case 1:
                     registration();
