@@ -1,16 +1,16 @@
 import Access.AccessScreen;
-import Utils.Data;
 
 /**
- * Clase que desencade la función del programa en su totalidad
+ * Clase principal que actúa como el punto de entrada.
+ * Se encarga de arrancar la aplicación a la pantalla de acceso inicial.
  */
 public class Main {
+
     /**
-     * variable que llama a otra clase y sus metodos
+     * Método principal que inicia la ejecución del programa.
+     * @param args Argumentos de la línea de comandos (no utilizados en este sistema).
      */
     public static void main(String[] args) {
-
         AccessScreen accessScreen = new AccessScreen();
-        Data chargeData = new Data();
     }
 }

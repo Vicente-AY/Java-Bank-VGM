@@ -1,31 +1,40 @@
 package Account;
 import Utils.Data;
 import Exceptions.InputNumberException;
-import Person.User;
+import Person.*;
+
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * Clase que permite interactuar con la cuenta bancaria en débito
+ * Clase que representa una cuenta de débito bancaria.
+ * Proporciona implementaciones para las operaciones transaccionales estándar
+ * como depósitos, retiros, transferencias y recargas, operando siempre bajo
+ * el saldo disponible de forma directa.
+ * @see BankAccount
  */
 public class DebitAccount extends BankAccount {
     Data dataAccess = new Data();
     Scanner sc  = new Scanner(System.in);
+
     /**
-     * Constructores de la clase con parámetros
-     * @see BankAccount
+     * Constructor para inicializar una cuenta de débito con sus datos identificativos.
+     * @param entity       Código de la entidad (4 dígitos).
+     * @param office       Código de la oficina (4 dígitos).
+     * @param accNumber    Número de cuenta (10 dígitos).
+     * @param dc           Dígitos de control.
+     * @param IBAN         Código IBAN completo.
+     * @param accountAlias Nombre o apodo asignado a la cuenta.
      */
     public DebitAccount(String entity, String office, String accNumber, String dc, String IBAN, String accountAlias) {
         super(entity, office, accNumber, dc, IBAN, accountAlias);
     }
-    public DebitAccount(String entity, String office, String accNumber, String dc, String IBAN) {
-        super(entity, office, accNumber, dc, IBAN);
-    }
 
     /**
-     * Metodo para depositar dinero en la cuenta bancaria
-     * @param amount Entero que indica la cantidad expresada
-     * @param account Llama a otra clase
+     * Incrementa el saldo de la cuenta indicada.
+     * @param amount  Cantidad entera a depositar.
+     * @param account Instancia de la cuenta que recibe el depósito.
      */
     @Override
     public void deposit(int amount, BankAccount account) {
@@ -36,9 +45,9 @@ public class DebitAccount extends BankAccount {
     }
 
     /**
-     * Metodo para retirar dinero de la cuenta bancaria
-     * @param amount Entero que indica la cantidad expresada
-     * @param account Llama a otra clase
+     * Extrae fondos de la cuenta siempre que haya saldo suficiente.
+     * @param amount  Cantidad entera a retirar.
+     * @param account Cuenta desde la cual se realiza la retirada.
      */
     @Override
     public void withdraw(int amount, BankAccount account) {
@@ -54,18 +63,14 @@ public class DebitAccount extends BankAccount {
     }
 
     /**
-     * Metodo para transferir dinero entre cuentas
-     * @param amount Doble que indica la cantidad expresada
-     * @param account Llama a otra clase
+     * Realiza una transferencia de fondos a otra cuenta mediante el número de cuenta destino.
+     * @param amount  Cantidad decimal a transferir.
+     * @param account Cuenta de origen (emisora).
+     * @throws InputMismatchException Si el usuario introduce un formato de monto inválido.
      */
     @Override
     public void transfer(double amount, BankAccount account) {
-/**
- * @param sourceAcc Cadena que representa la cuenta de la que se va a sacar el dinero
- * @param destinationAcc Cadena que representa la cuenta que recibirá el dinero
- * @param ammount Doble que indica la cantidad expresada
- * @param destAcc Llama a otra clase para establecer la cuenta receptora
- */
+
         try{
             String sourceAcc =  account.accNumber;
             System.out.println("Please enter the destination account number\n");
@@ -96,15 +101,14 @@ public class DebitAccount extends BankAccount {
     }
 
     /**
-     * Metodo para recargar la tarjeta SIM del usuario
-     * @param amount Entero que indica la cantidad expresada
-     * @param account Llama a otra clase
+     * Simula la recarga de una tarjeta SIM.
+     * Valida que el número de teléfono tenga una longitud de 9 dígitos.
+     * @param amount  Monto de la recarga.
+     * @param account Cuenta que pagará la recarga.
      */
     @Override
     public void rechargeSIM(int amount, BankAccount account) {
-        /**
-         * @param number Cadena que almacena el número de teléfono introducido
-         */
+
         System.out.println("Input the destination phone number\n");
         try{
             String number =  sc.nextLine();
@@ -118,16 +122,12 @@ public class DebitAccount extends BankAccount {
     }
 
     /**
-     * Metodo que selecciona la cuenta del usuario
-     * @param user Atributo que llama a otra clase
+     * Muestra las cuentas vinculadas a un usuario y permite seleccionar una para operar.
+     * @param user El usuario cliente cuya cuenta se desea seleccionar.
      */
     @Override
     public void selectAccount(User user) {
-/**
- * @param foundBankAccount Variable de otra clase que indica si se ha encontrado la cuenta
- * @param aliasBA Cadena que muestra el apodo asociado a la cuenta bancaria
- * @param option Entero que recibe el número de la elección
- */
+
         BankAccount foundBankAccount = null;
         System.out.println("Select the account you want to use by typing the number of the option");
         for(int i = 0; i < user.bankAccounts.size(); i++) {
@@ -147,7 +147,15 @@ public class DebitAccount extends BankAccount {
 
     }
 
-    public DebitAccount  createDebitAccount(DebitAccount newDebitAccount, User currentUser) {
+    /**
+     * Proceso de creación de una nueva cuenta de débito.
+     * Calcula los parámetros bancarios y persiste la información en el sistema.
+     * @param newDebitAccount Instancia base para obtener configuraciones.
+     * @param currentUser      Usuario al que se le asignará la cuenta.
+     * @return La nueva cuenta de débito creada y vinculada.
+     */
+    public DebitAccount  createDebitAccount(DebitAccount newDebitAccount, Person currentUser) {
+        ArrayList<Person> personsArray = dataAccess.chargeData();
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
 
         entity = newDebitAccount.getEntity();
@@ -157,11 +165,10 @@ public class DebitAccount extends BankAccount {
         dc = newDebitAccount.calcDC(entity, office, accNumber);
         IBAN = newDebitAccount.calcIBAN(entity, office, accNumber);
         alias = newDebitAccount.accountAlias();
-        System.out.println("Your account has been created");
 
         newDebitAccount = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
-        currentUser.getBankAccounts().add(newDebitAccount);
-        dataAccess.writeBankAccounts(currentUser.getBankAccounts());
+        ((User) currentUser).getBankAccounts().add(newDebitAccount);
+        dataAccess.saveData(personsArray);
         System.out.println("Your account has been created");
         return newDebitAccount;
     }

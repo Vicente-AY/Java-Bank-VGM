@@ -1,50 +1,55 @@
 package Person;
 
 import Account.BankAccount;
-
+import Utils.Data;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Clase con los atributos de un empleado del banco
+ * Representa a un empleado de la entidad bancaria.
+ * Esta clase extiende Person y proporciona funcionalidades
+ * como el registro de personal y validaciones de seguridad.
+ * @see Person
  */
 public class Employee extends Person {
-
-    int employeeId;
-    public static int id = 0;
+    Data dataAccess = new Data();
+    String employeeId;
 
     /**
-     * Constructor con parámetros
-     * @param name que almacena el número de identificación
-     * @param employeeId Entero que establece el número identificador propio del empleado
-     * param
-     * @see Person
+     * Constructor para inicializar un empleado.
+     * @param name       Nombre completo del empleado.
+     * @param password   Contraseña de acceso al sistema.
+     * @param birthDate  Fecha de nacimiento en formato dd/mm/yyyy.
+     * @param employeeId Identificador único asignado al empleado.
      */
-    public Employee(String name, String password, String birthDate, int employeeId) {
+    public Employee(String name, String password, String birthDate, String employeeId) {
         super(name, password, birthDate);
         this.employeeId = employeeId;
         this.active = true;
     }
 
     /**
-     * Metodo que permite al empleado registrar usuarios
-     * @see Person
-     * @see User
+     * Gestiona el proceso de registro de un nuevo empleado.
+     * Incluye la captura de datos por consola, validación de contraseña y fecha,
+     * y la generación automática de ID.
+     * @return Un nuevo empleado.
+     * @see #checkPassword(String)
+     * @see #checkDate(String)
      */
     @Override
     public Employee register(){
-        /**
-         * @param newId Variable que crea un nuevo número identificador
-         */
+
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
         System.out.println("Please enter your name and surnames");
         name = sc.nextLine();
 
+        //Validación de contraseña
         System.out.println("Please enter your password");
         password = sc.nextLine();
-        checkPassword(password);
+        checkP = checkPassword(password);
         while (!checkP){
             System.out.println("The password you entered is incorrect");
             System.out.println("The password must contain:");
@@ -56,6 +61,7 @@ public class Employee extends Person {
             checkPassword(password);
         }
 
+        //Validación de fecha
         System.out.println("Please enter your birthdate (dd/mm/yyyy)");
         birthdate = sc.nextLine();
         checkD = checkDate(birthdate);
@@ -65,22 +71,37 @@ public class Employee extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-         id += 1;
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> EmployeeArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof Employee || person instanceof Gerente){
+                EmployeeArray.add(person);
+            }
+        }
+        int id = 1;
+        if(!EmployeeArray.isEmpty()) {
+            for (Person customer : EmployeeArray) {
+                if (customer.getId().equals(String.valueOf(id))) {
+                    id++;
+                }
+            }
+        }
         String newId = createId(id);
-        User newUser = new User(name, password, birthdate, newId);
-        System.out.println("The register process has ended");
+        Employee newEmployee = new Employee(name, password, birthdate, newId);
+        System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
         System.out.println("Name: " + name);
         System.out.println("Birthdate: " + birthdate);
         System.out.println("Password: " + password);
         System.out.println("Id: " + newId);
-        return newUser;
+        return newEmployee;
     }
 
     /**
-     * Metodo que comprueba la validez de la contraseña introducida
-     * @see User
-     * @see Person
+     * Valida la contraseña mediante una expresión regular (Regex).
+     * Requisitos: Al menos una mayúscula, una minúscula, un número, un carácter especial y 8 caracteres.
+     * @param password La cadena de texto a validar.
+     * @return true si cumple los requisitos de seguridad, false en caso contrario.
      */
     @Override
     public boolean checkPassword(String password){ //regex password
@@ -94,9 +115,10 @@ public class Employee extends Person {
     }
 
     /**
-     * Metodo que comprueba la validez de la fecha introducida
-     * @see User
-     * @see Person
+     * Valida que una fecha sea cronológicamente correcta.
+     * Comprueba límites de meses, días según el mes y años bisiestos para febrero.
+     * @param date Fecha en formato String (dd/mm/yyyy).
+     * @return true si la fecha es válida y coherente, false si no.
      */
     @Override
     public boolean checkDate(String date){
@@ -133,14 +155,11 @@ public class Employee extends Person {
     }
 
     /**
-     * Metodo que permite al empleado crear un nuevo número identificador
-     * @param id Entero con el número identificador
-     * @return Número identificador nuevo
+     * Convierte un número entero en un ID de empleado con formato de 8 dígitos.
+     * @param id El número identificador.
+     * @return Cadena de 8 caracteres como identificador final.
      */
     public String createId(int id){
-        /**
-         * @param newId Número identificador nuevo
-         */
         String newId ="";
         for (int i= String.valueOf(id).length(); i < 8; i++){
             newId = "0" + newId;
@@ -148,14 +167,7 @@ public class Employee extends Person {
         return newId;
     }
 
-    /**
-     * Metodo para acceder a la creación de la cuenta bancaria
-     * @return
-     */
-    public BankAccount createBankAccount(){
-        return null;
-    }
-    // PERMISOS DE EMPLEADO
+    /* PERMISOS DE EMPLEADO
     public boolean canCreateAccount() {
         return true; // Los empleados SÍ pueden crear cuentas
     }
@@ -175,20 +187,11 @@ public class Employee extends Person {
     public boolean canUnblockAccounts() {
         return false; // Solo gerentes pueden desbloquear
     }
+    */
 
-    // Método para crear cuenta bancaria para un cliente
-    public BankAccount createBankAccountForClient(User client) {
-        if (!canCreateAccount()) {
-            System.out.println("You don't have permission to create accounts");
-            return null;
-        }
-        System.out.println("Creating bank account for client: " + client.name);
-        // Aquí iría la lógica real de creación
-        return null;
-    }
-
+    /** @return El identificador de empleado. */
     @Override
     public String getId(){
-        return String.valueOf(employeeId);
+        return employeeId;
     }
 }

@@ -1,33 +1,40 @@
 package Person;
 import Account.BankAccount;
-
+import Utils.Data;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Clase con los metodos que el usuario puede utilizar
+ * Representa a un cliente final del banco.
+ * Proporciona funcionalidades para el registro personal, gestión de contraseñas
+ * y mantiene un registro de las cuentas bancarias de las que es titular.
+ * @see Person
  */
 public class User extends Person {
 
-    public String id = "";
+    Data dataAccess = new Data();
+    Scanner input = new Scanner(System.in);
+    public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
 
     /**
-     * Constructor con parámetros
-     * @param id Cadena con el número de identificación del usuario
-     * @see Person
+     * Constructor para inicializar un usuario con sus datos básicos.
+     * @param name      Nombre completo del usuario.
+     * @param password  Contraseña de acceso.
+     * @param birthDate Fecha de nacimiento (dd/mm/yyyy).
+     * @param userId    ID único de cliente.
      */
-    public User(String name, String password, String birthDate, String id) {
+    public User(String name, String password, String birthDate, String userId) {
 
         super(name, password, birthDate);
         this.active = true;
-        this.id = id;
+        this.userId = userId;
     }
 
     /**
-     * Metodo para realizar el registro del usuario
-     * @see Person
+     * Gestiona el proceso de registro de un nuevo cliente, pidiedo datos por consola.
+     * @return Una nueva instancia de {@link User} con los datos validados.
      */
     @Override
     public User register() {
@@ -47,7 +54,7 @@ public class User extends Person {
 
             System.out.println("Please enter your password");
             password = sc.nextLine();
-            checkPassword(password);
+            checkP = checkPassword(password);
             while (!checkP) {
                 System.out.println("The password you entered is incorrect");
                 System.out.println("The password must contain:");
@@ -68,9 +75,24 @@ public class User extends Person {
                 birthdate = sc.nextLine();
                 checkD = checkDate(birthdate);
             }
-            id = id + 1;
-            User newUser = new User(name, password, birthdate, id);
-            System.out.println("The register process has ended");
+            ArrayList<Person> personsArray = dataAccess.chargeData();
+            ArrayList<Person> clientArray = new ArrayList<>();
+            for(Person person : personsArray) {
+                if(person instanceof User){
+                    clientArray.add(person);
+                }
+            }
+            int id = 1;
+            if(!clientArray.isEmpty()) {
+                for (Person customer : clientArray) {
+                    if (customer.getId().equals(String.valueOf(id))) {
+                        id++;
+                    }
+                }
+            }
+            userId = String.valueOf(id);
+            User newUser = new User(name, password, birthdate, userId);
+            System.out.println("The register process has ended successfully");
             System.out.println("Your data:");
             System.out.println("Name: " + name);
             System.out.println("Birthdate: " + birthdate);
@@ -80,19 +102,12 @@ public class User extends Person {
         }
 
     /**
-     * Metodo que comprueba la validez de la fecha con la que el usuario interactua
-     * @see Person
+     * Valida la fecha de nacimiento del usuario.
+     * @param date Fecha en formato String.
+     * @return true si la fecha es válida; false en caso contrario.
      */
     @Override
     public boolean checkDate(String date) {
-        /**
-         * @param regex Variable que representa el formato en el que hay que introducir la fecha
-         * @param myArray Array que gestiona las partes de la fecha
-         * @param element1 Entero que representa el número asignado al día
-         * @param element2 Entero que representa el número asignado al mes
-         * @param element3 Entero que representa el número asignado al año
-         * @param year Año actual
-         */
         String regex = "[,\\.\\s]";
         String[] myArray = date.split(regex);
         int element1 = Integer.parseInt(myArray[0]);
@@ -126,9 +141,10 @@ public class User extends Person {
         }
 
     /**
-     * Metodo que comprueba la validez de la contraseña introducida por el usuario
-     * @see Person
-     * @param password Cadena con los caracteres que se pueden escribir en el campo de contraseña
+     * Valida la contraseña mediante una expresión regular.
+     * Requiere: 1 Mayúscula, 1 Minúscula, 1 Número, 1 Carácter especial y longitud mín. de 8.
+     * @param password Contraseña a verificar.
+     * @return true si cumple el patrón.
      */
     @Override
     public boolean checkPassword(String password) { //regex password
@@ -141,38 +157,26 @@ public class User extends Person {
         }
     }
 
+    //Getters y Setters
 
-        @Override
-        public String getId() {
-            return id;
-        }
+    /** @return Identificador único del usuario. */
+    @Override
+    public String getId() {
+        return userId;
+    }
 
+    /** @param active Estado de activación de la cuenta. */
+    public void setActive ( boolean active){
+        this.active = active;
+    }
 
-        public void setActive ( boolean active){
-            this.active = active;
-        }
+    /** @return Nombre completo del usuario. */
+    public String getName () {
+        return name;
+    }
 
-        public String getName () {
-            return name;
-        }
-
-        public ArrayList<BankAccount> getBankAccounts () {
-            return bankAccounts;
-        }
-
-
-        public boolean canCreateAccount() {
-            return false; // Los clientes NO pueden crear cuentas
-        }
-
-
-        public boolean canDeleteAccount() {
-            return false; // Los clientes NO pueden borrar cuentas
-        }
-
-
-        public double getWithdrawalLimit () {
-            return 1000.0; // Máximo 1000€
-        }
-
+    /** @return Lista de todas las cuentas bancarias asociadas. */
+    public ArrayList<BankAccount> getBankAccounts () {
+        return bankAccounts;
+    }
 }

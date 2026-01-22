@@ -1,5 +1,5 @@
 package Person;
-
+import Utils.Data;
 import Account.BankAccount;
 
 import java.time.Year;
@@ -7,16 +7,33 @@ import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Representa al usuario con el rol de Gerente en el sistema bancario.
+ * Hereda de Person y posee privilegios superiores para gestionar
+ * tanto a empleados como cuentas.
+ */
 public class Gerente extends Person {
-    int gerenteid;
+    String managerId;
     public static int id =0;
+    Data dataAccess = new Data() ;
 
-    public Gerente(String name, String password, String birthDate, Object o) {
+    /**
+     * Constructor para inicializar un Gerente.
+     * @param name       Nombre del Gerente.
+     * @param password   Contraseña de seguridad.
+     * @param birthDate  Fecha de nacimiento (dd/mm/yyyy).
+     * @param gerenteId  ID específico asignado al gerente.
+     */
+    public Gerente(String name, String password, String birthDate, String gerenteId) {
         super(name, password, birthDate);
-        this.gerenteid = gerenteid;
+        this.managerId = managerId;
     }
 
-
+    /**
+     * Inicia el proceso de registro de un nuevo Gerente por consola.
+     * Valida datos de seguridad y genera un ID de 8 dígitos de forma automática.
+     * @return Una nuevo Gerente
+     */
     @Override
     public Gerente register() {
         Scanner sc = new Scanner(System.in);
@@ -48,10 +65,24 @@ public class Gerente extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        id += 1;
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> EmployeeArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof Employee || person instanceof Gerente){
+                EmployeeArray.add(person);
+            }
+        }
+        int id = 1;
+        if(!EmployeeArray.isEmpty()) {
+            for (Person customer : EmployeeArray) {
+                if (customer.getId().equals(String.valueOf(id))) {
+                    id++;
+                }
+            }
+        }
         String newId = createId(id);
         Gerente newGerente = new Gerente(name, password, birthdate, newId);
-        System.out.println("The register process has ended");
+        System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
         System.out.println("Name: " + name);
         System.out.println("Birthdate: " + birthdate);
@@ -60,6 +91,11 @@ public class Gerente extends Person {
         return newGerente;
     }
 
+    /**
+     * Valida la contraseña mediante expresión regular.
+     * @param password Contraseña a verificar.
+     * @return true si coincide con el patrón.
+     */
     @Override
     public boolean checkPassword(String password){ //regex password
         String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
@@ -71,6 +107,11 @@ public class Gerente extends Person {
         }
     }
 
+    /**
+     * Valida la existencia real de una fecha y bisiestos.
+     * @param date Fecha en String.
+     * @return true si es válida.
+     */
     @Override
     public boolean checkDate(String date){
         String regex = "[,//.\\s]";
@@ -105,11 +146,17 @@ public class Gerente extends Person {
         return true;
     }
 
+    /**Devuelve el id del Gerente*/
     @Override
     public String getId() {
-        return "";
+        return managerId;
     }
 
+    /**
+     * Formatea un número entero a un ID de 8 caracteres con relleno de ceros.
+     * @param id Número base.
+     * @return String de 8 dígitos.
+     */
     public String createId(int id){
         String newId ="";
         for (int i= String.valueOf(id).length(); i < 8; i++){
@@ -118,10 +165,10 @@ public class Gerente extends Person {
         return newId;
     }
 
-    public BankAccount createBankAccount(){
-        return null;
-    }
-
+    /**
+     * Permite eliminar una cuenta bancaria de un usuario seleccionado.
+     * Requisito: La cuenta debe tener saldo 0.0 para poder ser borrada.
+     */
     private void deleteBankAccount(){
         ArrayList<User> users = new ArrayList<>();
         //Aqui cargar datos de usuarios
@@ -168,26 +215,30 @@ public class Gerente extends Person {
         }
     }
 
+    /**
+     * Desbloquea el acceso de un usuario que haya fallado sus intentos de login.
+     * @param blockedUser Instancia del usuario a reactivar.
+     */
     private void unlockAccount(User blockedUser){
         blockedUser.setActive(true);
         System.out.println(blockedUser.getName() + " Has been unlocked");
     }
 
-    public Employee createEmployee(ArrayList<Employee> employeeList) {
+    /*
+    private Employee createEmployee(ArrayList<Employee> employeeList) {
         if (!canManageEmployees()) {
             System.out.println("You don't have permission to create employees");
             return null;
         }
 
         System.out.println("[MANAGER] Creating new employee...");
-        Employee dummyEmployee = new Employee(null, null, null, 0);
+        Employee dummyEmployee = new Employee(null, null, null, null);
         Employee newEmployee = dummyEmployee.register();
 
         if (newEmployee != null) {
             employeeList.add(newEmployee);
             System.out.println("[MANAGER] Employee created successfully!");
         }
-
         return newEmployee;
     }
 
@@ -198,7 +249,7 @@ public class Gerente extends Person {
         }
 
         for (int i = 0; i < employeeList.size(); i++) {
-            if (Objects.equals(employeeList.get(i).id, employeeId)) {
+            if (Objects.equals(employeeList.get(i).getId(), employeeId)) {
                 Employee removed = employeeList.remove(i);
                 System.out.println("[MANAGER] Employee " + removed.name + " (ID: " + employeeId + ") has been removed");
                 return true;
@@ -211,5 +262,5 @@ public class Gerente extends Person {
 
     private boolean canManageEmployees() {
         return canManageEmployees();
-    }
+    }*/
 }

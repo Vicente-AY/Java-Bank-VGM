@@ -1,44 +1,46 @@
 package Person;
 
 /**
- * Clase con los atributos de una persona
+ * Clase abstracta que sirve como base para todos los tipos de usuarios del sistema.
+ * Define los atributos comunes de identidad y los métodos de validación
  */
 public abstract class Person {
 
     public String name="", birthDate ="", password="";
     public boolean active=true;
 
-
-    protected String id;
-
     /**
-     * Constructor con parámetros
-     * @param name Nombre del usuario
-     * @param password Contraseña del usuario
-     * @param birthDate Fecha de nacimiento del usuario
+     * Constructor para inicializar los datos básicos de una persona.
+     * @param name      Nombre y apellidos del usuario.
+     * @param password  Clave de seguridad del usuario.
+     * @param birthDate Fecha de nacimiento del usuario.
      */
-    public Person( String name, String password, String birthDate) {}
+    public Person( String name, String password, String birthDate) {
+        this.name = name;
+        this.password = password;
+        this.birthDate = birthDate;
+    }
 
     /**
-     * Metodo que registra al usuario
-     * @return Nuevo usuario creado
+     * Metodo abstracto que debe implementar la lógica de registro
+     * específica según el tipo de persona (Cliente, Empleado o Gerente).
+     * @return Una nueva instancia del objeto que extiende de Person.
      */
     public abstract Person register();
 
     /**
-     * Metodo que revisa la validez de la contraseña
-     * @param password Contraseña del usuario
-     * @return Validez de la contraseña
+     * Define los requisitos que debe cumplir la contraseña del usuario.
+     * @param password La cadena de texto a validar.
+     * @return true si la contraseña cumple con las reglas.
      */
     abstract boolean checkPassword(String password);
 
     /**
-     * Metodo que revisa la validez de la fecha introducida
-     * @param date Fecha introducida
-     * @return Validez de la fecha
+     * Valida que la fecha introducida sea correcta y cumpla con el formato.
+     * @param date La fecha de cumpleaños de la Persona
+     * @return true si la fecha existe y es válida; false si el formato o día son incorrectos.
      */
     abstract boolean checkDate(String date);
 
     public abstract String getId();
-
 }
