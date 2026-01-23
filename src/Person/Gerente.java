@@ -15,7 +15,10 @@ import java.util.Scanner;
 public class Gerente extends Person {
     String managerId;
     public static int id =0;
-    Data dataAccess = new Data() ;
+    transient Data dataAccess = new Data() ;
+    private static final long serialVersionUID = 6983069239864257474L;
+
+
 
     /**
      * Constructor para inicializar un Gerente.
@@ -232,7 +235,7 @@ public class Gerente extends Person {
             System.out.println("- - - -");
         }
     }
-    /*
+
     private Employee createEmployee(ArrayList<Employee> employeeList) {
         if (!canManageEmployees()) {
             System.out.println("You don't have permission to create employees");
@@ -270,5 +273,5 @@ public class Gerente extends Person {
 
     private boolean canManageEmployees() {
         return canManageEmployees();
-    }*/
+    }
 }

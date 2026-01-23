@@ -16,18 +16,17 @@ public class UsersMenu {
     public void menuAccess(Person currentUser){
 
         int option = 0;
-        System.out.println("Welcome " + currentUser.name);
-        System.out.println("1. Create BankAccount");
-        System.out.println("2. Make a deposit");
-        System.out.println("3. Withdraw");
-        System.out.println("4. Transfer Money");
-        System.out.println("5. Recharge SIM card");
-        System.out.println("6. Log Out");
-        System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
-        Scanner scanner = new Scanner(System.in);
-        option = scanner.nextInt();
-
-        while (option != 6) {
+        while (true) {
+            System.out.println("Welcome " + currentUser.name);
+            System.out.println("1. Create BankAccount");
+            System.out.println("2. Make a deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Transfer Money");
+            System.out.println("5. Recharge SIM card");
+            System.out.println("6. Log Out");
+            System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
+            Scanner scanner = new Scanner(System.in);
+            option = scanner.nextInt();
             switch (option) {
                 case 1:
                     bankAcoountCreation(currentUser);
@@ -43,6 +42,8 @@ public class UsersMenu {
                     return;
                 case 6:
                     return;
+                    default: System.out.println("Opción no valida");
+                    break;
             }
         }
     }

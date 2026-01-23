@@ -6,9 +6,11 @@ import java.util.ArrayList;
 /**
  * Clase de utilidad encargada de la persistencia de datos del sistema.
  */
-public class Data {
+public class Data implements Serializable{
     ArrayList<Person> personsArray = new ArrayList<Person>();
-    File personsList = new File("Persons.dat");
+    transient File personsList = new File("Persons.dat");
+    private static final long serialVersionUID = 1L;
+
 
     /**
      * Carga la lista de personas desde el archivo binario "Persons.dat".
@@ -36,7 +38,9 @@ public class Data {
      */
     public void saveData(ArrayList<Person> personsArray){
         try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(personsList))){
+            output.reset();
             output.writeObject(personsArray);
+            output.flush();
         }
         catch(IOException e){
             System.err.println("Error writing data " + e.getMessage());

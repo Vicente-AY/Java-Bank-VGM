@@ -13,8 +13,9 @@ import java.util.Scanner;
  */
 public class User extends Person {
 
-    Data dataAccess = new Data();
-    Scanner input = new Scanner(System.in);
+    transient Data dataAccess = new Data();
+    private static final long serialVersionUID = 1L;
+    transient Scanner input = new Scanner(System.in);
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
 
@@ -108,36 +109,40 @@ public class User extends Person {
      */
     @Override
     public boolean checkDate(String date) {
-        String regex = "[,\\.\\s]";
+        String regex = "[,//.\\s]";
         String[] myArray = date.split(regex);
         int element1 = Integer.parseInt(myArray[0]);
         int element2 = Integer.parseInt(myArray[1]);
         int element3 = Integer.parseInt(myArray[2]);
         int year = Year.now().getValue();
-
-            if (element1 > 32 || element1 < 0) {//check if the day is between 1 and 31
-                return false;
-            }
-            if (element2 == 4 || element2 == 6 || element2 == 9 || element2 == 11) {//check if it is a 30-day month
-                if (element1 > 30) {
+            try {
+                if (element1 > 32 || element1 < 0) {//check if the day is between 1 and 31
                     return false;
                 }
-            }
-            if (element2 == 2) { //check if february
-                if (element3 % 4 == 0) {
-                    if (element1 > 29) {//leap year
-                        return false;
-                    }
-                } else {
-                    if (element1 > 28) {//normal year
+                if (element2 == 4 || element2 == 6 || element2 == 9 || element2 == 11) {//check if it is a 30-day month
+                    if (element1 > 30) {
                         return false;
                     }
                 }
-            }
-            if (element3 < 1900 || element3 > year) {
-                return false;
-            }
-            return true;
+                if (element2 == 2) { //check if february
+                    if (element3 % 4 == 0) {
+                        if (element1 > 29) {//leap year
+                            return false;
+                        }
+                    } else {
+                        if (element1 > 28) {//normal year
+                            return false;
+                        }
+                    }
+                }
+                if (element3 < 1900 || element3 > year) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid date");
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                System.out.println("Esto no va");
+            }return true;
         }
 
     /**

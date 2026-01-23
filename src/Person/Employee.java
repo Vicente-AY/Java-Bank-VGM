@@ -13,7 +13,8 @@ import java.util.Scanner;
  * @see Person
  */
 public class Employee extends Person {
-    Data dataAccess = new Data();
+    transient Data dataAccess = new Data();
+    private static final long serialVersionUID = 1L;
     String employeeId;
 
     /**
@@ -86,7 +87,7 @@ public class Employee extends Person {
                 }
             }
         }
-        String newId = createId(id);
+        String newId = String.valueOf(id);
         Employee newEmployee = new Employee(name, password, birthdate, newId);
         System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
@@ -122,7 +123,7 @@ public class Employee extends Person {
      */
     @Override
     public boolean checkDate(String date){
-        String regex = "[,\\.\\s]";
+        String regex = "[,//.\\s]";
         String[] myArray = date.split(regex);
         int element1 = Integer.parseInt(myArray[0]);
         int element2 = Integer.parseInt(myArray[1]);

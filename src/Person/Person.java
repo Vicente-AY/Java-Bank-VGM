@@ -1,10 +1,12 @@
 package Person;
 
+import java.io.Serializable;
+
 /**
  * Clase abstracta que sirve como base para todos los tipos de usuarios del sistema.
  * Define los atributos comunes de identidad y los métodos de validación
  */
-public abstract class Person {
+public abstract class Person implements Serializable {
 
     public String name="", birthDate ="", password="";
     public boolean active=true;
