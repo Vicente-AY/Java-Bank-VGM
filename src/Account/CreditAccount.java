@@ -41,7 +41,6 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void deposit(int amount, BankAccount account) {
-
     }
 
     /**

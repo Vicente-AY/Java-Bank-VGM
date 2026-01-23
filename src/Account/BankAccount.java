@@ -14,6 +14,7 @@ import static java.lang.Integer.parseInt;
  */
 public abstract class BankAccount implements Accounting {
 
+    ArrayList<BankAccountHistory>  history = new ArrayList<BankAccountHistory>();
     public String entity = "9999", office = "8888";
     public String dc = "", accNumber = "";
     public String IBAN = "";
@@ -245,5 +246,9 @@ public abstract class BankAccount implements Accounting {
     /** @param balance Nuevo saldo de la cuenta. */
     public void setBalance ( double balance){
         this.balance = balance;
+    }
+
+    public ArrayList<BankAccountHistory> getHistory(){
+        return history;
     }
 }

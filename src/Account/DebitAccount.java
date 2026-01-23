@@ -3,7 +3,9 @@ import Utils.Data;
 import Exceptions.InputNumberException;
 import Person.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -15,6 +17,8 @@ import java.util.Scanner;
  * @see BankAccount
  */
 public class DebitAccount extends BankAccount {
+    Date todayDate = new Date();
+    SimpleDateFormat formatoFecha = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     Data dataAccess = new Data();
     Scanner sc  = new Scanner(System.in);
 
@@ -39,9 +43,12 @@ public class DebitAccount extends BankAccount {
     @Override
     public void deposit(int amount, BankAccount account) {
 
+        String transactionDate = formatoFecha.format(new Date());
+        double previousBalance =  account.getBalance();
         account.balance += amount;
         System.out.println("Deposited " + amount);
         System.out.println("New Balance: " + account.balance);
+        account.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, account.balance, transactionDate));
     }
 
     /**
@@ -56,9 +63,12 @@ public class DebitAccount extends BankAccount {
             System.out.println("Insufficient funds");
         }
         else{
+            String transactionDate = formatoFecha.format(new Date());
+            double previousBalance =  account.getBalance();
             account.balance -= amount;
-            System.out.println("Operation successful");
+            System.out.println("Withdrawn " + amount);
             System.out.println("New balance in " + account.accNumber + " is: " + account.balance);
+            account.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", amount, account.balance, transactionDate));
         }
     }
 
@@ -71,6 +81,8 @@ public class DebitAccount extends BankAccount {
     @Override
     public void transfer(double amount, BankAccount account) {
 
+        String transactionDate = formatoFecha.format(new Date());
+        double previousBalance = account.getBalance();
         try{
             String sourceAcc =  account.accNumber;
             System.out.println("Please enter the destination account number\n");
@@ -82,7 +94,6 @@ public class DebitAccount extends BankAccount {
                 System.out.println("Insufficient funds");
             }
             else{
-                account.balance -= ammount;
                 BankAccount destAcc = null;
                 for(int i = 0; i < accounts.size(); i++){
                     if(accounts.get(i).accNumber.equals(destinationAcc)){
@@ -90,9 +101,19 @@ public class DebitAccount extends BankAccount {
                         destAcc = accounts.get(i);
                     }
                 }
-                System.out.println("Operation successful");
-                System.out.println("New balance in " + sourceAcc + " is: " + account.balance);
-                System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
+                if(destAcc != null){
+                    double destAcPreviousBalance =  destAcc.getBalance();
+                    account.balance -= ammount;
+                    destAcc.balance += ammount;
+                    System.out.println("Operation successful");
+                    System.out.println("New balance in " + sourceAcc + " is: " + account.balance);
+                    System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
+                    account.getHistory().add(new BankAccountHistory(previousBalance, "Transference", amount, account.balance, transactionDate, destAcc));
+                }
+                else{
+                    System.out.println("Destination account does not exist");
+                    return;
+                }
             }
         }
         catch(InputMismatchException e){
@@ -109,6 +130,7 @@ public class DebitAccount extends BankAccount {
     @Override
     public void rechargeSIM(int amount, BankAccount account) {
 
+        String transactionDate = formatoFecha.format(new Date());
         System.out.println("Input the destination phone number\n");
         try{
             String number =  sc.nextLine();
@@ -118,6 +140,16 @@ public class DebitAccount extends BankAccount {
             }
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
+        }
+        if(account.balance >= amount || account.balance - amount < 0){
+            System.out.println("Insufficient funds");
+        }
+        else {
+            double previousBalance = account.balance;
+            account.balance -= amount;
+            System.out.println("Operation successful");
+            System.out.println("New balance in " + account.accNumber + " is: " + account.balance);
+            account.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, account.balance, transactionDate));
         }
     }
 
