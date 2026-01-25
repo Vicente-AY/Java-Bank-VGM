@@ -21,7 +21,6 @@ public abstract class BankAccount implements Accounting {
     public String accountAlias = "";
     public double balance = 0.0;
     int numNewAccount = 0;
-    ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     Scanner sc = new Scanner(System.in);
     Data dataAccess = new Data();
 
@@ -145,7 +144,7 @@ public abstract class BankAccount implements Accounting {
         if (check.equalsIgnoreCase("yes") || check.equalsIgnoreCase("si")) {
             System.out.println("Introduce the account alias: ");
             alias = sc.nextLine();
-        //Comportamiento por defecto si el usuario rechaza no poner nada
+        //Comportamiento por defecto si el usuario rechaza poner alias
         } else if (alias.isEmpty() || check.equalsIgnoreCase("no")) {
             System.out.println("The account name will default to its number.");
             alias = "Account " + IBAN;
