@@ -25,9 +25,9 @@ public class Gerente extends Person {
      * @param name       Nombre del Gerente.
      * @param password   Contraseña de seguridad.
      * @param birthDate  Fecha de nacimiento (dd/mm/yyyy).
-     * @param gerenteId  ID específico asignado al gerente.
+     * @param managerId  ID específico asignado al gerente.
      */
-    public Gerente(String name, String password, String birthDate, String gerenteId) {
+    public Gerente(String name, String password, String birthDate, String managerId) {
         super(name, password, birthDate);
         this.managerId = managerId;
     }
@@ -38,7 +38,7 @@ public class Gerente extends Person {
      * @return Una nuevo Gerente
      */
     @Override
-    public Gerente register() {
+    public Gerente register(ArrayList<Person> persons) {
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
@@ -68,17 +68,16 @@ public class Gerente extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
         ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : personsArray) {
+        for(Person person : persons) {
             if(person instanceof Employee || person instanceof Gerente){
                 EmployeeArray.add(person);
             }
         }
         int id = 1;
         if(!EmployeeArray.isEmpty()) {
-            for (Person customer : EmployeeArray) {
-                if (customer.getId().equals(String.valueOf(id))) {
+            for (Person employee : EmployeeArray) {
+                if (createId(id).equals(employee.getId())) {
                     id++;
                 }
             }
@@ -117,7 +116,7 @@ public class Gerente extends Person {
      */
     @Override
     public boolean checkDate(String date){
-        String regex = "[,//.\\s]";
+        String regex = "[,./\\s]";
         String[] myArray = date.split(regex);
         int element1 = Integer.parseInt(myArray[0]);
         int element2 = Integer.parseInt(myArray[1]);
@@ -160,12 +159,9 @@ public class Gerente extends Person {
      * @param id Número base.
      * @return String de 8 dígitos.
      */
-    public String createId(int id){
-        String newId ="";
-        for (int i= String.valueOf(id).length(); i < 8; i++){
-            newId = "0" + newId;
-        }
-        return newId;
+    public String createId(int id) {
+
+        return String.format("%08d", id);
     }
 
     /**
@@ -227,37 +223,23 @@ public class Gerente extends Person {
         System.out.println(blockedUser.getName() + " Has been unlocked");
     }
 
-    public void listOfClients(){
-        ArrayList<Person> persons = dataAccess.chargeData();
+    public void listOfClients(ArrayList<Person> persons){
         for(Person person : persons){
             System.out.println("- - - -");
-            System.out.println(person);
-            System.out.println("- - - -");
+            System.out.println(person.getName());
         }
     }
 
-    private Employee createEmployee(ArrayList<Employee> employeeList) {
-        if (!canManageEmployees()) {
-            System.out.println("You don't have permission to create employees");
-            return null;
-        }
+    private void createEmployee(ArrayList<Person> persons) {
 
         System.out.println("[MANAGER] Creating new employee...");
         Employee dummyEmployee = new Employee(null, null, null, null);
-        Employee newEmployee = dummyEmployee.register();
 
-        if (newEmployee != null) {
-            employeeList.add(newEmployee);
-            System.out.println("[MANAGER] Employee created successfully!");
-        }
-        return newEmployee;
+        Employee newEmployee = new Employee(null, null, null, null).register(persons);
+        persons.add(newEmployee);
     }
 
     public boolean deleteEmployee(ArrayList<Employee> employeeList, String employeeId) {
-        if (!canManageEmployees()) {
-            System.out.println("You don't have permission to delete employees");
-            return false;
-        }
 
         for (int i = 0; i < employeeList.size(); i++) {
             if (Objects.equals(employeeList.get(i).getId(), employeeId)) {
@@ -271,7 +253,4 @@ public class Gerente extends Person {
         return false;
     }
 
-    private boolean canManageEmployees() {
-        return canManageEmployees();
-    }
 }

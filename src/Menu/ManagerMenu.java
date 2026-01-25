@@ -1,6 +1,8 @@
 package Menu;
-
+import java.util.Scanner;
 import Person.*;
+
+import java.util.ArrayList;
 
 /**
  * Clase encargada de gestionar la interfaz de usuario y las operaciones
@@ -8,37 +10,27 @@ import Person.*;
  */
 public class ManagerMenu {
 
+    Scanner scanner = new Scanner(System.in);
+
     /**
      * Proporciona acceso al menú administrativo del gerente.
      * Permite la gestión de cuentas bancarias
      * con privilegios elevados.
      * @param currentManager El Gerente que ha iniciado sesión.
      */
-    public void menuAccess(Person currentManager){
+    public void menuAccess(Person currentManager, ArrayList<Person> persons) {
 
-        int option = 0;
-        System.out.println("Welcome " + currentManager.name);
-        System.out.println("1. See list of persons");
-        System.out.println("2. Make a deposit");
-        System.out.println("3. Withdraw");
-        System.out.println("4. Transfer Money");
-        System.out.println("5. Recharge SIM card");
-        System.out.println("6. Log Out");
-        System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
-        while (option != 6) {
+        while (true) {
+            System.out.println("Welcome " + currentManager.name);
+            System.out.println("1. See list of persons");
+            System.out.println("2. Log Out");
+            int option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    ((Gerente) currentManager).listOfClients();
+                    ((Gerente) currentManager).listOfClients(persons);
                     break;
                 case 2:
-                    break;
-                case 3:
-                    return;
-                case 4:
-                    return;
-                case 5:
-                    return;
-                case 6:
+                    System.out.println("Loggin out");
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");

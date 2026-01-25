@@ -39,7 +39,7 @@ public class Employee extends Person {
      * @see #checkDate(String)
      */
     @Override
-    public Employee register(){
+    public Employee register(ArrayList<Person> persons){
 
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
@@ -81,13 +81,13 @@ public class Employee extends Person {
         }
         int id = 1;
         if(!EmployeeArray.isEmpty()) {
-            for (Person customer : EmployeeArray) {
-                if (customer.getId().equals(String.valueOf(id))) {
+            for (Person employee : EmployeeArray) {
+                if (createId(id).equals(employee.getId())) {
                     id++;
                 }
             }
         }
-        String newId = String.valueOf(id);
+        String newId = createId(id);
         Employee newEmployee = new Employee(name, password, birthdate, newId);
         System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
@@ -160,12 +160,9 @@ public class Employee extends Person {
      * @param id El número identificador.
      * @return Cadena de 8 caracteres como identificador final.
      */
-    public String createId(int id){
-        String newId ="";
-        for (int i= String.valueOf(id).length(); i < 8; i++){
-            newId = "0" + newId;
-        }
-        return newId;
+    public String createId(int id) {
+
+        return String.format("%08d", id);
     }
 
     /* PERMISOS DE EMPLEADO

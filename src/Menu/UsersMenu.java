@@ -1,6 +1,8 @@
 package Menu;
 import Person.Person;
 import Account.*;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -13,7 +15,7 @@ public class UsersMenu {
      * Proporciona acceso a las funcionalidades disponibles para el cliente.
      * @param currentUser El cliente que ha iniciado sesión.
      */
-    public void menuAccess(Person currentUser){
+    public void menuAccess(Person currentUser, ArrayList<Person> persons){
 
         int option = 0;
         while (true) {

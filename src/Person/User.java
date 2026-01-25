@@ -38,7 +38,7 @@ public class User extends Person {
      * @return Una nueva instancia de {@link User} con los datos validados.
      */
     @Override
-    public User register() {
+    public User register(ArrayList<Person> persons) {
         /**
          * @param sc Variable que llama al escáner
          * @param checkP Booleano que determina que se han cumplido con los requerimientos de la contraseña

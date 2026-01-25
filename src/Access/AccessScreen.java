@@ -45,7 +45,7 @@ public class AccessScreen {
             sc.nextLine();
             switch (option){
                 case 1:
-                    registration();
+                    registration(personsArray);
                     break;
                 case 2:
                     login(personsArray);
@@ -63,7 +63,7 @@ public class AccessScreen {
      * Gestiona el proceso de registro de nuevos usuarios.
      * Permite elegir entre Cliente, Empleado o Gerente y guarda los cambios.
      */
-    public void registration() {
+    public void registration(ArrayList<Person> persons) {
 
         //Cada vez que se registra satisfactoriamente se actualiza el archivo con los nuevos datos
         int option = 0;
@@ -78,17 +78,17 @@ public class AccessScreen {
             option = sc.nextInt();
             switch (option) {
                 case 1:
-                    User newUser = dummyUserC.register();
+                    User newUser = dummyUserC.register(persons);
                     personsArray.add(newUser);
                     dataAccess.saveData(personsArray);
                     break;
                 case 2:
-                    Employee newEmployee = dummyUserE.register();
+                    Employee newEmployee = dummyUserE.register(persons);
                     personsArray.add(newEmployee);
                     dataAccess.saveData(personsArray);
                     break;
                 case 3:
-                    Gerente newGerente = dummyUserG.register();
+                    Gerente newGerente = dummyUserG.register(persons);
                     personsArray.add(newGerente);
                     dataAccess.saveData(personsArray);
                     break;
@@ -129,13 +129,16 @@ public class AccessScreen {
                     if (pass.equals(currentPerson.password)) {
                         System.out.println("You have successfully logged in");
                         if(currentPerson instanceof User){
-                            menuUser.menuAccess(currentPerson);
+                            menuUser.menuAccess(currentPerson, personsArray);
+                            return;
                         }
                         else if(currentPerson instanceof Employee){
-                            menuEmpployee.menuAccess(currentPerson);
+                            menuEmpployee.menuAccess(currentPerson, personsArray);
+                            return;
                         }
                         else{
-                            menuManager.menuAccess(currentPerson);
+                            menuManager.menuAccess(currentPerson, personsArray);
+                            return;
                         }
 
                     } else {

@@ -1,6 +1,7 @@
 package Person;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Clase abstracta que sirve como base para todos los tipos de usuarios del sistema.
@@ -28,7 +29,7 @@ public abstract class Person implements Serializable {
      * específica según el tipo de persona (Cliente, Empleado o Gerente).
      * @return Una nueva instancia del objeto que extiende de Person.
      */
-    public abstract Person register();
+    public abstract Person register(ArrayList<Person> persons);
 
     /**
      * Define los requisitos que debe cumplir la contraseña del usuario.
@@ -45,4 +46,8 @@ public abstract class Person implements Serializable {
     abstract boolean checkDate(String date);
 
     public abstract String getId();
+
+    public String getName(){
+        return name;
+    }
 }

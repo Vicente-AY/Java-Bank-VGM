@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class Data implements Serializable{
     ArrayList<Person> personsArray = new ArrayList<Person>();
-    transient File personsList = new File("Persons.dat");
+    private static final File personsList = new File("Persons.dat");
     private static final long serialVersionUID = 1L;
 
 
