@@ -229,7 +229,7 @@ public class Gerente extends Person {
     /**
      * Crea empleados
      */
-    public void CreateEmployee(ArrayList<Person> persons){
+    private void CreateEmployee(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
@@ -288,7 +288,7 @@ public class Gerente extends Person {
     /**
      * Crea gerentes
      */
-    public void CreateManager(ArrayList<Person> persons){
+    private void CreateManager(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
@@ -345,7 +345,7 @@ public class Gerente extends Person {
     /**
      * Borra empleados
      */
-    public void DeleteEmployee(ArrayList<Person> persons ){
+    private void DeleteEmployee(ArrayList<Person> persons ){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Employee's ID");
         String comprovId = sc.nextLine();
@@ -372,7 +372,7 @@ public class Gerente extends Person {
      * Borra gerentes
      * @param managerId el id que tiene el gerente
      */
-    public void DeleteManager(ArrayList<Person> persons, String managerId){
+    private void DeleteManager(ArrayList<Person> persons, String managerId){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Manager's ID");
         String comprovId = sc.nextLine();
@@ -397,7 +397,7 @@ public class Gerente extends Person {
     /**
      * Borra las cuenta bancarias de los clientes
      */
-    public void DeleteBankAccount(ArrayList<Person> persons){
+    private void DeleteBankAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Client's ID");
         String comprovId = sc.nextLine();
@@ -475,7 +475,7 @@ public class Gerente extends Person {
     /**
      * Reactiva cuentas de clientes bloqueadas
      */
-    public void ReactivateClientAccount(ArrayList<Person> persons){
+    private void ReactivateClientAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
         System.out.println("Enter the Client's ID:");
@@ -505,7 +505,7 @@ public class Gerente extends Person {
     /**
      * Reactiva cuentas de empleados bloqueadas
      */
-    public void ReactivateEmployee(ArrayList<Person> persons){
+    private void ReactivateEmployee(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE EMPLOYEE ACCOUNT ===");
         System.out.println("Enter the Employee's ID:");
@@ -535,7 +535,7 @@ public class Gerente extends Person {
     /**
      * Reactiva cuentas de gerentes bloqueadas
      */
-    public void ReactivateManager(ArrayList<Person> persons){
+    private void ReactivateManager(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE MANAGER ACCOUNT ===");
         System.out.println("Enter the Manager's ID:");
