@@ -68,7 +68,7 @@ public class AccessScreen {
 
         //Cada vez que se registra satisfactoriamente se actualiza el archivo con los nuevos datos
         int option = 0;
-        while (option != 3) {
+        while (true) {
             System.out.println("Welcome to the registration Process");
             System.out.println("Please type the type of user");
             System.out.println("1. Client");
@@ -81,11 +81,11 @@ public class AccessScreen {
                 case 1:
                     User newUser = dummyUserC.register(persons);
                     personsArray.add(newUser);
-                    break;
+                    return;
                 case 2:
                     Employee newEmployee = dummyUserE.register(persons);
                     personsArray.add(newEmployee);
-                    break;
+                    return;
                 case 3:
                     Gerente newGerente = dummyUserG.register(persons);
                     personsArray.add(newGerente);
