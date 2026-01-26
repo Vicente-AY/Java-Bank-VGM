@@ -51,6 +51,7 @@ public class AccessScreen {
                     login(personsArray);
                     break;
                 case 3:
+                    dataAccess.saveData(personsArray);
                     return;
                 default:
                     System.out.println("Invalid option. Please try again");
@@ -80,17 +81,14 @@ public class AccessScreen {
                 case 1:
                     User newUser = dummyUserC.register(persons);
                     personsArray.add(newUser);
-                    dataAccess.saveData(personsArray);
                     break;
                 case 2:
                     Employee newEmployee = dummyUserE.register(persons);
                     personsArray.add(newEmployee);
-                    dataAccess.saveData(personsArray);
                     break;
                 case 3:
                     Gerente newGerente = dummyUserG.register(persons);
                     personsArray.add(newGerente);
-                    dataAccess.saveData(personsArray);
                     break;
                 case 4:
                     return;

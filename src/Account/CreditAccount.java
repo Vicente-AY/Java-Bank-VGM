@@ -41,7 +41,6 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void deposit(int amount, BankAccount account) {
-
     }
 
     /**
@@ -56,17 +55,18 @@ public class CreditAccount extends BankAccount {
 
     /**
      * Transfiere fondos desde esta cuenta de crédito hacia otra.
-     * * @param amount  Monto de la transferencia.
+     * @param amount  Monto de la transferencia.
      * @param account Cuenta de destino.
+     * @param persons ArrayList para buscar la cuenta bancaria destino
      */
     @Override
-    public void transfer(double amount, BankAccount account) {
+    public void transfer(double amount, BankAccount account, ArrayList<Person> persons) {
 
     }
 
     /**
      * Permite pagar la recarga de una tarjeta SIM utilizando el crédito disponible.
-     * * @param amount  Costo de la recarga.
+     * @param amount  Costo de la recarga.
      * @param account Referencia de la cuenta.
      */
     @Override
@@ -76,7 +76,7 @@ public class CreditAccount extends BankAccount {
 
     /**
      * Permite al usuario interactuar con la cuenta seleccionada.
-     * * @param user Usuario que realiza la acción.
+     * @param user Usuario que realiza la acción.
      */
     @Override
     public void selectAccount(User user) {
@@ -91,7 +91,6 @@ public class CreditAccount extends BankAccount {
      * @return La instancia de CreditAccount.
      */
     public CreditAccount  createCreditAccount(CreditAccount newCreditAccount, Person currentUser) {
-        ArrayList<Person> personsArray = dataAccess.chargeData();
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
         double limit = 0.0, percentage = 0.0;
 
@@ -108,7 +107,6 @@ public class CreditAccount extends BankAccount {
 
         newCreditAccount = new CreditAccount(entity, office, accNumber, dc, IBAN, alias, limit, percentage);
         ((User) currentUser).getBankAccounts().add(newCreditAccount);
-        dataAccess.saveData(personsArray);
         System.out.println("Your account has been created");
         return newCreditAccount;
     }

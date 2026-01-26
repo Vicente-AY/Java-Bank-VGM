@@ -14,13 +14,13 @@ import static java.lang.Integer.parseInt;
  */
 public abstract class BankAccount implements Accounting {
 
+    ArrayList<BankAccountHistory>  history = new ArrayList<BankAccountHistory>();
     public String entity = "9999", office = "8888";
     public String dc = "", accNumber = "";
     public String IBAN = "";
     public String accountAlias = "";
     public double balance = 0.0;
     int numNewAccount = 0;
-    ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     Scanner sc = new Scanner(System.in);
     Data dataAccess = new Data();
 
@@ -144,7 +144,7 @@ public abstract class BankAccount implements Accounting {
         if (check.equalsIgnoreCase("yes") || check.equalsIgnoreCase("si")) {
             System.out.println("Introduce the account alias: ");
             alias = sc.nextLine();
-        //Comportamiento por defecto si el usuario rechaza no poner nada
+        //Comportamiento por defecto si el usuario rechaza poner alias
         } else if (alias.isEmpty() || check.equalsIgnoreCase("no")) {
             System.out.println("The account name will default to its number.");
             alias = "Account " + IBAN;
@@ -245,5 +245,9 @@ public abstract class BankAccount implements Accounting {
     /** @param balance Nuevo saldo de la cuenta. */
     public void setBalance ( double balance){
         this.balance = balance;
+    }
+
+    public ArrayList<BankAccountHistory> getHistory(){
+        return history;
     }
 }
