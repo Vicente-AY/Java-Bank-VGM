@@ -1,5 +1,5 @@
 package Menu;
-import Person.Person;
+import Person.*;
 import Account.*;
 
 import java.util.ArrayList;
@@ -10,6 +10,8 @@ import java.util.Scanner;
  * Permite al usuario final administrar sus cuentas bancarias
  */
 public class UsersMenu {
+    DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
+    BankAccount selectedBankAccount = null;
 
     /**
      * Proporciona acceso a las funcionalidades disponibles para el cliente.
@@ -20,7 +22,7 @@ public class UsersMenu {
         int option = 0;
         while (true) {
             System.out.println("Welcome " + currentUser.name);
-            System.out.println("1. Create BankAccount");
+            System.out.println("1. Select a BankAccount");
             System.out.println("2. Make a deposit");
             System.out.println("3. Withdraw");
             System.out.println("4. Transfer Money");
@@ -31,11 +33,10 @@ public class UsersMenu {
             option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    bankAcoountCreation(currentUser);
-                    break;
-                case 2:
 
-                    break;
+                    return;
+                case 2:
+                    return;
                 case 3:
                     return;
                 case 4:
@@ -44,34 +45,9 @@ public class UsersMenu {
                     return;
                 case 6:
                     return;
-                    default: System.out.println("Opción no valida");
-                    break;
+                default: System.out.println("Opción no valida");
+                break;
             }
-        }
-    }
-    /**
-     * Gestiona el submenú de creación de nuevas cuentas bancarias.
-     * Permite al usuario elegir entre una cuenta de débito o una de crédito,
-     * @param currentUser El usuario al que se le asignará la nueva cuenta creada.
-     */
-    public BankAccount bankAcoountCreation(Person currentUser) {
-        CreditAccount dummyCreditAccount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);
-        DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
-        System.out.println("Select the type of bank account you want to create: ");
-        System.out.println("1. Debit Account");
-        System.out.println("2. Credit Account");
-        Scanner scan = new Scanner(System.in);
-        int option = scan.nextInt();
-        while (true) {
-            switch (option) {
-                case 1:
-                    dummyDebitAccount.createDebitAccount(dummyDebitAccount, currentUser);
-                case 2:
-                    dummyCreditAccount.createCreditAccount(dummyCreditAccount, currentUser);
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-
         }
     }
 }

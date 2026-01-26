@@ -115,7 +115,7 @@ public abstract class BankAccount implements Accounting {
     /**
      * Crea cuentas bancarias a través de diferentes metodos
      */
-    public void createBankAccount() {
+    public void createBankAccount(ArrayList<Person> persons) {
 
         BankAccount newBankAccount;
         String entity = "", office = "", dc = "", accNumber = "", IBAN = "", alias = "";

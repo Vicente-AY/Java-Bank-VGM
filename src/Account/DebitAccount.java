@@ -193,17 +193,27 @@ public class DebitAccount extends BankAccount {
         catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     /**
      * Proceso de creación de una nueva cuenta de débito.
      * Calcula los parámetros bancarios y persiste la información en el sistema.
-     * @param newDebitAccount Instancia base para obtener configuraciones.
-     * @param currentUser      Usuario al que se le asignará la cuenta.
      * @return La nueva cuenta de débito creada y vinculada.
      */
-    public DebitAccount  createDebitAccount(DebitAccount newDebitAccount, Person currentUser) {
+    public void  createDebitAccount(ArrayList<Person> persons) {
+
+        System.out.println("Please introduce de ID of the client the new bank account is for");
+        String id = sc.nextLine();
+        Person currentUser = null;
+        DebitAccount newDebitAccount = null;
+        for(Person person : persons){
+            if(person instanceof User){
+                if(person.getId().equals(id)){
+                    currentUser = person;
+                }
+            }
+        }
+
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
 
         entity = newDebitAccount.getEntity();
@@ -216,7 +226,6 @@ public class DebitAccount extends BankAccount {
 
         newDebitAccount = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
         ((User) currentUser).getBankAccounts().add(newDebitAccount);
-        System.out.println("Your account has been created");
-        return newDebitAccount;
+        System.out.println("The account has been created");
     }
 }
