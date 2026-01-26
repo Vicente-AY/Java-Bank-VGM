@@ -15,19 +15,15 @@ import java.util.Scanner;
 public class Gerente extends Person {
     String managerId;
     public static int id =0;
-    transient Data dataAccess = new Data() ;
-    private static final long serialVersionUID = 6983069239864257474L;
-
-
 
     /**
      * Constructor para inicializar un Gerente.
      * @param name       Nombre del Gerente.
      * @param password   Contraseña de seguridad.
      * @param birthDate  Fecha de nacimiento (dd/mm/yyyy).
-     * @param managerId  ID específico asignado al gerente.
+     * @param gerenteId  ID específico asignado al gerente.
      */
-    public Gerente(String name, String password, String birthDate, String managerId) {
+    public Gerente(String name, String password, String birthDate, String gerenteId) {
         super(name, password, birthDate);
         this.managerId = managerId;
     }
@@ -116,7 +112,7 @@ public class Gerente extends Person {
      */
     @Override
     public boolean checkDate(String date){
-        String regex = "[,./\\s]";
+        String regex = "[,//.\\s]";
         String[] myArray = date.split(regex);
         int element1 = Integer.parseInt(myArray[0]);
         int element2 = Integer.parseInt(myArray[1]);
@@ -230,27 +226,430 @@ public class Gerente extends Person {
         }
     }
 
-    private void createEmployee(ArrayList<Person> persons) {
+    /**
+     * Crea empleados
+     */
+    public void CreateEmployee(){
+        Scanner sc = new Scanner(System.in);
+        String name, birthdate, password;
+        boolean checkP=false, checkD=false;
+        System.out.println("Please enter your name and surnames");
+        name = sc.nextLine();
 
-        System.out.println("[MANAGER] Creating new employee...");
-        Employee dummyEmployee = new Employee(null, null, null, null);
+        //Validación de contraseña
+        System.out.println("Please enter your password");
+        password = sc.nextLine();
+        checkP = checkPassword(password);
+        while (!checkP){
+            System.out.println("The password you entered is incorrect");
+            System.out.println("The password must contain:");
+            System.out.println("* 1 uppercase letter");
+            System.out.println("* 1 lowercase letter");
+            System.out.println("* 1 number");
+            System.out.println("* 1 special character");
+            password = sc.nextLine();
+            checkPassword(password);
+        }
 
-        Employee newEmployee = new Employee(null, null, null, null).register(persons);
-        persons.add(newEmployee);
+        //Validación de fecha
+        System.out.println("Please enter your birthdate (dd/mm/yyyy)");
+        birthdate = sc.nextLine();
+        checkD = checkDate(birthdate);
+        while(!checkD){
+            System.out.println("The date you entered is incorrect, please try again");
+            System.out.println("Remember to use the following format: dd/mm/yyyy");
+            birthdate = sc.nextLine();
+            checkD = checkDate(birthdate);
+        }
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> EmployeeArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof Employee || person instanceof Gerente){
+                EmployeeArray.add(person);
+            }
+        }
+        int id = 1;
+        if(!EmployeeArray.isEmpty()) {
+            for (Person customer : EmployeeArray) {
+                if (customer.getId().equals(String.valueOf(id))) {
+                    id++;
+                }
+            }
+        }
+        String newId = createId(id);
+        Employee newEmployee = new Employee(name, password, birthdate, newId);
+        System.out.println("The register process has ended successfully");
+        System.out.println("Your data:");
+        System.out.println("Name: " + name);
+        System.out.println("Birthdate: " + birthdate);
+        System.out.println("Password: " + password);
+        System.out.println("Id: " + newId);
     }
 
-    public boolean deleteEmployee(ArrayList<Employee> employeeList, String employeeId) {
+    /**
+     * Crea gerentes
+     */
+    public void CreateManager(){
+        Scanner sc = new Scanner(System.in);
+        String name, birthdate, password;
+        boolean checkP=false, checkD=false;
+        System.out.println("Please Gerente enter your name and surnames");
+        name = sc.nextLine();
 
+        System.out.println("Please enter your password");
+        password = sc.nextLine();
+        checkP = checkPassword(password);
+        while (!checkP){
+            System.out.println("The password you entered is incorrect");
+            System.out.println("The password must contain:");
+            System.out.println("* 1 uppercase letter");
+            System.out.println("* 1 lowercase letter");
+            System.out.println("* 1 number");
+            System.out.println("* 1 special character");
+            password = sc.nextLine();
+            checkP = checkPassword(password);
+        }
+
+        System.out.println("Please enter your birthdate (dd/mm/yyyy)");
+        birthdate = sc.nextLine();
+        checkD = checkDate(birthdate);
+        while(!checkD){
+            System.out.println("The date you entered is incorrect, please try again");
+            System.out.println("Remember to use the following format: dd/mm/yyyy");
+            birthdate = sc.nextLine();
+            checkD = checkDate(birthdate);
+        }
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> ManagerArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof Employee || person instanceof Gerente){
+                ManagerArray.add(person);
+            }
+        }
+        int id = 1;
+        if(!ManagerArray.isEmpty()) {
+            for (Person customer : ManagerArray) {
+                if (customer.getId().equals(String.valueOf(id))) {
+                    id++;
+                }
+            }
+        }
+        String newId = createId(id);
+        Gerente newGerente = new Gerente(name, password, birthdate, newId);
+        System.out.println("The register process has ended successfully");
+        System.out.println("Your data:");
+        System.out.println("Name: " + name);
+        System.out.println("Birthdate: " + birthdate);
+        System.out.println("Password: " + password);
+        System.out.println("Id: " + newId);
+    }
+
+    /**
+     * Borra empleados
+     * @param employeeList la lista de empleados creados
+     * @param employeeId Id que tiene el empleado
+     */
+    public void DeleteEmployee(ArrayList<Employee> employeeList, String employeeId){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Tell me the Employee's ID");
+        String comprovId = sc.nextLine();
+        boolean encontrado = false;
         for (int i = 0; i < employeeList.size(); i++) {
-            if (Objects.equals(employeeList.get(i).getId(), employeeId)) {
+            if (Objects.equals(employeeList.get(i).getId(), comprovId)) {
                 Employee removed = employeeList.remove(i);
-                System.out.println("[MANAGER] Employee " + removed.name + " (ID: " + employeeId + ") has been removed");
-                return true;
+                System.out.println("[MANAGER] Manager " + removed.name + " (ID: " + comprovId + ") has been removed");
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            System.out.println("Manager with ID " + managerId + " not found");
+        }
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> EmployeeArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof Employee || person instanceof Gerente){
+                EmployeeArray.add(person);
+            }
+        }
+        int id = 1;
+        if(!EmployeeArray.isEmpty()) {
+            for (Person customer : EmployeeArray) {
+                if (customer.getId().equals(String.valueOf(id))) {
+                    id++;
+                }
             }
         }
 
-        System.out.println("Employee with ID " + employeeId + " not found");
-        return false;
+    }
+
+    /**
+     * Borra gerentes
+     * @param gerenteList la lista de gerentes creados
+     * @param managerId el id que tiene el gerente
+     */
+    public void DeleteManager(ArrayList<Gerente> gerenteList, String managerId){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Tell me the Manager's ID");
+        String comprovId = sc.nextLine();
+        boolean encontrado = false;
+        for (int i = 0; i < gerenteList.size(); i++) {
+            if (Objects.equals(gerenteList.get(i).getId(), comprovId)) {
+                Gerente removed = gerenteList.remove(i);
+                System.out.println("[MANAGER] Manager " + removed.name + " (ID: " + comprovId + ") has been removed");
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            System.out.println("Manager with ID " + managerId + " not found");
+        }
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> ManagerArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof Employee || person instanceof Gerente){
+                ManagerArray.add(person);
+            }
+        }
+        int id = 1;
+        if(!ManagerArray.isEmpty()) {
+            for (Person customer : ManagerArray) {
+                if (customer.getId().equals(String.valueOf(id))) {
+                    id++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Borra las cuenta bancarias de los clientes
+     * @param userList la lista de usuarios creados
+     */
+    public void DeleteBankAccount(ArrayList<User> userList){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Tell me the Client's ID");
+        String comprovId = sc.nextLine();
+        boolean encontrado = false;
+
+        for (int i = 0; i < userList.size(); i++) {
+            if (Objects.equals(userList.get(i).getId(), comprovId)) {
+                encontrado = true;
+                User selectedUser = userList.get(i);
+                System.out.println("Client with ID " + comprovId + " exists");
+
+                // Mostrar las cuentas bancarias del usuario
+                if(selectedUser.getBankAccounts().isEmpty()){
+                    System.out.println("This client has no bank accounts");
+                    return;
+                }
+
+                System.out.println("Bank accounts for client " + selectedUser.name + ":");
+                for(int j = 0; j < selectedUser.getBankAccounts().size(); j++){
+                    BankAccount account = selectedUser.getBankAccounts().get(j);
+                    System.out.println((j+1) + ". Alias: " + account.accountAlias +
+                            " | Balance: " + account.getBalance());
+                }
+
+                System.out.println("Which bank account do you want to delete?");
+                System.out.println("Tell Alias of the Bank Account (or type 'cancel' to abort):");
+                String comprovBA = sc.nextLine();
+
+                if(comprovBA.equalsIgnoreCase("cancel")){
+                    System.out.println("Operation cancelled");
+                    return;
+                }
+
+                // Buscar la cuenta bancaria por alias
+                BankAccount accountToDelete = null;
+                for(BankAccount account : selectedUser.getBankAccounts()){
+                    if(account.accountAlias.equals(comprovBA)){
+                        accountToDelete = account;
+                        break;
+                    }
+                }
+
+                if(accountToDelete != null){
+                    if(accountToDelete.getBalance() > 0){
+                        System.out.println("ERROR: Cannot delete account with balance greater than 0");
+                        System.out.println("Current balance: " + accountToDelete.getBalance());
+                        return;
+                    }
+
+                    System.out.println("Are you sure you want to delete account '" +
+                            accountToDelete.accountAlias + "'? (Y/N)");
+                    String confirmation = sc.nextLine().toLowerCase();
+
+                    if(confirmation.equals("y") || confirmation.equals("yes")){
+                        selectedUser.getBankAccounts().remove(accountToDelete);
+                        System.out.println("[MANAGER] Bank account '" + accountToDelete.accountAlias +
+                                "' has been deleted successfully");
+                    } else {
+                        System.out.println("Operation cancelled");
+                    }
+                } else {
+                    System.out.println("Bank account with alias '" + comprovBA + "' not found");
+                }
+                ArrayList<Person> personsArray = dataAccess.chargeData();
+                ArrayList<Person> UserArray = new ArrayList<>();
+                for(Person person : personsArray) {
+                    if(person instanceof Employee || person instanceof Gerente){
+                        UserArray.add(person);
+                    }
+                }
+                int id = 1;
+                if(!UserArray.isEmpty()) {
+                    for (Person customer : UserArray) {
+                        if (customer.getId().equals(String.valueOf(id))) {
+                            id++;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Client with ID " + comprovId + " not found");
+        }
+    }
+
+    /**
+     * Reactiva cuentas de clientes bloqueadas
+     * @param userList Lista de clientes creados
+     */
+    public void ReactivateClientAccount(ArrayList<User> userList){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
+        System.out.println("Enter the Client's ID:");
+        String clientId = sc.nextLine();
+
+        boolean found = false;
+        for(User user : userList){
+            if(user.getId().equals(clientId)){
+                found = true;
+                if(user.active){
+                    System.out.println("Client " + user.name + " (ID: " + clientId +
+                            ") is already active");
+                } else {
+                    user.active = true;
+                    System.out.println("[MANAGER] Client " + user.name + " (ID: " + clientId +
+                            ") has been reactivated successfully");
+                }
+                ArrayList<Person> personsArray = dataAccess.chargeData();
+                ArrayList<Person> UserArray = new ArrayList<>();
+                for(Person person : personsArray) {
+                    if(person instanceof Employee || person instanceof Gerente){
+                        UserArray.add(person);
+                    }
+                }
+                int id = 1;
+                if(!UserArray.isEmpty()) {
+                    for (Person customer : UserArray) {
+                        if (customer.getId().equals(String.valueOf(id))) {
+                            id++;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        if(!found){
+            System.out.println("Client with ID " + clientId + " not found");
+        }
+    }
+
+    /**
+     * Reactiva cuentas de empleados bloqueadas
+     * @param employeeList Lista de empleados creados
+     */
+    public void ReactivateEmployee(ArrayList<Employee> employeeList){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== REACTIVATE EMPLOYEE ACCOUNT ===");
+        System.out.println("Enter the Employee's ID:");
+        String employeeId = sc.nextLine();
+
+        boolean found = false;
+        for(Employee employee : employeeList){
+            if(employee.getId().equals(employeeId)){
+                found = true;
+                if(employee.active){
+                    System.out.println("Employee " + employee.name + " (ID: " + employeeId +
+                            ") is already active");
+                } else {
+                    employee.active = true;
+                    System.out.println("[MANAGER] Employee " + employee.name + " (ID: " +
+                            employeeId + ") has been reactivated successfully");
+                }
+                ArrayList<Person> personsArray = dataAccess.chargeData();
+                ArrayList<Person> EmployeeArray = new ArrayList<>();
+                for(Person person : personsArray) {
+                    if(person instanceof Employee || person instanceof Gerente){
+                        EmployeeArray.add(person);
+                    }
+                }
+                int id = 1;
+                if(!EmployeeArray.isEmpty()) {
+                    for (Person customer : EmployeeArray) {
+                        if (customer.getId().equals(String.valueOf(id))) {
+                            id++;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        if(!found){
+            System.out.println("Employee with ID " + employeeId + " not found");
+        }
+    }
+
+    /**
+     * Reactiva cuentas de gerentes bloqueadas
+     * @param gerenteList Lista de gerentes creados
+     */
+    public void ReactivateManager(ArrayList<Gerente> gerenteList){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== REACTIVATE MANAGER ACCOUNT ===");
+        System.out.println("Enter the Manager's ID:");
+        String managerId = sc.nextLine();
+
+        boolean found = false;
+        for(Gerente gerente : gerenteList){
+            if(gerente.getId().equals(managerId)){
+                found = true;
+                if(gerente.active){
+                    System.out.println("Manager " + gerente.name + " (ID: " + managerId +
+                            ") is already active");
+                } else {
+                    gerente.active = true;
+                    System.out.println("[MANAGER] Manager " + gerente.name + " (ID: " +
+                            managerId + ") has been reactivated successfully");
+                }
+                ArrayList<Person> personsArray = dataAccess.chargeData();
+                ArrayList<Person> ManagerArray = new ArrayList<>();
+                for(Person person : personsArray) {
+                    if(person instanceof Employee || person instanceof Gerente){
+                        ManagerArray.add(person);
+                    }
+                }
+                int id = 1;
+                if(!ManagerArray.isEmpty()) {
+                    for (Person customer : ManagerArray) {
+                        if (customer.getId().equals(String.valueOf(id))) {
+                            id++;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        if(!found){
+            System.out.println("Manager with ID " + managerId + " not found");
+        }
+
     }
 
 }

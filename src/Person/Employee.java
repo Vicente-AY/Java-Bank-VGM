@@ -4,6 +4,7 @@ import Account.BankAccount;
 import Utils.Data;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -165,27 +166,114 @@ public class Employee extends Person {
         return String.format("%08d", id);
     }
 
-    /* PERMISOS DE EMPLEADO
-    public boolean canCreateAccount() {
-        return true; // Los empleados SÍ pueden crear cuentas
+
+    /**
+     * Borra las cuenta bancarias de los clientes
+     * @param userList la lista de usuarios creados
+     */
+    public void DeleteBankAccount(ArrayList<User> userList){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Tell me the Client's ID");
+        String comprovId = sc.nextLine();
+        boolean encontrado = false;
+
+        for (int i = 0; i < userList.size(); i++) {
+            if (Objects.equals(userList.get(i).getId(), comprovId)) {
+                encontrado = true;
+                User selectedUser = userList.get(i);
+                System.out.println("Client with ID " + comprovId + " exists");
+
+                // Mostrar las cuentas bancarias del usuario
+                if(selectedUser.getBankAccounts().isEmpty()){
+                    System.out.println("This client has no bank accounts");
+                    return;
+                }
+
+                System.out.println("Bank accounts for client " + selectedUser.name + ":");
+                for(int j = 0; j < selectedUser.getBankAccounts().size(); j++){
+                    BankAccount account = selectedUser.getBankAccounts().get(j);
+                    System.out.println((j+1) + ". Alias: " + account.accountAlias +
+                            " | Balance: " + account.getBalance());
+                }
+
+                System.out.println("Which bank account do you want to delete?");
+                System.out.println("Tell Alias of the Bank Account (or type 'cancel' to abort):");
+                String comprovBA = sc.nextLine();
+
+                if(comprovBA.equalsIgnoreCase("cancel")){
+                    System.out.println("Operation cancelled");
+                    return;
+                }
+
+                // Buscar la cuenta bancaria por alias
+                BankAccount accountToDelete = null;
+                for(BankAccount account : selectedUser.getBankAccounts()){
+                    if(account.accountAlias.equals(comprovBA)){
+                        accountToDelete = account;
+                        break;
+                    }
+                }
+
+                if(accountToDelete != null){
+                    if(accountToDelete.getBalance() > 0){
+                        System.out.println("ERROR: Cannot delete account with balance greater than 0");
+                        System.out.println("Current balance: " + accountToDelete.getBalance());
+                        return;
+                    }
+
+                    System.out.println("Are you sure you want to delete account '" +
+                            accountToDelete.accountAlias + "'? (Y/N)");
+                    String confirmation = sc.nextLine().toLowerCase();
+
+                    if(confirmation.equals("y") || confirmation.equals("yes")){
+                        selectedUser.getBankAccounts().remove(accountToDelete);
+                        System.out.println("[MANAGER] Bank account '" + accountToDelete.accountAlias +
+                                "' has been deleted successfully");
+                    } else {
+                        System.out.println("Operation cancelled");
+                    }
+                } else {
+                    System.out.println("Bank account with alias '" + comprovBA + "' not found");
+                }
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Client with ID " + comprovId + " not found");
+        }
     }
 
-    public boolean canDeleteAccount() {
-        return false; // Los empleados NO pueden borrar cuentas
-    }
+    /**
+     * Reactiva cuentas de clientes bloqueadas
+     * @param userList Lista de clientes creados
+     */
+    public void ReactivateClientAccount(ArrayList<User> userList){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
+        System.out.println("Enter the Client's ID:");
+        String clientId = sc.nextLine();
 
-    public double getWithdrawalLimit() {
-        return Double.MAX_VALUE; // Sin límite
-    }
+        boolean found = false;
+        for(User user : userList){
+            if(user.getId().equals(clientId)){
+                found = true;
+                if(user.active){
+                    System.out.println("Client " + user.name + " (ID: " + clientId +
+                            ") is already active");
+                } else {
+                    user.active = true;
+                    System.out.println("[MANAGER] Client " + user.name + " (ID: " + clientId +
+                            ") has been reactivated successfully");
+                }
+                break;
+            }
+        }
 
-    public boolean canManageEmployees() {
-        return false; // Solo gerentes pueden gestionar empleados
+        if(!found){
+            System.out.println("Client with ID " + clientId + " not found");
+        }
     }
-
-    public boolean canUnblockAccounts() {
-        return false; // Solo gerentes pueden desbloquear
-    }
-    */
 
     /** @return El identificador de empleado. */
     @Override
