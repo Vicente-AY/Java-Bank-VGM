@@ -262,7 +262,7 @@ public class Employee extends Person {
                     System.out.println("Client " + user.name + " (ID: " + clientId +
                             ") is already active");
                 } else {
-                    user.active = true;
+                    user.setActive(true);
                     System.out.println("[MANAGER] Client " + user.name + " (ID: " + clientId +
                             ") has been reactivated successfully");
                 }
