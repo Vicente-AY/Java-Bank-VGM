@@ -229,7 +229,7 @@ public class Gerente extends Person {
     /**
      * Crea empleados
      */
-    public void CreateEmployee(){
+    public void CreateEmployee(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
@@ -261,9 +261,8 @@ public class Gerente extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
         ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : personsArray) {
+        for(Person person : persons) {
             if(person instanceof Employee || person instanceof Gerente){
                 EmployeeArray.add(person);
             }
@@ -289,7 +288,7 @@ public class Gerente extends Person {
     /**
      * Crea gerentes
      */
-    public void CreateManager(){
+    public void CreateManager(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
@@ -313,15 +312,14 @@ public class Gerente extends Person {
         System.out.println("Please enter your birthdate (dd/mm/yyyy)");
         birthdate = sc.nextLine();
         checkD = checkDate(birthdate);
-        while(!checkD){
+        while(!checkD) {
             System.out.println("The date you entered is incorrect, please try again");
             System.out.println("Remember to use the following format: dd/mm/yyyy");
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
         ArrayList<Person> ManagerArray = new ArrayList<>();
-        for(Person person : personsArray) {
+        for(Person person : persons) {
             if(person instanceof Employee || person instanceof Gerente){
                 ManagerArray.add(person);
             }
@@ -346,18 +344,16 @@ public class Gerente extends Person {
 
     /**
      * Borra empleados
-     * @param employeeList la lista de empleados creados
-     * @param employeeId Id que tiene el empleado
      */
-    public void DeleteEmployee(ArrayList<Employee> employeeList, String employeeId){
+    public void DeleteEmployee(ArrayList<Person> persons ){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Employee's ID");
         String comprovId = sc.nextLine();
         boolean encontrado = false;
-        for (int i = 0; i < employeeList.size(); i++) {
-            if (Objects.equals(employeeList.get(i).getId(), comprovId)) {
-                Employee removed = employeeList.remove(i);
-                System.out.println("[MANAGER] Manager " + removed.name + " (ID: " + comprovId + ") has been removed");
+        Person removed = null;
+        for (int i = 0; i < persons.size(); i++) {
+            if (Objects.equals(persons.get(i).getId(), comprovId)) {
+                removed = persons.remove(i);
                 encontrado = true;
                 break;
             }
@@ -365,38 +361,26 @@ public class Gerente extends Person {
         if (!encontrado) {
             System.out.println("Manager with ID " + managerId + " not found");
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
-        ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : personsArray) {
-            if(person instanceof Employee || person instanceof Gerente){
-                EmployeeArray.add(person);
-            }
-        }
-        int id = 1;
-        if(!EmployeeArray.isEmpty()) {
-            for (Person customer : EmployeeArray) {
-                if (customer.getId().equals(String.valueOf(id))) {
-                    id++;
-                }
-            }
+        else {
+            persons.remove(removed);
+            System.out.println("[MANAGER] Manager " + removed.name + " (ID: " + comprovId + ") has been removed");
         }
 
     }
 
     /**
      * Borra gerentes
-     * @param gerenteList la lista de gerentes creados
      * @param managerId el id que tiene el gerente
      */
-    public void DeleteManager(ArrayList<Gerente> gerenteList, String managerId){
+    public void DeleteManager(ArrayList<Person> persons, String managerId){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Manager's ID");
         String comprovId = sc.nextLine();
         boolean encontrado = false;
-        for (int i = 0; i < gerenteList.size(); i++) {
-            if (Objects.equals(gerenteList.get(i).getId(), comprovId)) {
-                Gerente removed = gerenteList.remove(i);
-                System.out.println("[MANAGER] Manager " + removed.name + " (ID: " + comprovId + ") has been removed");
+        Person removed = null;
+        for (int i = 0; i < persons.size(); i++) {
+            if (Objects.equals(persons.get(i).getId(), comprovId)) {
+                removed = persons.remove(i);
                 encontrado = true;
                 break;
             }
@@ -404,48 +388,37 @@ public class Gerente extends Person {
         if (!encontrado) {
             System.out.println("Manager with ID " + managerId + " not found");
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
-        ArrayList<Person> ManagerArray = new ArrayList<>();
-        for(Person person : personsArray) {
-            if(person instanceof Employee || person instanceof Gerente){
-                ManagerArray.add(person);
-            }
-        }
-        int id = 1;
-        if(!ManagerArray.isEmpty()) {
-            for (Person customer : ManagerArray) {
-                if (customer.getId().equals(String.valueOf(id))) {
-                    id++;
-                }
-            }
+        else {
+            persons.remove(removed);
+            System.out.println("[MANAGER] Manager " + removed.name + " (ID: " + comprovId + ") has been removed");
         }
     }
 
     /**
      * Borra las cuenta bancarias de los clientes
-     * @param userList la lista de usuarios creados
      */
-    public void DeleteBankAccount(ArrayList<User> userList){
+    public void DeleteBankAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Client's ID");
         String comprovId = sc.nextLine();
         boolean encontrado = false;
+        Person selectedUser = null;
 
-        for (int i = 0; i < userList.size(); i++) {
-            if (Objects.equals(userList.get(i).getId(), comprovId)) {
+        for (int i = 0; i < persons.size(); i++) {
+            if (Objects.equals(persons.get(i).getId(), comprovId)) {
                 encontrado = true;
-                User selectedUser = userList.get(i);
+                selectedUser = persons.get(i);
                 System.out.println("Client with ID " + comprovId + " exists");
 
                 // Mostrar las cuentas bancarias del usuario
-                if(selectedUser.getBankAccounts().isEmpty()){
+                if(((User) selectedUser).getBankAccounts().isEmpty()){
                     System.out.println("This client has no bank accounts");
                     return;
                 }
 
                 System.out.println("Bank accounts for client " + selectedUser.name + ":");
-                for(int j = 0; j < selectedUser.getBankAccounts().size(); j++){
-                    BankAccount account = selectedUser.getBankAccounts().get(j);
+                for(int j = 0; j < ((User) selectedUser).getBankAccounts().size(); j++){
+                    BankAccount account = ((User) selectedUser).getBankAccounts().get(j);
                     System.out.println((j+1) + ". Alias: " + account.accountAlias +
                             " | Balance: " + account.getBalance());
                 }
@@ -461,7 +434,7 @@ public class Gerente extends Person {
 
                 // Buscar la cuenta bancaria por alias
                 BankAccount accountToDelete = null;
-                for(BankAccount account : selectedUser.getBankAccounts()){
+                for(BankAccount account : ((User) selectedUser).getBankAccounts()){
                     if(account.accountAlias.equals(comprovBA)){
                         accountToDelete = account;
                         break;
@@ -480,7 +453,7 @@ public class Gerente extends Person {
                     String confirmation = sc.nextLine().toLowerCase();
 
                     if(confirmation.equals("y") || confirmation.equals("yes")){
-                        selectedUser.getBankAccounts().remove(accountToDelete);
+                        ((User) selectedUser).getBankAccounts().remove(accountToDelete);
                         System.out.println("[MANAGER] Bank account '" + accountToDelete.accountAlias +
                                 "' has been deleted successfully");
                     } else {
@@ -489,21 +462,6 @@ public class Gerente extends Person {
                 } else {
                     System.out.println("Bank account with alias '" + comprovBA + "' not found");
                 }
-                ArrayList<Person> personsArray = dataAccess.chargeData();
-                ArrayList<Person> UserArray = new ArrayList<>();
-                for(Person person : personsArray) {
-                    if(person instanceof Employee || person instanceof Gerente){
-                        UserArray.add(person);
-                    }
-                }
-                int id = 1;
-                if(!UserArray.isEmpty()) {
-                    for (Person customer : UserArray) {
-                        if (customer.getId().equals(String.valueOf(id))) {
-                            id++;
-                        }
-                    }
-                }
                 break;
             }
         }
@@ -511,44 +469,29 @@ public class Gerente extends Person {
         if (!encontrado) {
             System.out.println("Client with ID " + comprovId + " not found");
         }
+
     }
 
     /**
      * Reactiva cuentas de clientes bloqueadas
-     * @param userList Lista de clientes creados
      */
-    public void ReactivateClientAccount(ArrayList<User> userList){
+    public void ReactivateClientAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
         System.out.println("Enter the Client's ID:");
         String clientId = sc.nextLine();
 
         boolean found = false;
-        for(User user : userList){
+        for(Person user : persons){
             if(user.getId().equals(clientId)){
                 found = true;
                 if(user.active){
                     System.out.println("Client " + user.name + " (ID: " + clientId +
                             ") is already active");
                 } else {
-                    user.active = true;
+                    user.setActive(true);
                     System.out.println("[MANAGER] Client " + user.name + " (ID: " + clientId +
                             ") has been reactivated successfully");
-                }
-                ArrayList<Person> personsArray = dataAccess.chargeData();
-                ArrayList<Person> UserArray = new ArrayList<>();
-                for(Person person : personsArray) {
-                    if(person instanceof Employee || person instanceof Gerente){
-                        UserArray.add(person);
-                    }
-                }
-                int id = 1;
-                if(!UserArray.isEmpty()) {
-                    for (Person customer : UserArray) {
-                        if (customer.getId().equals(String.valueOf(id))) {
-                            id++;
-                        }
-                    }
                 }
                 break;
             }
@@ -561,40 +504,24 @@ public class Gerente extends Person {
 
     /**
      * Reactiva cuentas de empleados bloqueadas
-     * @param employeeList Lista de empleados creados
      */
-    public void ReactivateEmployee(ArrayList<Employee> employeeList){
+    public void ReactivateEmployee(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE EMPLOYEE ACCOUNT ===");
         System.out.println("Enter the Employee's ID:");
         String employeeId = sc.nextLine();
 
         boolean found = false;
-        for(Employee employee : employeeList){
+        for(Person employee : persons){
             if(employee.getId().equals(employeeId)){
                 found = true;
                 if(employee.active){
                     System.out.println("Employee " + employee.name + " (ID: " + employeeId +
                             ") is already active");
                 } else {
-                    employee.active = true;
+                    employee.setActive(true);
                     System.out.println("[MANAGER] Employee " + employee.name + " (ID: " +
                             employeeId + ") has been reactivated successfully");
-                }
-                ArrayList<Person> personsArray = dataAccess.chargeData();
-                ArrayList<Person> EmployeeArray = new ArrayList<>();
-                for(Person person : personsArray) {
-                    if(person instanceof Employee || person instanceof Gerente){
-                        EmployeeArray.add(person);
-                    }
-                }
-                int id = 1;
-                if(!EmployeeArray.isEmpty()) {
-                    for (Person customer : EmployeeArray) {
-                        if (customer.getId().equals(String.valueOf(id))) {
-                            id++;
-                        }
-                    }
                 }
                 break;
             }
@@ -607,40 +534,24 @@ public class Gerente extends Person {
 
     /**
      * Reactiva cuentas de gerentes bloqueadas
-     * @param gerenteList Lista de gerentes creados
      */
-    public void ReactivateManager(ArrayList<Gerente> gerenteList){
+    public void ReactivateManager(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE MANAGER ACCOUNT ===");
         System.out.println("Enter the Manager's ID:");
         String managerId = sc.nextLine();
 
         boolean found = false;
-        for(Gerente gerente : gerenteList){
+        for(Person gerente : persons){
             if(gerente.getId().equals(managerId)){
                 found = true;
                 if(gerente.active){
                     System.out.println("Manager " + gerente.name + " (ID: " + managerId +
                             ") is already active");
                 } else {
-                    gerente.active = true;
+                    gerente.setActive(true);
                     System.out.println("[MANAGER] Manager " + gerente.name + " (ID: " +
                             managerId + ") has been reactivated successfully");
-                }
-                ArrayList<Person> personsArray = dataAccess.chargeData();
-                ArrayList<Person> ManagerArray = new ArrayList<>();
-                for(Person person : personsArray) {
-                    if(person instanceof Employee || person instanceof Gerente){
-                        ManagerArray.add(person);
-                    }
-                }
-                int id = 1;
-                if(!ManagerArray.isEmpty()) {
-                    for (Person customer : ManagerArray) {
-                        if (customer.getId().equals(String.valueOf(id))) {
-                            id++;
-                        }
-                    }
                 }
                 break;
             }

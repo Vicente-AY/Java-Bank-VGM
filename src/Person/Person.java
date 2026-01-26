@@ -50,4 +50,8 @@ public abstract class Person implements Serializable {
     public String getName(){
         return name;
     }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }
