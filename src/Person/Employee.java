@@ -169,29 +169,36 @@ public class Employee extends Person {
 
     /**
      * Borra las cuenta bancarias de los clientes
-     * @param userList la lista de usuarios creados
+     * @param persons la lista de usuarios
      */
-    public void DeleteBankAccount(ArrayList<User> userList){
+    public void DeleteBankAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Client's ID");
         String comprovId = sc.nextLine();
         boolean encontrado = false;
+        ArrayList<Person> userList = new ArrayList<>();
+
+        for(Person person : persons){
+            if(person instanceof User){
+                userList.add(person);
+            }
+        }
 
         for (int i = 0; i < userList.size(); i++) {
             if (Objects.equals(userList.get(i).getId(), comprovId)) {
                 encontrado = true;
-                User selectedUser = userList.get(i);
+                Person selectedUser = userList.get(i);
                 System.out.println("Client with ID " + comprovId + " exists");
 
                 // Mostrar las cuentas bancarias del usuario
-                if(selectedUser.getBankAccounts().isEmpty()){
+                if(((User) selectedUser).getBankAccounts().isEmpty()){
                     System.out.println("This client has no bank accounts");
                     return;
                 }
 
                 System.out.println("Bank accounts for client " + selectedUser.name + ":");
-                for(int j = 0; j < selectedUser.getBankAccounts().size(); j++){
-                    BankAccount account = selectedUser.getBankAccounts().get(j);
+                for(int j = 0; j < ((User) selectedUser).getBankAccounts().size(); j++){
+                    BankAccount account = ((User) selectedUser).getBankAccounts().get(j);
                     System.out.println((j+1) + ". Alias: " + account.accountAlias +
                             " | Balance: " + account.getBalance());
                 }
@@ -207,7 +214,7 @@ public class Employee extends Person {
 
                 // Buscar la cuenta bancaria por alias
                 BankAccount accountToDelete = null;
-                for(BankAccount account : selectedUser.getBankAccounts()){
+                for(BankAccount account : ((User) selectedUser).getBankAccounts()){
                     if(account.accountAlias.equals(comprovBA)){
                         accountToDelete = account;
                         break;
@@ -226,7 +233,7 @@ public class Employee extends Person {
                     String confirmation = sc.nextLine().toLowerCase();
 
                     if(confirmation.equals("y") || confirmation.equals("yes")){
-                        selectedUser.getBankAccounts().remove(accountToDelete);
+                        ((User) selectedUser).getBankAccounts().remove(accountToDelete);
                         System.out.println("[MANAGER] Bank account '" + accountToDelete.accountAlias +
                                 "' has been deleted successfully");
                     } else {
@@ -246,16 +253,23 @@ public class Employee extends Person {
 
     /**
      * Reactiva cuentas de clientes bloqueadas
-     * @param userList Lista de clientes creados
+     * @param persons Lista de usuarios
      */
-    public void ReactivateClientAccount(ArrayList<User> userList){
+    public void ReactivateClientAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
         System.out.println("Enter the Client's ID:");
         String clientId = sc.nextLine();
+        ArrayList <Person> userList = new ArrayList<>();
+
+        for(Person person : persons){
+            if(person instanceof User){
+                userList.add(person);
+            }
+        }
 
         boolean found = false;
-        for(User user : userList){
+        for(Person user : userList){
             if(user.getId().equals(clientId)){
                 found = true;
                 if(user.active){
