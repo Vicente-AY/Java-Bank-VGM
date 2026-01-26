@@ -171,7 +171,7 @@ public class Employee extends Person {
      * Borra las cuenta bancarias de los clientes
      * @param persons la lista de usuarios
      */
-    public void DeleteBankAccount(ArrayList<Person> persons){
+    private void DeleteBankAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the Client's ID");
         String comprovId = sc.nextLine();
@@ -255,7 +255,7 @@ public class Employee extends Person {
      * Reactiva cuentas de clientes bloqueadas
      * @param persons Lista de usuarios
      */
-    public void ReactivateClientAccount(ArrayList<Person> persons){
+    private void ReactivateClientAccount(ArrayList<Person> persons){
         Scanner sc = new Scanner(System.in);
         System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
         System.out.println("Enter the Client's ID:");
