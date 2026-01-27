@@ -1,5 +1,9 @@
 package Menu;
 import java.util.Scanner;
+
+import Account.BankAccount;
+import Account.CreditAccount;
+import Account.DebitAccount;
 import Person.*;
 import Person.Gerente;
 
@@ -10,9 +14,14 @@ import java.util.ArrayList;
  * exclusivas para los usuarios con rol de Gerente (Manager).
  */
 public class ManagerMenu {
-
+    Employee dummyEmployee = new Employee(null, null, null, null);
+    User dummyUser = new User (null, null, null, null);
+    Gerente dummyManager = new Gerente(null, null, null, null);
     Scanner scanner = new Scanner(System.in);
     ArrayList<Person> persons = new ArrayList<>();
+    BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
+    BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);
+
     /**
      * Proporciona acceso al menú administrativo del gerente.
      * Permite la gestión de cuentas bancarias
@@ -22,7 +31,7 @@ public class ManagerMenu {
     public void menuAccess(Person currentManager, ArrayList<Person> persons) {
 
         while (true) {
-            System.out.println("Welcome " + currentManager.name);
+            System.out.println("Welcome to the Manger´s Menu \n" + currentManager.name);
             System.out.println("1. Create Users");
             System.out.println("2. Delete Users");
             System.out.println("3. Create Bank Account");
@@ -33,17 +42,19 @@ public class ManagerMenu {
             int option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    menuCreate();
+                    menuCreateUsers();
                     break;
                 case 2:
-                    menuDelete();
+                    ((Gerente) currentManager).deleteSystemAccount(persons);
                     break;
                 case 3:
+                    createNewBankAccount(persons, currentManager);
                     break;
                 case 4:
+                    ((Gerente) currentManager).deleteBankAccount(persons);
                     break;
                 case 5:
-                    menuReactivate();
+                    ((Gerente) currentManager).reactivate(persons);
                 case 6:
                     System.out.println("Login out");
                     return;
@@ -55,85 +66,56 @@ public class ManagerMenu {
         }
     }
 
-    public void menuCreate(){
+    public void menuCreateUsers(){
         while (true) {
             System.out.println("Which User Create");
-            System.out.println("1. Create Employee");
-            System.out.println("2. Create Manager");
-            System.out.println("3. Return");
-            System.out.println("Please enter your numbered choice (1, 2, or 3");
+            System.out.println("1. Create new User");
+            System.out.println("2. Create new Employee");
+            System.out.println("3. Create new Manager");
+            System.out.println("4. Back");
+            System.out.println("Please enter your numbered choice (1, 2, 3 or 4");
             int option = scanner.nextInt();
             scanner.nextLine();
             switch (option) {
                 case 1:
-                    CreateEmployee(persons);
+                    dummyUser.register(persons);
                     break;
                 case 2:
-                    CreateManager(persons);
+                    dummyEmployee.register(persons);
                     break;
                 case 3:
-                    System.out.println("Return");
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
-
-            }
-        }
-    }
-
-    public void menuDelete(){
-        while (true) {
-            System.out.println("Which user Delete");
-            System.out.println("1. Delete Employee");
-            System.out.println("2. Delete Manager");
-            System.out.println("3. Return");
-            System.out.println("Please enter your numbered choice (1, 2, or 3");
-            int option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    DeleteEmployee(persons);
-                    break;
-                case 2:
-                    DeleteManager(persons);
-                    break;
-                case 3:
-                    System.out.println("Return");
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
-
-            }
-        }
-    }
-
-    public void menuReactivate(){
-        while (true) {
-            System.out.println("Which user reactivate");
-            System.out.println("1. Reactivate Client");
-            System.out.println("2. Reactivate Employee");
-            System.out.println("3. Reactivate Manager");
-            System.out.println("4. Return");
-            System.out.println("Please enter your numbered choice (1, 2, 3 or 4");
-            int option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    ReactivateClientAccount(persons);
-                    break;
-                case 2:
-                    ReactivateEmployee(persons);
-                    break;
-                case 3:
-                    ReactivateManager(persons);
+                    dummyManager.register(persons);
                     break;
                 case 4:
-                    System.out.println("Return");
+                    System.out.println("Closing Menu");
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
                     break;
+            }
+        }
+    }
 
+    public void createNewBankAccount(ArrayList<Person> persons, Person currentManager){
+        while(true) {
+            System.out.println("Enter a valid option");
+            System.out.println("1. Create a new Debit Account");
+            System.out.println("2. Create a new Credit Account");
+            System.out.println("3. Back");
+            int option = scanner.nextInt();
+            switch (option) {
+                case 1:
+                    ((DebitAccount) dummyDebitAcount).createDebitAccount(persons);
+                    return;
+                case 2:
+                    ((CreditAccount) dummyCreditAcount).createCreditAccount(persons);
+                    return;
+                case 3:
+                    System.out.println("Cancelling new Bank Account creation");
+                    return;
+                default:
+                    System.out.println("Please enter a valid option");
+                    break;
             }
         }
     }

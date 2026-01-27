@@ -37,40 +37,35 @@ public class CreditAccount extends BankAccount {
     /**
      * Realiza un depósito de efectivo en la cuenta de crédito.
      * * @param amount  Cantidad a depositar.
-     * @param account Referencia a la cuenta donde se realiza la operación.
      */
     @Override
-    public void deposit(int amount, BankAccount account) {
+    public void deposit(double amount) {
     }
 
     /**
      * Realiza una retirada de efectivo, validando el límite de crédito.
      * * @param amount  Cantidad a retirar.
-     * @param account Referencia a la cuenta de origen.
      */
     @Override
-    public void withdraw(int amount, BankAccount account) {
+    public void withdraw(double amount) {
 
     }
 
     /**
      * Transfiere fondos desde esta cuenta de crédito hacia otra.
-     * @param amount  Monto de la transferencia.
-     * @param account Cuenta de destino.
      * @param persons ArrayList para buscar la cuenta bancaria destino
      */
     @Override
-    public void transfer(double amount, BankAccount account, ArrayList<Person> persons) {
+    public void transfer(ArrayList<Person> persons) {
 
     }
 
     /**
      * Permite pagar la recarga de una tarjeta SIM utilizando el crédito disponible.
      * @param amount  Costo de la recarga.
-     * @param account Referencia de la cuenta.
      */
     @Override
-    public void rechargeSIM(int amount, BankAccount account) {
+    public void rechargeSIM(double amount) {
 
     }
 
@@ -87,10 +82,31 @@ public class CreditAccount extends BankAccount {
      * Metodo para registrar una nueva cuenta de crédito en el sistema.
      * Calcula los datos bancarios necesarios y vincula la cuenta al perfil del usuario actual.
      * * @param newCreditAccount Instancia temporal de la cuenta con los datos de configuración.
-     * @param currentUser      El usuario al que se le asignará la nueva cuenta.
-     * @return La instancia de CreditAccount.
      */
-    public CreditAccount  createCreditAccount(CreditAccount newCreditAccount, Person currentUser) {
+    public void  createCreditAccount(ArrayList<Person> persons) {
+
+        System.out.println("Please introduce de ID of the client the new bank account is for");
+        String id = sc.nextLine();
+        Person currentUser = null;
+        CreditAccount newCreditAccount = null;
+        for(Person person : persons){
+            if(person instanceof User){
+                if(person.getId().equals(id)){
+                    currentUser = person;
+                }
+                else{
+                    System.out.println("Invalid ID");
+                    return;
+                }
+            }
+            else{
+                System.out.println("This ID is not an user");
+                return;
+            }
+        }
+
+
+
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
         double limit = 0.0, percentage = 0.0;
 
@@ -107,7 +123,6 @@ public class CreditAccount extends BankAccount {
 
         newCreditAccount = new CreditAccount(entity, office, accNumber, dc, IBAN, alias, limit, percentage);
         ((User) currentUser).getBankAccounts().add(newCreditAccount);
-        System.out.println("Your account has been created");
-        return newCreditAccount;
+        System.out.println("The account has been created");
     }
 }

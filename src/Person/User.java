@@ -15,9 +15,9 @@ public class User extends Person {
 
     transient Data dataAccess = new Data();
     private static final long serialVersionUID = 1L;
-    transient Scanner input = new Scanner(System.in);
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
+    Scanner sc = new Scanner(System.in);
 
     /**
      * Constructor para inicializar un usuario con sus datos básicos.
@@ -38,69 +38,63 @@ public class User extends Person {
      * @return Una nueva instancia de {@link User} con los datos validados.
      */
     @Override
-    public User register(ArrayList<Person> persons) {
-        /**
-         * @param sc Variable que llama al escáner
-         * @param checkP Booleano que determina que se han cumplido con los requerimientos de la contraseña
-         * @param checkD Booleano que determina si la fecha de nacimiento introducida es válida
-         * @param id Número identificador del usuario
-         * @param newUser Constructor de objeto de la clase
-         * @see Person
-         */
-        Scanner sc = new Scanner(System.in);
+    public void register(ArrayList<Person> persons) {
+
         String name, birthdate, password;
         boolean checkP = false, checkD = false;
         System.out.println("Please enter your name and surnames");
         name = sc.nextLine();
 
-            System.out.println("Please enter your password");
+        System.out.println("Please enter your password");
+        password = sc.nextLine();
+        checkP = checkPassword(password);
+        while (!checkP) {
+            System.out.println("The password you entered is incorrect");
+            System.out.println("The password must contain:");
+            System.out.println("* 1 uppercase letter");
+            System.out.println("* 1 lowercase letter");
+            System.out.println("* 1 number");
+            System.out.println("* 1 special character");
             password = sc.nextLine();
             checkP = checkPassword(password);
-            while (!checkP) {
-                System.out.println("The password you entered is incorrect");
-                System.out.println("The password must contain:");
-                System.out.println("* 1 uppercase letter");
-                System.out.println("* 1 lowercase letter");
-                System.out.println("* 1 number");
-                System.out.println("* 1 special character");
-                password = sc.nextLine();
-                checkP = checkPassword(password);
-            }
+        }
 
-            System.out.println("Please enter your birthdate (dd/mm/yyyy)");
+        System.out.println("Please enter your birthdate (dd/mm/yyyy)");
+        birthdate = sc.nextLine();
+        checkD = checkDate(birthdate);
+        while (!checkD) {
+            System.out.println("The date you entered is incorrect, please try again");
+            System.out.println("Remember to use the following format: dd/mm/yyyy");
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
-            while (!checkD) {
-                System.out.println("The date you entered is incorrect, please try again");
-                System.out.println("Remember to use the following format: dd/mm/yyyy");
-                birthdate = sc.nextLine();
-                checkD = checkDate(birthdate);
-            }
-            ArrayList<Person> personsArray = dataAccess.chargeData();
-            ArrayList<Person> clientArray = new ArrayList<>();
-            for(Person person : personsArray) {
-                if(person instanceof User){
-                    clientArray.add(person);
-                }
-            }
-            int id = 1;
-            if(!clientArray.isEmpty()) {
-                for (Person customer : clientArray) {
-                    if (customer.getId().equals(String.valueOf(id))) {
-                        id++;
-                    }
-                }
-            }
-            userId = String.valueOf(id);
-            User newUser = new User(name, password, birthdate, userId);
-            System.out.println("The register process has ended successfully");
-            System.out.println("Your data:");
-            System.out.println("Name: " + name);
-            System.out.println("Birthdate: " + birthdate);
-            System.out.println("Password: " + password);
-            System.out.println("Id: " + id);
-            return newUser;
         }
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> clientArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof User){
+                clientArray.add(person);
+            }
+        }
+        int id = 1;
+        int currentIdInt;
+        if(!clientArray.isEmpty()) {
+            for (Person customer : clientArray) {
+                currentIdInt = Integer.parseInt(customer.getId());
+                if (currentIdInt > id) {
+                    id = currentIdInt;
+                }
+            }
+        }
+        userId = String.valueOf(id +1);
+        User newUser = new User(name, password, birthdate, userId);
+        System.out.println("The register process has ended successfully");
+        System.out.println("Your data:");
+        System.out.println("Name: " + name);
+        System.out.println("Birthdate: " + birthdate);
+        System.out.println("Password: " + password);
+        System.out.println("Id: " + id);
+        persons.add(newUser);
+    }
 
     /**
      * Valida la fecha de nacimiento del usuario.

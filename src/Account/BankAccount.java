@@ -129,7 +129,7 @@ public abstract class BankAccount implements Accounting {
         dc = calcDC(entity, office, accNumber);
         IBAN = calcIBAN(entity, office, accNumber);
         alias = accountAlias();
-        System.out.println("Your account has been created");
+        System.out.println("The account has been created");
 
     }
 

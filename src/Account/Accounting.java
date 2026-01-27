@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 interface Accounting
 {
-    void deposit(int amount, BankAccount account);
-    void withdraw(int amount, BankAccount account);
-    void transfer(double amount, BankAccount account, ArrayList<Person> persons);
-    void rechargeSIM(int amount, BankAccount account);
+    void deposit(double amount);
+    void withdraw(double amount);
+    void transfer(ArrayList<Person> persons);
+    void rechargeSIM(double amount);
     void selectAccount(User user);
 }
 /**

@@ -45,52 +45,13 @@ public class AccessScreen {
             sc.nextLine();
             switch (option){
                 case 1:
-                    registration(personsArray);
+                    dummyUserC.register(personsArray);
                     break;
                 case 2:
                     login(personsArray);
                     break;
                 case 3:
                     dataAccess.saveData(personsArray);
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again");
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Gestiona el proceso de registro de nuevos usuarios.
-     * Permite elegir entre Cliente, Empleado o Gerente y guarda los cambios.
-     */
-    public void registration(ArrayList<Person> persons) {
-
-        //Cada vez que se registra satisfactoriamente se actualiza el archivo con los nuevos datos
-        int option = 0;
-        while (true) {
-            System.out.println("Welcome to the registration Process");
-            System.out.println("Please type the type of user");
-            System.out.println("1. Client");
-            System.out.println("2. Employee");
-            System.out.println("3. Manager");
-            System.out.println("4. Back");
-            System.out.println("Please enter your numbered choice (1, 2, 3 or 4)");
-            option = sc.nextInt();
-            switch (option) {
-                case 1:
-                    User newUser = dummyUserC.register(persons);
-                    personsArray.add(newUser);
-                    return;
-                case 2:
-                    Employee newEmployee = dummyUserE.register(persons);
-                    personsArray.add(newEmployee);
-                    return;
-                case 3:
-                    Gerente newGerente = dummyUserG.register(persons);
-                    personsArray.add(newGerente);
-                    break;
-                case 4:
                     return;
                 default:
                     System.out.println("Invalid option. Please try again");
@@ -116,10 +77,12 @@ public class AccessScreen {
         if (currentPerson == null) {
             System.out.println("Stated id is not found, please enter a valid id");
             return;
-        } else {
+        }
+        else {
             if (!currentPerson.active) {
                 System.out.println("The account associated with this id is blocked.\n Contact a system admin for more information.");
-            } else {
+            }
+            else {
                 int tries = 0;
                 while (tries != 3) {
                     System.out.println("Please enter password: ");
@@ -139,7 +102,8 @@ public class AccessScreen {
                             return;
                         }
 
-                    } else {
+                    }
+                    else {
                         System.out.println("Wrong password, please try again");
                         tries++;
                         if (tries == 3) {

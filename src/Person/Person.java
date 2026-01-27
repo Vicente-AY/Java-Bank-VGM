@@ -29,7 +29,7 @@ public abstract class Person implements Serializable {
      * específica según el tipo de persona (Cliente, Empleado o Gerente).
      * @return Una nueva instancia del objeto que extiende de Person.
      */
-    public abstract Person register(ArrayList<Person> persons);
+    public abstract void register(ArrayList<Person> persons);
 
     /**
      * Define los requisitos que debe cumplir la contraseña del usuario.
@@ -53,5 +53,9 @@ public abstract class Person implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean getActive(){
+        return active;
     }
 }

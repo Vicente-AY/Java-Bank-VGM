@@ -38,67 +38,63 @@ public class DebitAccount extends BankAccount {
     /**
      * Incrementa el saldo de la cuenta indicada.
      * @param amount  Cantidad entera a depositar.
-     * @param account Instancia de la cuenta que recibe el depósito.
      */
     @Override
-    public void deposit(int amount, BankAccount account) {
+    public void deposit(double amount) {
 
         //capturamos la fecha con el formato
         String transactionDate = dateFormat.format(new Date());
         //guardamos el balance previo a la operacion
-        double previousBalance =  account.getBalance();
+        double previousBalance =  this.getBalance();
 
-        account.balance += amount;
+        this.balance += amount;
         //informamos al usuario del movimiento realizado
         System.out.println("Deposited " + amount);
-        System.out.println("New Balance: " + account.balance);
+        System.out.println("New Balance: " + this.balance);
 
         //guardamos en el historial de movimientos de la cuenta la operación realizada
-        account.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, account.balance, transactionDate));
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, this.balance, transactionDate));
     }
 
     /**
      * Extrae fondos de la cuenta siempre que haya saldo suficiente.
      * @param amount  Cantidad entera a retirar.
-     * @param account Cuenta desde la cual se realiza la retirada.
      */
     @Override
-    public void withdraw(int amount, BankAccount account) {
+    public void withdraw(double amount) {
 
         //si la cuenta no tiene fondos no puede hacer el movimiento
-        if (account.balance <= 0 || account.balance - amount < 0){
+        if (this.balance <= 0 || this.balance - amount < 0){
             System.out.println("Insufficient funds");
         }
         else{
             String transactionDate = dateFormat.format(new Date());
-            double previousBalance =  account.getBalance();
-            account.balance -= amount;
+            double previousBalance =  this.getBalance();
+            this.balance -= amount;
             System.out.println("Withdrawn " + amount);
-            System.out.println("New balance in " + account.accNumber + " is: " + account.balance);
-            account.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", amount, account.balance, transactionDate));
+            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", amount, this.balance, transactionDate));
         }
     }
 
     /**
      * Realiza una transferencia de fondos a otra cuenta mediante el número de cuenta destino.
-     * @param amount  Cantidad decimal a transferir.
-     * @param account Cuenta de origen (emisora).
      * @throws InputMismatchException Si el usuario introduce un formato de monto inválido.
      */
     @Override
-    public void transfer(double amount, BankAccount account, ArrayList<Person> persons) {
+    public void transfer(ArrayList<Person> persons) {
 
         String transactionDate = dateFormat.format(new Date());
-        double previousBalance = account.getBalance();
+        double previousBalance = this.getBalance();
         try{
-            String sourceAcc =  account.accNumber;
+            String sourceAcc =  this.accNumber;
             System.out.println("Please enter the destination account number\n");
             String destinationAcc =  sc.nextLine();
             System.out.println("Please enter the amount to be transferred (With decimals)\n");
-            double ammount = sc.nextDouble();
+            double amount = sc.nextDouble();
 
             //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
-            if(ammount > account.balance){
+            if(amount > this.balance){
                 System.out.println("Insufficient funds");
             }
             else{
@@ -116,12 +112,12 @@ public class DebitAccount extends BankAccount {
                 //si encontramos la cuenta en el proceso anterior realizamos la operación
                 if(destAcc != null){
                     double destAcPreviousBalance =  destAcc.getBalance();
-                    account.balance -= ammount;
-                    destAcc.balance += ammount;
+                    this.balance -= amount;
+                    destAcc.balance += amount;
                     System.out.println("Operation successful");
-                    System.out.println("New balance in " + sourceAcc + " is: " + account.balance);
+                    System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
                     System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
-                    account.getHistory().add(new BankAccountHistory(previousBalance, "Transference", amount, account.balance, transactionDate, destAcc));
+                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference", amount, this.balance, transactionDate, destAcc));
                     destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Transference", amount, destAcc.balance, transactionDate, destAcc));
                 }
                 else{
@@ -139,10 +135,9 @@ public class DebitAccount extends BankAccount {
      * Simula la recarga de una tarjeta SIM.
      * Valida que el número de teléfono tenga una longitud de 9 dígitos.
      * @param amount  Monto de la recarga.
-     * @param account Cuenta que pagará la recarga.
      */
     @Override
-    public void rechargeSIM(int amount, BankAccount account) {
+    public void rechargeSIM(double amount) {
 
         String transactionDate = dateFormat.format(new Date());
         System.out.println("Input the destination phone number\n");
@@ -156,15 +151,15 @@ public class DebitAccount extends BankAccount {
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-        if(account.balance >= amount || account.balance - amount < 0){
+        if(this.balance >= amount || this.balance - amount < 0){
             System.out.println("Insufficient funds");
         }
         else {
-            double previousBalance = account.balance;
-            account.balance -= amount;
+            double previousBalance = this.balance;
+            this.balance -= amount;
             System.out.println("Operation successful");
-            System.out.println("New balance in " + account.accNumber + " is: " + account.balance);
-            account.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, account.balance, transactionDate));
+            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, this.balance, transactionDate));
         }
     }
 
@@ -211,6 +206,14 @@ public class DebitAccount extends BankAccount {
                 if(person.getId().equals(id)){
                     currentUser = person;
                 }
+                else{
+                    System.out.println("Invalid ID");
+                    return;
+                }
+            }
+            else{
+                System.out.println("This ID is not an user");
+                return;
             }
         }
 

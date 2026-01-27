@@ -17,6 +17,7 @@ public class Employee extends Person {
     transient Data dataAccess = new Data();
     private static final long serialVersionUID = 1L;
     String employeeId;
+    Scanner sc =  new Scanner(System.in);
 
     /**
      * Constructor para inicializar un empleado.
@@ -40,7 +41,7 @@ public class Employee extends Person {
      * @see #checkDate(String)
      */
     @Override
-    public Employee register(ArrayList<Person> persons){
+    public void register(ArrayList<Person> persons){
 
         Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
@@ -81,14 +82,16 @@ public class Employee extends Person {
             }
         }
         int id = 1;
+        int currentIdInt;
         if(!EmployeeArray.isEmpty()) {
             for (Person employee : EmployeeArray) {
-                if (createId(id).equals(employee.getId())) {
-                    id++;
+                currentIdInt = Integer.parseInt(employee.getId());
+                if (currentIdInt > id) {
+                    id = currentIdInt;
                 }
             }
         }
-        String newId = createId(id);
+        String newId = createId(id +1);
         Employee newEmployee = new Employee(name, password, birthdate, newId);
         System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
@@ -96,7 +99,7 @@ public class Employee extends Person {
         System.out.println("Birthdate: " + birthdate);
         System.out.println("Password: " + password);
         System.out.println("Id: " + newId);
-        return newEmployee;
+        persons.add(newEmployee);
     }
 
     /**
@@ -171,121 +174,52 @@ public class Employee extends Person {
      * Borra las cuenta bancarias de los clientes
      * @param persons la lista de usuarios
      */
-    private void DeleteBankAccount(ArrayList<Person> persons){
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Tell me the Client's ID");
-        String comprovId = sc.nextLine();
-        boolean encontrado = false;
-        ArrayList<Person> userList = new ArrayList<>();
+    public void deleteBankAccount(ArrayList<Person> persons) {
 
-        for(Person person : persons){
-            if(person instanceof User){
-                userList.add(person);
-            }
-        }
+        //Busca al usuario por id
+        System.out.println("Enter the User ID number you want to select");
+        String userId = sc.nextLine();
+        User selectedUser = null;
+        BankAccount eraseAccount = null;
 
-        for (int i = 0; i < userList.size(); i++) {
-            if (Objects.equals(userList.get(i).getId(), comprovId)) {
-                encontrado = true;
-                Person selectedUser = userList.get(i);
-                System.out.println("Client with ID " + comprovId + " exists");
-
-                // Mostrar las cuentas bancarias del usuario
-                if(((User) selectedUser).getBankAccounts().isEmpty()){
-                    System.out.println("This client has no bank accounts");
-                    return;
-                }
-
-                System.out.println("Bank accounts for client " + selectedUser.name + ":");
-                for(int j = 0; j < ((User) selectedUser).getBankAccounts().size(); j++){
-                    BankAccount account = ((User) selectedUser).getBankAccounts().get(j);
-                    System.out.println((j+1) + ". Alias: " + account.accountAlias +
-                            " | Balance: " + account.getBalance());
-                }
-
-                System.out.println("Which bank account do you want to delete?");
-                System.out.println("Tell Alias of the Bank Account (or type 'cancel' to abort):");
-                String comprovBA = sc.nextLine();
-
-                if(comprovBA.equalsIgnoreCase("cancel")){
-                    System.out.println("Operation cancelled");
-                    return;
-                }
-
-                // Buscar la cuenta bancaria por alias
-                BankAccount accountToDelete = null;
-                for(BankAccount account : ((User) selectedUser).getBankAccounts()){
-                    if(account.accountAlias.equals(comprovBA)){
-                        accountToDelete = account;
-                        break;
-                    }
-                }
-
-                if(accountToDelete != null){
-                    if(accountToDelete.getBalance() > 0){
-                        System.out.println("ERROR: Cannot delete account with balance greater than 0");
-                        System.out.println("Current balance: " + accountToDelete.getBalance());
-                        return;
-                    }
-
-                    System.out.println("Are you sure you want to delete account '" +
-                            accountToDelete.accountAlias + "'? (Y/N)");
-                    String confirmation = sc.nextLine().toLowerCase();
-
-                    if(confirmation.equals("y") || confirmation.equals("yes")){
-                        ((User) selectedUser).getBankAccounts().remove(accountToDelete);
-                        System.out.println("[MANAGER] Bank account '" + accountToDelete.accountAlias +
-                                "' has been deleted successfully");
-                    } else {
-                        System.out.println("Operation cancelled");
-                    }
-                } else {
-                    System.out.println("Bank account with alias '" + comprovBA + "' not found");
-                }
+        for(Person person : persons) {
+            if(person instanceof User && userId.equals(person.getId())) {
+                selectedUser = (User) person;
                 break;
             }
-        }
-
-        if (!encontrado) {
-            System.out.println("Client with ID " + comprovId + " not found");
-        }
-    }
-
-    /**
-     * Reactiva cuentas de clientes bloqueadas
-     * @param persons Lista de usuarios
-     */
-    private void ReactivateClientAccount(ArrayList<Person> persons){
-        Scanner sc = new Scanner(System.in);
-        System.out.println("=== REACTIVATE CLIENT ACCOUNT ===");
-        System.out.println("Enter the Client's ID:");
-        String clientId = sc.nextLine();
-        ArrayList <Person> userList = new ArrayList<>();
-
-        for(Person person : persons){
-            if(person instanceof User){
-                userList.add(person);
+            else{
+                System.out.println("Error, user not found");
+                return;
             }
         }
-
-        boolean found = false;
-        for(Person user : userList){
-            if(user.getId().equals(clientId)){
-                found = true;
-                if(user.active){
-                    System.out.println("Client " + user.name + " (ID: " + clientId +
-                            ") is already active");
-                } else {
-                    user.setActive(true);
-                    System.out.println("[MANAGER] Client " + user.name + " (ID: " + clientId +
-                            ") has been reactivated successfully");
+        //Selecciona la cuenta bancaria a eliminar
+        if (selectedUser != null) {
+            for (int i = 0; i < selectedUser.getBankAccounts().size(); i++) {
+                System.out.println((i + 1) + ". " + selectedUser.getBankAccounts().get(i));
+            }
+            System.out.println("Select the account you want to delete. Type 0 to cancell");
+            int accountSelection = sc.nextInt();
+            if (accountSelection == 0) {
+                System.out.println("Operation aborted");
+                return;
+            }
+            else {
+                eraseAccount = selectedUser.getBankAccounts().get(accountSelection - 1);
+                //si la cuenta bancaria tiene balance  positivo o negativo no podrá ser eliminada
+                if (eraseAccount.getBalance() != 0) {
+                    System.out.println("Cancelling operation, the account must be at 0 before deletion");
                 }
-                break;
+                else {
+                    System.out.println("Are you sure do you want to erase Y/N");
+                    String choice = sc.nextLine().toLowerCase();
+                    if (choice.equals("y") || choice.equals("yes")) {
+                        selectedUser.getBankAccounts().remove(accountSelection - 1);
+                    }
+                    else {
+                        System.out.println("Operation aborted");
+                    }
+                }
             }
-        }
-
-        if(!found){
-            System.out.println("Client with ID " + clientId + " not found");
         }
     }
 
@@ -293,5 +227,81 @@ public class Employee extends Person {
     @Override
     public String getId(){
         return employeeId;
+    }
+
+    /**
+     * Reactiva cuentas bloqueadas si introduce id de empleado o gerente no podrá hacerlo
+     * @param persons Lista de usuarios
+     */
+    public void reactivate(ArrayList<Person> persons){
+        System.out.println("Introduce the ID you want to reactivate:");
+        String id = sc.nextLine();
+        Person personToReactivate = null;
+        for(Person person : persons){
+            if(person.getId().equals(id)){
+                personToReactivate = person;
+                break;
+            }
+        }
+        if(personToReactivate == null){
+            System.out.println("Person with ID " + id + " not found");
+            return;
+        }
+        //aqui comprobamos si el id introducido es de empleado o gerente y mostramos por consola que no puede hacerlo
+        if(personToReactivate instanceof Employee || personToReactivate instanceof Gerente){
+            System.out.println("You have no permission to perform this operation");
+            return;
+        }
+
+        if(personToReactivate.getActive()){
+            System.out.println(personToReactivate.getName() + " Is arleady active");
+        }
+        else{
+            //reactivamos la cuenta
+            personToReactivate.setActive(true);
+            System.out.println(personToReactivate.getName() + " has been reactivated successfully");
+        }
+    }
+
+    /**
+     * Borra usuarios del sistema
+     * @param persons ArrayList de todos los usuarios
+     */
+    public void deleteUser(ArrayList<Person> persons){
+        System.out.println("Type the Account's ID");
+        String id = sc.nextLine();
+        Person removed = null;
+        //buscamos al usuario por ID
+        for(Person person : persons) {
+            if(person.getId().equals(id)) {
+                removed = person;
+                break;
+            }
+        }
+        if(removed == null) {
+            System.out.println("ID "  + id + " not found");
+            return;
+        }
+        if(removed instanceof Employee || removed instanceof Gerente){
+            System.out.println("You have no permission to perform this operation");
+            return;
+        }
+        //Si es un usuario y todavia tiene cuentas asociadas paramos la operación
+        if(removed instanceof User) {
+            if(!((User) removed).getBankAccounts().isEmpty()){
+                System.out.println("Sorry, the client still have linked bank accounts. Delete them first");
+                return;
+            }
+        }
+        //nos aseguramos que el usuario que realiza la operacion quiera borrar al usuario seleccionado
+        System.out.println("(Yes/No) Do you really want to delete User: " + removed.getName() + "? With ID " + removed.getId());
+        String decision = sc.nextLine().toLowerCase();
+        if(decision.equals("yes")) {
+            persons.remove(removed);
+            System.out.println(removed.getName() + " has been removed");
+        }
+        else {
+            System.out.println("Cancelling Operation");
+        }
     }
 }
