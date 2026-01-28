@@ -20,7 +20,7 @@ public class DebitAccount extends BankAccount {
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     Data dataAccess = new Data();
-    Scanner sc  = new Scanner(System.in);
+    private transient Scanner sc  = new Scanner(System.in);
 
     /**
      * Constructor para inicializar una cuenta de débito con sus datos identificativos.

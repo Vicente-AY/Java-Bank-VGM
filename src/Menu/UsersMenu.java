@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class UsersMenu {
     DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
     BankAccount selectedBankAccount = null;
-    Scanner sc = new Scanner(System.in);
+    private transient Scanner sc = new Scanner(System.in);
     double amount;
 
     /**
@@ -50,7 +50,7 @@ public class UsersMenu {
                 case 2:
                     if(selectedBankAccount == null){
                         System.out.println("Please select and account first");
-                        selectedBankAccount = selectAccount((User) currentUser);
+                        break;
                     }
                     System.out.println("Enter the amount you want to Deposit");
                     amount = sc.nextDouble();
@@ -60,7 +60,7 @@ public class UsersMenu {
                 case 3:
                     if(selectedBankAccount == null){
                         System.out.println("Please select and account first");
-                        selectedBankAccount = selectAccount((User) currentUser);
+                        break;
                     }
                     System.out.println("Enter the amount you want to Withdraw");
                     amount = sc.nextDouble();
@@ -70,14 +70,14 @@ public class UsersMenu {
                 case 4:
                     if(selectedBankAccount == null){
                         System.out.println("Please select and account first");
-                        selectedBankAccount = selectAccount((User) currentUser);
+                        break;
                     }
                     selectedBankAccount.transfer(persons);
                     break;
                 case 5:
                     if(selectedBankAccount == null){
                         System.out.println("Please select and account first");
-                        selectedBankAccount = selectAccount((User) currentUser);
+                        break;
                     }
                     System.out.println("Enter the amount you want to Recharge");
                     amount = sc.nextDouble();
@@ -100,6 +100,10 @@ public class UsersMenu {
 
         //mostramos por pantalla las cuentas bancarias asociadas para que el usuario pueda seleccionarla
         BankAccount foundBankAccount = null;
+        if(user.bankAccounts.isEmpty()){
+            System.out.println("You need to create a bank account first. Contact an Employee");
+            return null;
+        }
         System.out.println("Select the account you want to use by typing the number of the option");
         for(int i = 0; i < user.bankAccounts.size(); i++) {
             String aliasBA = user.bankAccounts.get(i).accountAlias;

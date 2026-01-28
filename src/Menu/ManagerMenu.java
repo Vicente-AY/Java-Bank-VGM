@@ -17,7 +17,7 @@ public class ManagerMenu {
     Employee dummyEmployee = new Employee(null, null, null, null);
     User dummyUser = new User (null, null, null, null);
     Gerente dummyManager = new Gerente(null, null, null, null);
-    Scanner scanner = new Scanner(System.in);
+    private transient Scanner scanner = new Scanner(System.in);
     ArrayList<Person> persons = new ArrayList<>();
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
     BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);

@@ -4,6 +4,7 @@ import Utils.*;
 import Person.User;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Clase que representa una cuenta de crédito bancaria.
@@ -15,6 +16,7 @@ public class CreditAccount extends BankAccount {
     Data dataAccess = new Data();
     double creditLimit = 0.0;
     double creditPercentage = 0.0;
+    private transient Scanner sc = new Scanner(System.in);
 
     /**
      * Constructor para inicializar una cuenta de crédito con todos sus parámetros.

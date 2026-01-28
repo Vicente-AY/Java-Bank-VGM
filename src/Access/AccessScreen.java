@@ -70,13 +70,12 @@ public class AccessScreen {
         id = sc.nextLine();
         Person currentPerson = null;
         for (int i = 0; i < personsArray.size(); i++) {
-            if (personsArray.get(i).getId().equals(id)) {
+            if (id.equals(personsArray.get(i).getId())) {
                 currentPerson = personsArray.get(i);
             }
         }
         if (currentPerson == null) {
             System.out.println("Stated id is not found, please enter a valid id");
-            return;
         }
         else {
             if (!currentPerson.active) {

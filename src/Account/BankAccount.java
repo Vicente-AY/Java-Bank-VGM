@@ -21,7 +21,7 @@ public abstract class BankAccount implements Accounting {
     public String accountAlias = "";
     public double balance = 0.0;
     int numNewAccount = 0;
-    Scanner sc = new Scanner(System.in);
+    private transient Scanner sc = new Scanner(System.in);
     Data dataAccess = new Data();
 
     /**

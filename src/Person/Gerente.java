@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Gerente extends Person {
     String managerId;
     public static int id =0;
-    Scanner sc = new Scanner(System.in);
+    private transient Scanner sc = new Scanner(System.in);
 
     /**
      * Constructor para inicializar un Gerente.
