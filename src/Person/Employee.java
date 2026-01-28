@@ -14,7 +14,6 @@ import java.util.Scanner;
  * @see Person
  */
 public class Employee extends Person {
-    transient Data dataAccess = new Data();
     private static final long serialVersionUID = 1L;
     String employeeId;
 
@@ -73,16 +72,10 @@ public class Employee extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : persons) {
-            if(person instanceof Employee || person instanceof Gerente){
-                EmployeeArray.add(person);
-            }
-        }
         int id = 0;
         int currentIdInt;
-        if(!EmployeeArray.isEmpty()) {
-            for (Person employee : EmployeeArray) {
+        if(!persons.isEmpty()) {
+            for (Person employee : persons) {
                 currentIdInt = Integer.parseInt(employee.getId());
                 if (currentIdInt > id) {
                     id = currentIdInt;

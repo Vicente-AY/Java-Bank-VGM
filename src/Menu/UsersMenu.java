@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class UsersMenu {
     DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
     BankAccount selectedBankAccount = null;
-    private transient Scanner sc = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
     double amount;
 
     /**

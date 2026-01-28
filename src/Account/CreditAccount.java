@@ -1,5 +1,5 @@
 package Account;
-import Person.Person;
+import Person.*;
 import Utils.*;
 import Person.User;
 
@@ -13,7 +13,6 @@ import java.util.Scanner;
  */
 public class CreditAccount extends BankAccount {
 
-    Data dataAccess = new Data();
     double creditLimit = 0.0;
     double creditPercentage = 0.0;
 
@@ -90,24 +89,21 @@ public class CreditAccount extends BankAccount {
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
         Person currentUser = null;
-        CreditAccount newCreditAccount = null;
-        for(Person person : persons){
-            if(person instanceof User){
-                if(person.getId().equals(id)){
-                    currentUser = person;
-                }
-                else{
-                    System.out.println("Invalid ID");
-                    return;
-                }
-            }
-            else{
-                System.out.println("This ID is not an user");
-                return;
+        CreditAccount newCreditAccount = new CreditAccount("9999", "8888", null, null, null, null, 0.0, 0.0);
+        for(Person person : persons) {
+            if (id.equals(person.getId())) {
+                currentUser = person;
+                break;
             }
         }
-
-
+        if(currentUser == null) {
+            System.out.println("Client ID not found");
+            return;
+        }
+        if(currentUser instanceof Employee || currentUser instanceof Gerente){
+            System.out.println("This ID is not linked to an User");
+            return;
+        }
 
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
         double limit = 0.0, percentage = 0.0;

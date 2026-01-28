@@ -11,7 +11,7 @@ public class EmployeeMenu {
 
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
     BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);
-    private transient Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     /**
      * Muestra el menú de opciones disponibles para un empleado y gestiona sus acciones.
@@ -35,6 +35,7 @@ public class EmployeeMenu {
                     break;
                 case 2:
                     createNewBankAccount(persons, currentEmployee);
+                    break;
                 case 3:
                     ((Employee) currentEmployee).reactivate(persons);
                     break;

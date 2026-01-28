@@ -1,11 +1,12 @@
 package Account;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Clase que representa el historico de movimientos de una cuenta bancaria.
  */
-public class BankAccountHistory {
+public class BankAccountHistory implements Serializable {
 
     double previousBalance;
     String operationType;

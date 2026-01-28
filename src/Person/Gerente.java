@@ -15,15 +15,16 @@ import java.util.Scanner;
 public class Gerente extends Person {
     String managerId;
     public static int id =0;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor para inicializar un Gerente.
      * @param name       Nombre del Gerente.
      * @param password   Contraseña de seguridad.
      * @param birthDate  Fecha de nacimiento (dd/mm/yyyy).
-     * @param gerenteId  ID específico asignado al gerente.
+     * @param managerId  ID específico asignado al gerente.
      */
-    public Gerente(String name, String password, String birthDate, String gerenteId) {
+    public Gerente(String name, String password, String birthDate, String managerId) {
         super(name, password, birthDate);
         this.managerId = managerId;
     }
@@ -65,16 +66,10 @@ public class Gerente extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : persons) {
-            if(person instanceof Employee || person instanceof Gerente){
-                EmployeeArray.add(person);
-            }
-        }
         int id = 0;
         int currentIdInt;
-        if(!EmployeeArray.isEmpty()) {
-            for (Person employee : EmployeeArray) {
+        if(!persons.isEmpty()) {
+            for (Person employee : persons) {
                 currentIdInt = Integer.parseInt(employee.getId());
                 if (currentIdInt > id) {
                     id = currentIdInt;
@@ -261,7 +256,7 @@ public class Gerente extends Person {
         if(removed instanceof Employee) {
             System.out.println("Employee " + removed.getName() + "? With ID " + removed.getId());
         }
-        if(removed instanceof User) {
+        if(removed instanceof Gerente) {
             System.out.println("Manager " + removed.getName() + "? With ID " + removed.getId());
         }
         String decision = sc.nextLine().toLowerCase();

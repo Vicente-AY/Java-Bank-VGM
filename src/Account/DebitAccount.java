@@ -19,7 +19,6 @@ public class DebitAccount extends BankAccount {
 
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-    Data dataAccess = new Data();
 
     /**
      * Constructor para inicializar una cuenta de débito con sus datos identificativos.
@@ -203,21 +202,20 @@ public class DebitAccount extends BankAccount {
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
         Person currentUser = null;
-        DebitAccount newDebitAccount = null;
-        for(Person person : persons){
-            if(person instanceof User){
-                if(person.getId().equals(id)){
-                    currentUser = person;
-                }
-                else{
-                    System.out.println("Invalid ID");
-                    return;
-                }
+        DebitAccount newDebitAccount = new DebitAccount("9999", "8888", null, null, null, null);
+        for(Person person : persons) {
+            if (id.equals(person.getId())) {
+                currentUser = person;
+                break;
             }
-            else{
-                System.out.println("This ID is not an user");
-                return;
-            }
+        }
+        if(currentUser == null) {
+            System.out.println("Client ID not found");
+            return;
+        }
+        if(currentUser instanceof Employee || currentUser instanceof Gerente){
+            System.out.println("This ID is not linked to an User");
+            return;
         }
 
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";

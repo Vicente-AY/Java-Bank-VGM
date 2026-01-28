@@ -13,7 +13,6 @@ import java.util.Scanner;
  */
 public class User extends Person {
 
-    transient Data dataAccess = new Data();
     private static final long serialVersionUID = 1L;
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
@@ -68,24 +67,18 @@ public class User extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
-        ArrayList<Person> clientArray = new ArrayList<>();
-        for(Person person : personsArray) {
-            if(person instanceof User){
-                clientArray.add(person);
-            }
-        }
+
         int id = 0;
         int currentIdInt;
-        if(!clientArray.isEmpty()) {
-            for (Person customer : clientArray) {
+        if(!persons.isEmpty()) {
+            for (Person customer : persons) {
                 currentIdInt = Integer.parseInt(customer.getId());
                 if (currentIdInt > id) {
                     id = currentIdInt;
                 }
             }
         }
-        userId = String.valueOf(id +1);
+        userId = createId(id + 1);
         User newUser = new User(name, password, birthdate, userId);
         System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
@@ -154,6 +147,16 @@ public class User extends Person {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Formatea un número entero a un ID de 8 caracteres con relleno de ceros.
+     * @param id Número base.
+     * @return String de 8 dígitos.
+     */
+    public String createId(int id) {
+
+        return String.format("%08d", id);
     }
 
     //Getters y Setters

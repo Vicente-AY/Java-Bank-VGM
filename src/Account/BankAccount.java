@@ -1,4 +1,5 @@
 package Account;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ import static java.lang.Integer.parseInt;
  * Clase abstracta que define la estructura y comportamiento base de una cuenta bancaria.
  * Implementa la interfaz Accounting y calcula el IBAN y codigos de control
  */
-public abstract class BankAccount implements Accounting {
+public abstract class BankAccount implements Accounting, Serializable {
 
     ArrayList<BankAccountHistory>  history = new ArrayList<BankAccountHistory>();
     public String entity = "9999", office = "8888";
@@ -20,8 +21,6 @@ public abstract class BankAccount implements Accounting {
     public String IBAN = "";
     public String accountAlias = "";
     public double balance = 0.0;
-    int numNewAccount = 0;
-    Data dataAccess = new Data();
 
     /**
      * Constructor completo para inicializar una cuenta bancaria
