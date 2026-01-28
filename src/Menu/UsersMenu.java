@@ -49,7 +49,7 @@ public class UsersMenu {
                     break;
                 case 2:
                     if(selectedBankAccount == null){
-                        System.out.println("Pleas select and account first");
+                        System.out.println("Please select and account first");
                         selectedBankAccount = selectAccount((User) currentUser);
                     }
                     System.out.println("Enter the amount you want to Deposit");
@@ -59,7 +59,7 @@ public class UsersMenu {
                     break;
                 case 3:
                     if(selectedBankAccount == null){
-                        System.out.println("Pleas select and account first");
+                        System.out.println("Please select and account first");
                         selectedBankAccount = selectAccount((User) currentUser);
                     }
                     System.out.println("Enter the amount you want to Withdraw");
@@ -69,14 +69,14 @@ public class UsersMenu {
                     break;
                 case 4:
                     if(selectedBankAccount == null){
-                        System.out.println("Pleas select and account first");
+                        System.out.println("Please select and account first");
                         selectedBankAccount = selectAccount((User) currentUser);
                     }
                     selectedBankAccount.transfer(persons);
                     break;
                 case 5:
                     if(selectedBankAccount == null){
-                        System.out.println("Pleas select and account first");
+                        System.out.println("Please select and account first");
                         selectedBankAccount = selectAccount((User) currentUser);
                     }
                     System.out.println("Enter the amount you want to Recharge");

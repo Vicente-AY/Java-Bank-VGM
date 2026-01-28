@@ -186,6 +186,10 @@ public class Gerente extends Person {
         }
         //Selecciona la cuenta bancaria a eliminar
         if (selectedUser != null) {
+            if(selectedUser.getBankAccounts().isEmpty()) {
+                System.out.println("The user dont have linked bank accounts");
+                return;
+            }
             for (int i = 0; i < selectedUser.getBankAccounts().size(); i++) {
                 System.out.println((i + 1) + ". " + selectedUser.getBankAccounts().get(i));
             }
@@ -212,6 +216,9 @@ public class Gerente extends Person {
                     }
                 }
             }
+        }
+        else{
+            System.out.println("User not found");
         }
     }
 
@@ -260,83 +267,6 @@ public class Gerente extends Person {
         else {
             System.out.println("Cancelling Operation");
         }
-    }
-
-    /**
-     * Borra las cuenta bancarias de los clientes
-     */
-    private void DeleteBankAccount(ArrayList<Person> persons){
-        System.out.println("Tell me the Client's ID");
-        String comprovId = sc.nextLine();
-        boolean encontrado = false;
-        Person selectedUser = null;
-
-        for (int i = 0; i < persons.size(); i++) {
-            if (Objects.equals(persons.get(i).getId(), comprovId)) {
-                encontrado = true;
-                selectedUser = persons.get(i);
-                System.out.println("Client with ID " + comprovId + " exists");
-
-                // Mostrar las cuentas bancarias del usuario
-                if(((User) selectedUser).getBankAccounts().isEmpty()){
-                    System.out.println("This client has no bank accounts");
-                    return;
-                }
-
-                System.out.println("Bank accounts for client " + selectedUser.name + ":");
-                for(int j = 0; j < ((User) selectedUser).getBankAccounts().size(); j++){
-                    BankAccount account = ((User) selectedUser).getBankAccounts().get(j);
-                    System.out.println((j+1) + ". Alias: " + account.accountAlias +
-                            " | Balance: " + account.getBalance());
-                }
-
-                System.out.println("Which bank account do you want to delete?");
-                System.out.println("Tell Alias of the Bank Account (or type 'cancel' to abort):");
-                String comprovBA = sc.nextLine();
-
-                if(comprovBA.equalsIgnoreCase("cancel")){
-                    System.out.println("Operation cancelled");
-                    return;
-                }
-
-                // Buscar la cuenta bancaria por alias
-                BankAccount accountToDelete = null;
-                for(BankAccount account : ((User) selectedUser).getBankAccounts()){
-                    if(account.accountAlias.equals(comprovBA)){
-                        accountToDelete = account;
-                        break;
-                    }
-                }
-
-                if(accountToDelete != null){
-                    if(accountToDelete.getBalance() > 0){
-                        System.out.println("ERROR: Cannot delete account with balance greater than 0");
-                        System.out.println("Current balance: " + accountToDelete.getBalance());
-                        return;
-                    }
-
-                    System.out.println("Are you sure you want to delete account '" +
-                            accountToDelete.accountAlias + "'? (Y/N)");
-                    String confirmation = sc.nextLine().toLowerCase();
-
-                    if(confirmation.equals("y") || confirmation.equals("yes")){
-                        ((User) selectedUser).getBankAccounts().remove(accountToDelete);
-                        System.out.println("[MANAGER] Bank account '" + accountToDelete.accountAlias +
-                                "' has been deleted successfully");
-                    } else {
-                        System.out.println("Operation cancelled");
-                    }
-                } else {
-                    System.out.println("Bank account with alias '" + comprovBA + "' not found");
-                }
-                break;
-            }
-        }
-
-        if (!encontrado) {
-            System.out.println("Client with ID " + comprovId + " not found");
-        }
-
     }
 
     /**

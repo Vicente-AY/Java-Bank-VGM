@@ -194,6 +194,10 @@ public class Employee extends Person {
         }
         //Selecciona la cuenta bancaria a eliminar
         if (selectedUser != null) {
+            if(selectedUser.getBankAccounts().isEmpty()) {
+                System.out.println("The user dont have linked bank accounts");
+                return;
+            }
             for (int i = 0; i < selectedUser.getBankAccounts().size(); i++) {
                 System.out.println((i + 1) + ". " + selectedUser.getBankAccounts().get(i));
             }
@@ -220,6 +224,9 @@ public class Employee extends Person {
                     }
                 }
             }
+        }
+        else{
+            System.out.println("User not found");
         }
     }
 

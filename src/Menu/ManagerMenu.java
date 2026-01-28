@@ -37,7 +37,8 @@ public class ManagerMenu {
             System.out.println("3. Create Bank Account");
             System.out.println("4. Delete Bank Account");
             System.out.println("5. Reactivate Account");
-            System.out.println("6. Log Out");
+            System.out.println("6. Delete Account");
+            System.out.println("7. Log Out");
             System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
             int option = scanner.nextInt();
             switch (option) {
