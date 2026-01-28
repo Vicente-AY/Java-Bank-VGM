@@ -21,7 +21,6 @@ public abstract class BankAccount implements Accounting {
     public String accountAlias = "";
     public double balance = 0.0;
     int numNewAccount = 0;
-    private transient Scanner sc = new Scanner(System.in);
     Data dataAccess = new Data();
 
     /**
@@ -123,7 +122,7 @@ public abstract class BankAccount implements Accounting {
         //Obtiene los datos que ya tenemos
         entity = getEntity();
         office = getOffice();
-        accNumber = accountNumber();
+        accNumber = accountNumber(persons);
 
         //Usa los datos base obtenidos para hacer el calculo del resto
         dc = calcDC(entity, office, accNumber);
@@ -138,6 +137,7 @@ public abstract class BankAccount implements Accounting {
      * @return El alias elegido o uno por defecto si se rechaza la opción.
      */
     public String accountAlias() {
+        Scanner sc = new Scanner(System.in);
         String alias = "";
         System.out.println("Do you want to give an alias to your account?");
         String check = sc.nextLine();
@@ -159,10 +159,9 @@ public abstract class BankAccount implements Accounting {
      * Busca en el archivo binario el número de cuenta más alto actual e incrementa en 1.
      * * @return Un String de 10 dígitos representando el nuevo número de cuenta.
      */
-    public String accountNumber () {
+    public String accountNumber (ArrayList<Person> persons) {
         String accNum = "";
         ArrayList<BankAccount> bankAccounts = new ArrayList<BankAccount>();
-        ArrayList<Person> persons = dataAccess.chargeData();
         //recopila todas las cuentas bancarias
         for(Person person : persons){
             if(person instanceof User){

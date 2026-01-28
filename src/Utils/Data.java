@@ -20,10 +20,6 @@ public class Data implements Serializable{
      * @throws ClassNotFoundException Si el objeto leído no coincide con la clase Person.
      */
     public ArrayList<Person> chargeData() {
-        Employee newEmployee = new Employee("Ramón Perez Torregrosa", "123456zZ%", "01/01/1991", "00000001");
-        Gerente newManager = new Gerente("Sofia Romero Calatrava", "123456zZ%", "01/01/1990", "00000002");
-        personsArray.add(newEmployee);
-        personsArray.add(newManager);
         if (personsList.exists() && personsList.length() > 0) {
             try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(personsList))) {
                 personsArray = (ArrayList<Person>) input.readObject();

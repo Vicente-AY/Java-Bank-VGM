@@ -20,7 +20,6 @@ public class DebitAccount extends BankAccount {
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     Data dataAccess = new Data();
-    private transient Scanner sc  = new Scanner(System.in);
 
     /**
      * Constructor para inicializar una cuenta de débito con sus datos identificativos.
@@ -84,6 +83,7 @@ public class DebitAccount extends BankAccount {
     @Override
     public void transfer(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
         double previousBalance = this.getBalance();
         try{
@@ -139,6 +139,7 @@ public class DebitAccount extends BankAccount {
     @Override
     public void rechargeSIM(double amount) {
 
+        Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
         System.out.println("Input the destination phone number\n");
         try{
@@ -170,6 +171,7 @@ public class DebitAccount extends BankAccount {
     @Override
     public void selectAccount(User user) {
 
+        Scanner sc = new Scanner(System.in);
         //mostramos por pantalla las cuentas bancarias asociadas para que el usuario pueda seleccionarla
         BankAccount foundBankAccount = null;
         System.out.println("Select the account you want to use by typing the number of the option");
@@ -197,6 +199,7 @@ public class DebitAccount extends BankAccount {
      */
     public void  createDebitAccount(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
         Person currentUser = null;
@@ -221,7 +224,7 @@ public class DebitAccount extends BankAccount {
 
         entity = newDebitAccount.getEntity();
         office = newDebitAccount.getOffice();
-        accNumber = newDebitAccount.accountNumber();
+        accNumber = newDebitAccount.accountNumber(persons);
 
         dc = newDebitAccount.calcDC(entity, office, accNumber);
         IBAN = newDebitAccount.calcIBAN(entity, office, accNumber);

@@ -16,7 +16,6 @@ public class CreditAccount extends BankAccount {
     Data dataAccess = new Data();
     double creditLimit = 0.0;
     double creditPercentage = 0.0;
-    private transient Scanner sc = new Scanner(System.in);
 
     /**
      * Constructor para inicializar una cuenta de crédito con todos sus parámetros.
@@ -87,6 +86,7 @@ public class CreditAccount extends BankAccount {
      */
     public void  createCreditAccount(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
         Person currentUser = null;
@@ -114,7 +114,7 @@ public class CreditAccount extends BankAccount {
 
         entity = newCreditAccount.getEntity();
         office = newCreditAccount.getOffice();
-        accNumber = newCreditAccount.accountNumber();
+        accNumber = newCreditAccount.accountNumber(persons);
 
         dc = newCreditAccount.calcDC(entity, office, accNumber);
         IBAN = newCreditAccount.calcIBAN(entity, office, accNumber);

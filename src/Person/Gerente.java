@@ -15,7 +15,6 @@ import java.util.Scanner;
 public class Gerente extends Person {
     String managerId;
     public static int id =0;
-    private transient Scanner sc = new Scanner(System.in);
 
     /**
      * Constructor para inicializar un Gerente.
@@ -36,6 +35,8 @@ public class Gerente extends Person {
      */
     @Override
     public void register(ArrayList<Person> persons) {
+
+        Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
         System.out.println("Please Gerente enter your name and surnames");
@@ -168,6 +169,8 @@ public class Gerente extends Person {
      */
     public void deleteBankAccount(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
+
         //Busca al usuario por id
         System.out.println("Enter the User ID number you want to select");
         String userId = sc.nextLine();
@@ -227,6 +230,8 @@ public class Gerente extends Person {
      * @param persons ArrayList de todos los usuarios
      */
     public void deleteSystemAccount(ArrayList<Person> persons){
+
+        Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the System Account's ID");
         String id = sc.nextLine();
         Person removed = null;
@@ -273,6 +278,8 @@ public class Gerente extends Person {
      * Reactiva cuentas bloqueadas
      */
     public void reactivate(ArrayList<Person> persons){
+
+        Scanner sc = new Scanner(System.in);
         System.out.println("Introduce the ID you want to reactivate:");
         String id = sc.nextLine();
         Person personToReactivate = null;

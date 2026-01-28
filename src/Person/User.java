@@ -17,7 +17,7 @@ public class User extends Person {
     private static final long serialVersionUID = 1L;
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
-    private transient Scanner sc = new Scanner(System.in);
+
 
     /**
      * Constructor para inicializar un usuario con sus datos básicos.
@@ -39,7 +39,7 @@ public class User extends Person {
      */
     @Override
     public void register(ArrayList<Person> persons) {
-
+        Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP = false, checkD = false;
         System.out.println("Please enter your name and surnames");

@@ -38,7 +38,8 @@ public class ManagerMenu {
             System.out.println("4. Delete Bank Account");
             System.out.println("5. Reactivate Account");
             System.out.println("6. Delete Account");
-            System.out.println("7. Log Out");
+            System.out.println("7. List of Users");
+            System.out.println("8. Log Out");
             System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
             int option = scanner.nextInt();
             switch (option) {
@@ -56,7 +57,11 @@ public class ManagerMenu {
                     break;
                 case 5:
                     ((Gerente) currentManager).reactivate(persons);
+                    break;
                 case 6:
+                    listOfPeople(persons);
+                    break;
+                case 7:
                     System.out.println("Login out");
                     return;
                 default:
@@ -113,6 +118,50 @@ public class ManagerMenu {
                     return;
                 case 3:
                     System.out.println("Cancelling new Bank Account creation");
+                    return;
+                default:
+                    System.out.println("Please enter a valid option");
+                    break;
+            }
+        }
+    }
+
+    public void listOfPeople(ArrayList<Person> persons){
+        while(true) {
+            System.out.println("What type of user do you want to list?");
+            System.out.println("1. Users");
+            System.out.println("2. Employees");
+            System.out.println("3. Managers");
+            System.out.println("4. Back");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+            switch (option) {
+                case 1:
+                    System.out.println("- - - List of clients - - -");
+                    for(Person person : persons) {
+                        if(person instanceof User){
+                            System.out.println(person.getId() + " " + person.getName());
+                            System.out.println("- - - - - - ");
+                        }
+                    }
+                case 2:
+                    System.out.println("- - - - List of Employees - - -");
+                    for(Person person : persons) {
+                        if(person instanceof Employee){
+                            System.out.println(person.getId() + " " + person.getName());
+                            System.out.println("- - - - - - ");
+                        }
+                    }
+                case 3:
+                    System.out.println("- - - - List of Managers - - -");
+                    for(Person person : persons) {
+                        if(person instanceof Gerente){
+                            System.out.println(person.getId() + " " + person.getName());
+                            System.out.println("- - - - - - ");
+                        }
+                    }
+                case 4:
+                    System.out.println("Returning");
                     return;
                 default:
                     System.out.println("Please enter a valid option");
