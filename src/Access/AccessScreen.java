@@ -5,7 +5,6 @@ import Person.Gerente;
 import Menu.*;
 
 import java.awt.*;
-import java.util.Objects;
 import Person.*;
 import Utils.Data;
 import java.util.Scanner;
@@ -70,7 +69,7 @@ public class AccessScreen {
         id = sc.nextLine();
         Person currentPerson = null;
         for (int i = 0; i < personsArray.size(); i++) {
-            if (personsArray.get(i).getId().equals(id)) {
+            if (id.equals(personsArray.get(i).getId())) {
                 currentPerson = personsArray.get(i);
             }
         }

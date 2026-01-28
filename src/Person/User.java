@@ -75,7 +75,7 @@ public class User extends Person {
                 clientArray.add(person);
             }
         }
-        int id = 1;
+        int id = 0;
         int currentIdInt;
         if(!clientArray.isEmpty()) {
             for (Person customer : clientArray) {
@@ -92,7 +92,7 @@ public class User extends Person {
         System.out.println("Name: " + name);
         System.out.println("Birthdate: " + birthdate);
         System.out.println("Password: " + password);
-        System.out.println("Id: " + id);
+        System.out.println("Id: " + userId);
         persons.add(newUser);
     }
 

@@ -4,7 +4,6 @@ import Account.BankAccount;
 import Utils.Data;
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -81,7 +80,7 @@ public class Employee extends Person {
                 EmployeeArray.add(person);
             }
         }
-        int id = 1;
+        int id = 0;
         int currentIdInt;
         if(!EmployeeArray.isEmpty()) {
             for (Person employee : EmployeeArray) {
