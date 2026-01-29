@@ -138,17 +138,12 @@ public abstract class BankAccount implements Accounting, Serializable {
     public String accountAlias() {
         Scanner sc = new Scanner(System.in);
         String alias = "";
-        System.out.println("Do you want to give an alias to your account?");
-        String check = sc.nextLine();
-        if (check.equalsIgnoreCase("yes") || check.equalsIgnoreCase("si")) {
-            System.out.println("Introduce the account alias: ");
-            alias = sc.nextLine();
-        //Comportamiento por defecto si el usuario rechaza poner alias
-        } else if (alias.isEmpty() || check.equalsIgnoreCase("no")) {
-            System.out.println("The account name will default to its number.");
-            alias = "Account " + IBAN;
-        } else {
-            alias = check;
+        System.out.println("Introduce the Account Alias (Empty for Default)");
+        alias = sc.nextLine();
+        //comportamiento por defecto del alias si este está vacio
+        if(alias.isEmpty()){
+            System.out.println("The account Alias will default to its number");
+            alias = "Account "+ IBAN;
         }
         return alias;
     }

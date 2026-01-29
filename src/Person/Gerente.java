@@ -177,10 +177,10 @@ public class Gerente extends Person {
                 selectedUser = (User) person;
                 break;
             }
-            else{
-                System.out.println("Error, user not found");
-                return;
-            }
+        }
+        if(selectedUser == null) {
+            System.out.println("Error: User not found");
+            return;
         }
         //Selecciona la cuenta bancaria a eliminar
         if (selectedUser != null) {
@@ -188,11 +188,13 @@ public class Gerente extends Person {
                 System.out.println("The user dont have linked bank accounts");
                 return;
             }
+            System.out.println("Bank Accounts from: " + selectedUser.getName());
             for (int i = 0; i < selectedUser.getBankAccounts().size(); i++) {
-                System.out.println((i + 1) + ". " + selectedUser.getBankAccounts().get(i));
+                System.out.println((i + 1) + ". Acc Num: " + selectedUser.getBankAccounts().get(i).getAccNumber());
             }
             System.out.println("Select the account you want to delete. Type 0 to cancell");
             int accountSelection = sc.nextInt();
+            sc.nextLine();
             if (accountSelection == 0) {
                 System.out.println("Operation aborted");
                 return;
@@ -204,10 +206,11 @@ public class Gerente extends Person {
                     System.out.println("Cancelling operation, the account must be at 0 before deletion");
                 }
                 else {
-                    System.out.println("Are you sure do you want to erase Y/N");
+                    System.out.println("Are you sure do you want to erase" + selectedUser.getName() + "´s bank account " + eraseAccount.getAccNumber() + "? (Y/N)");
                     String choice = sc.nextLine().toLowerCase();
                     if (choice.equals("y") || choice.equals("yes")) {
                         selectedUser.getBankAccounts().remove(accountSelection - 1);
+                        System.out.println("Bank Account Deleted successfully");
                     }
                     else {
                         System.out.println("Operation aborted");

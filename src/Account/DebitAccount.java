@@ -87,11 +87,11 @@ public class DebitAccount extends BankAccount {
         double previousBalance = this.getBalance();
         try{
             String sourceAcc =  this.accNumber;
-            System.out.println("Please enter the destination account number\n");
+            System.out.println("Please enter the destination account number");
             String destinationAcc =  sc.nextLine();
-            System.out.println("Please enter the amount to be transferred (With decimals)\n");
+            System.out.println("Please enter the amount to be transferred");
             double amount = sc.nextDouble();
-
+            sc.nextLine();
             //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
             if(amount > this.balance){
                 System.out.println("Insufficient funds");
@@ -140,18 +140,18 @@ public class DebitAccount extends BankAccount {
 
         Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
-        System.out.println("Input the destination phone number\n");
+        System.out.println("Input the destination phone number");
         try{
             //pedimos al usuario un numero de telefono de 9 digitos
             String number =  sc.nextLine();
             while(number.length() != 9){
-                System.out.println("Please enter a valid phone number (9 digits)\n");
+                System.out.println("Please enter a valid phone number (9 digits)");
                 number = sc.nextLine();
             }
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-        if(this.balance >= amount || this.balance - amount < 0){
+        if(amount >= this.balance || this.balance - amount < 0){
             System.out.println("Insufficient funds");
         }
         else {
@@ -228,8 +228,8 @@ public class DebitAccount extends BankAccount {
         IBAN = newDebitAccount.calcIBAN(entity, office, accNumber);
         alias = newDebitAccount.accountAlias();
 
-        newDebitAccount = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
-        ((User) currentUser).getBankAccounts().add(newDebitAccount);
-        System.out.println("The account has been created");
+        DebitAccount debitAcc = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
+        ((User) currentUser).getBankAccounts().add(debitAcc);
+        System.out.println("The Debit account " + debitAcc.getAccNumber() + "has been created for " + currentUser.getName());
     }
 }

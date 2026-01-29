@@ -21,7 +21,7 @@ public class UsersMenu {
      * @param currentUser El cliente que ha iniciado sesión.
      */
     public void menuAccess(Person currentUser, ArrayList<Person> persons){
-
+        selectedBankAccount = null;
         //Imprimimos el menú, si tiene cuenta seleccionada la mostramos por consola también
         int option = 0;
         while (true) {

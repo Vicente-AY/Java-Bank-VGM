@@ -101,7 +101,7 @@ public class ManagerMenu {
 
     public void createNewBankAccount(ArrayList<Person> persons, Person currentManager){
         while(true) {
-            System.out.println("Enter a valid option");
+            System.out.println("Which Bank Account type do yo want to create?");
             System.out.println("1. Create a new Debit Account");
             System.out.println("2. Create a new Credit Account");
             System.out.println("3. Back");
