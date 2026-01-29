@@ -1,12 +1,7 @@
 package Access;
-import Person.User;
-import Person.Employee;
-import Person.Gerente;
 import Menu.*;
-
 import java.awt.*;
 import Person.*;
-import Utils.Data;
 import java.util.Scanner;
 import Account.*;
 import java.util.ArrayList;
@@ -65,21 +60,21 @@ public class AccessScreen {
      * * @param personsArray Lista de personas registradas
      */
     public void login(ArrayList<Person> personsArray) {
-        System.out.println("Please enter user id: ");
+        System.out.println("Please enter user ID: ");
         id = sc.nextLine();
         Person currentPerson = null;
         for (int i = 0; i < personsArray.size(); i++) {
             if (id.equals(personsArray.get(i).getId())) {
                 currentPerson = personsArray.get(i);
+                break;
             }
         }
         if (currentPerson == null) {
-            System.out.println("Stated id is not found, please enter a valid id");
-            return;
+            System.out.println("Stated ID is not found, please enter a valid id");
         }
         else {
             if (!currentPerson.active) {
-                System.out.println("The account associated with this id is blocked.\n Contact a system admin for more information.");
+                System.out.println("The account associated with this ID is blocked.\n Contact a system admin for more information.");
             }
             else {
                 int tries = 0;

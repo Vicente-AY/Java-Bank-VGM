@@ -19,8 +19,6 @@ public class DebitAccount extends BankAccount {
 
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-    Data dataAccess = new Data();
-    Scanner sc  = new Scanner(System.in);
 
     /**
      * Constructor para inicializar una cuenta de débito con sus datos identificativos.
@@ -84,15 +82,16 @@ public class DebitAccount extends BankAccount {
     @Override
     public void transfer(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
         double previousBalance = this.getBalance();
         try{
             String sourceAcc =  this.accNumber;
-            System.out.println("Please enter the destination account number\n");
+            System.out.println("Please enter the destination account number");
             String destinationAcc =  sc.nextLine();
-            System.out.println("Please enter the amount to be transferred (With decimals)\n");
+            System.out.println("Please enter the amount to be transferred");
             double amount = sc.nextDouble();
-
+            sc.nextLine();
             //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
             if(amount > this.balance){
                 System.out.println("Insufficient funds");
@@ -139,19 +138,20 @@ public class DebitAccount extends BankAccount {
     @Override
     public void rechargeSIM(double amount) {
 
+        Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
-        System.out.println("Input the destination phone number\n");
+        System.out.println("Input the destination phone number");
         try{
             //pedimos al usuario un numero de telefono de 9 digitos
             String number =  sc.nextLine();
             while(number.length() != 9){
-                System.out.println("Please enter a valid phone number (9 digits)\n");
+                System.out.println("Please enter a valid phone number (9 digits)");
                 number = sc.nextLine();
             }
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-        if(this.balance >= amount || this.balance - amount < 0){
+        if(amount >= this.balance || this.balance - amount < 0){
             System.out.println("Insufficient funds");
         }
         else {
@@ -170,6 +170,7 @@ public class DebitAccount extends BankAccount {
     @Override
     public void selectAccount(User user) {
 
+        Scanner sc = new Scanner(System.in);
         //mostramos por pantalla las cuentas bancarias asociadas para que el usuario pueda seleccionarla
         BankAccount foundBankAccount = null;
         System.out.println("Select the account you want to use by typing the number of the option");
@@ -197,38 +198,38 @@ public class DebitAccount extends BankAccount {
      */
     public void  createDebitAccount(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
         Person currentUser = null;
-        DebitAccount newDebitAccount = null;
-        for(Person person : persons){
-            if(person instanceof User){
-                if(person.getId().equals(id)){
-                    currentUser = person;
-                }
-                else{
-                    System.out.println("Invalid ID");
-                    return;
-                }
+        DebitAccount newDebitAccount = new DebitAccount("9999", "8888", null, null, null, null);
+        for(Person person : persons) {
+            if (id.equals(person.getId())) {
+                currentUser = person;
+                break;
             }
-            else{
-                System.out.println("This ID is not an user");
-                return;
-            }
+        }
+        if(currentUser == null) {
+            System.out.println("Client ID not found");
+            return;
+        }
+        if(currentUser instanceof Employee || currentUser instanceof Gerente){
+            System.out.println("This ID is not linked to an User");
+            return;
         }
 
         String entity="", office="", dc="", accNumber="", IBAN="", alias ="";
 
         entity = newDebitAccount.getEntity();
         office = newDebitAccount.getOffice();
-        accNumber = newDebitAccount.accountNumber();
+        accNumber = newDebitAccount.accountNumber(persons);
 
         dc = newDebitAccount.calcDC(entity, office, accNumber);
         IBAN = newDebitAccount.calcIBAN(entity, office, accNumber);
         alias = newDebitAccount.accountAlias();
 
-        newDebitAccount = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
-        ((User) currentUser).getBankAccounts().add(newDebitAccount);
-        System.out.println("The account has been created");
+        DebitAccount debitAcc = new DebitAccount(entity, office, accNumber, dc, IBAN, alias);
+        ((User) currentUser).getBankAccounts().add(debitAcc);
+        System.out.println("The Debit account " + debitAcc.getAccNumber() + "has been created for " + currentUser.getName());
     }
 }

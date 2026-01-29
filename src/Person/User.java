@@ -17,7 +17,7 @@ public class User extends Person {
     private static final long serialVersionUID = 1L;
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
-    Scanner sc = new Scanner(System.in);
+
 
     /**
      * Constructor para inicializar un usuario con sus datos básicos.
@@ -39,7 +39,7 @@ public class User extends Person {
      */
     @Override
     public void register(ArrayList<Person> persons) {
-
+        Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP = false, checkD = false;
         System.out.println("Please enter your name and surnames");
@@ -75,17 +75,17 @@ public class User extends Person {
                 clientArray.add(person);
             }
         }
-        int id = 0;
+        int id = 1;
         int currentIdInt;
-        if(!clientArray.isEmpty()) {
-            for (Person customer : clientArray) {
+        if(!persons.isEmpty()) {
+            for (Person customer : persons) {
                 currentIdInt = Integer.parseInt(customer.getId());
                 if (currentIdInt > id) {
                     id = currentIdInt;
                 }
             }
         }
-        userId = String.valueOf(id +1);
+        userId = createId(id + 1);
         User newUser = new User(name, password, birthdate, userId);
         System.out.println("The register process has ended successfully");
         System.out.println("Your data:");
@@ -154,6 +154,16 @@ public class User extends Person {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Formatea un número entero a un ID de 8 caracteres con relleno de ceros.
+     * @param id Número base.
+     * @return String de 8 dígitos.
+     */
+    public String createId(int id) {
+
+        return String.format("%08d", id);
     }
 
     //Getters y Setters

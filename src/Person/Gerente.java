@@ -15,16 +15,16 @@ import java.util.Scanner;
 public class Gerente extends Person {
     String managerId;
     public static int id =0;
-    Scanner sc = new Scanner(System.in);
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor para inicializar un Gerente.
      * @param name       Nombre del Gerente.
      * @param password   Contraseña de seguridad.
      * @param birthDate  Fecha de nacimiento (dd/mm/yyyy).
-     * @param gerenteId  ID específico asignado al gerente.
+     * @param managerId  ID específico asignado al gerente.
      */
-    public Gerente(String name, String password, String birthDate, String gerenteId) {
+    public Gerente(String name, String password, String birthDate, String managerId) {
         super(name, password, birthDate);
         this.managerId = managerId;
     }
@@ -36,6 +36,8 @@ public class Gerente extends Person {
      */
     @Override
     public void register(ArrayList<Person> persons) {
+
+        Scanner sc = new Scanner(System.in);
         String name, birthdate, password;
         boolean checkP=false, checkD=false;
         System.out.println("Please Gerente enter your name and surnames");
@@ -64,16 +66,10 @@ public class Gerente extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : persons) {
-            if(person instanceof Employee || person instanceof Gerente){
-                EmployeeArray.add(person);
-            }
-        }
         int id = 0;
         int currentIdInt;
-        if(!EmployeeArray.isEmpty()) {
-            for (Person employee : EmployeeArray) {
+        if(!persons.isEmpty()) {
+            for (Person employee : persons) {
                 currentIdInt = Integer.parseInt(employee.getId());
                 if (currentIdInt > id) {
                     id = currentIdInt;
@@ -168,6 +164,8 @@ public class Gerente extends Person {
      */
     public void deleteBankAccount(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
+
         //Busca al usuario por id
         System.out.println("Enter the User ID number you want to select");
         String userId = sc.nextLine();
@@ -179,10 +177,10 @@ public class Gerente extends Person {
                 selectedUser = (User) person;
                 break;
             }
-            else{
-                System.out.println("Error, user not found");
-                return;
-            }
+        }
+        if(selectedUser == null) {
+            System.out.println("Error: User not found");
+            return;
         }
         //Selecciona la cuenta bancaria a eliminar
         if (selectedUser != null) {
@@ -190,11 +188,13 @@ public class Gerente extends Person {
                 System.out.println("The user dont have linked bank accounts");
                 return;
             }
+            System.out.println("Bank Accounts from: " + selectedUser.getName());
             for (int i = 0; i < selectedUser.getBankAccounts().size(); i++) {
-                System.out.println((i + 1) + ". " + selectedUser.getBankAccounts().get(i));
+                System.out.println((i + 1) + ". Acc Num: " + selectedUser.getBankAccounts().get(i).getAccNumber());
             }
             System.out.println("Select the account you want to delete. Type 0 to cancell");
             int accountSelection = sc.nextInt();
+            sc.nextLine();
             if (accountSelection == 0) {
                 System.out.println("Operation aborted");
                 return;
@@ -206,10 +206,11 @@ public class Gerente extends Person {
                     System.out.println("Cancelling operation, the account must be at 0 before deletion");
                 }
                 else {
-                    System.out.println("Are you sure do you want to erase Y/N");
+                    System.out.println("Are you sure do you want to erase" + selectedUser.getName() + "´s bank account " + eraseAccount.getAccNumber() + "? (Y/N)");
                     String choice = sc.nextLine().toLowerCase();
                     if (choice.equals("y") || choice.equals("yes")) {
                         selectedUser.getBankAccounts().remove(accountSelection - 1);
+                        System.out.println("Bank Account Deleted successfully");
                     }
                     else {
                         System.out.println("Operation aborted");
@@ -227,6 +228,8 @@ public class Gerente extends Person {
      * @param persons ArrayList de todos los usuarios
      */
     public void deleteSystemAccount(ArrayList<Person> persons){
+
+        Scanner sc = new Scanner(System.in);
         System.out.println("Tell me the System Account's ID");
         String id = sc.nextLine();
         Person removed = null;
@@ -256,7 +259,7 @@ public class Gerente extends Person {
         if(removed instanceof Employee) {
             System.out.println("Employee " + removed.getName() + "? With ID " + removed.getId());
         }
-        if(removed instanceof User) {
+        if(removed instanceof Gerente) {
             System.out.println("Manager " + removed.getName() + "? With ID " + removed.getId());
         }
         String decision = sc.nextLine().toLowerCase();
@@ -273,6 +276,8 @@ public class Gerente extends Person {
      * Reactiva cuentas bloqueadas
      */
     public void reactivate(ArrayList<Person> persons){
+
+        Scanner sc = new Scanner(System.in);
         System.out.println("Introduce the ID you want to reactivate:");
         String id = sc.nextLine();
         Person personToReactivate = null;

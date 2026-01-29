@@ -13,10 +13,8 @@ import java.util.Scanner;
  * @see Person
  */
 public class Employee extends Person {
-    transient Data dataAccess = new Data();
     private static final long serialVersionUID = 1L;
     String employeeId;
-    Scanner sc =  new Scanner(System.in);
 
     /**
      * Constructor para inicializar un empleado.
@@ -73,17 +71,10 @@ public class Employee extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-        ArrayList<Person> personsArray = dataAccess.chargeData();
-        ArrayList<Person> EmployeeArray = new ArrayList<>();
-        for(Person person : personsArray) {
-            if(person instanceof Employee || person instanceof Gerente){
-                EmployeeArray.add(person);
-            }
-        }
         int id = 0;
         int currentIdInt;
-        if(!EmployeeArray.isEmpty()) {
-            for (Person employee : EmployeeArray) {
+        if(!persons.isEmpty()) {
+            for (Person employee : persons) {
                 currentIdInt = Integer.parseInt(employee.getId());
                 if (currentIdInt > id) {
                     id = currentIdInt;
@@ -175,6 +166,7 @@ public class Employee extends Person {
      */
     public void deleteBankAccount(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
         //Busca al usuario por id
         System.out.println("Enter the User ID number you want to select");
         String userId = sc.nextLine();
@@ -240,11 +232,13 @@ public class Employee extends Person {
      * @param persons Lista de usuarios
      */
     public void reactivate(ArrayList<Person> persons){
+
+        Scanner sc = new Scanner(System.in);
         System.out.println("Introduce the ID you want to reactivate:");
         String id = sc.nextLine();
         Person personToReactivate = null;
         for(Person person : persons){
-            if(person.getId().equals(id)){
+            if(id.equals(person.getId())){
                 personToReactivate = person;
                 break;
             }
@@ -274,12 +268,14 @@ public class Employee extends Person {
      * @param persons ArrayList de todos los usuarios
      */
     public void deleteUser(ArrayList<Person> persons){
+
+        Scanner sc = new Scanner(System.in);
         System.out.println("Type the Account's ID");
         String id = sc.nextLine();
         Person removed = null;
         //buscamos al usuario por ID
         for(Person person : persons) {
-            if(person.getId().equals(id)) {
+            if(id.equals(person.getId())) {
                 removed = person;
                 break;
             }

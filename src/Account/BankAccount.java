@@ -1,4 +1,5 @@
 package Account;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ import static java.lang.Integer.parseInt;
  * Clase abstracta que define la estructura y comportamiento base de una cuenta bancaria.
  * Implementa la interfaz Accounting y calcula el IBAN y codigos de control
  */
-public abstract class BankAccount implements Accounting {
+public abstract class BankAccount implements Accounting, Serializable {
 
     ArrayList<BankAccountHistory>  history = new ArrayList<BankAccountHistory>();
     public String entity = "9999", office = "8888";
@@ -20,9 +21,6 @@ public abstract class BankAccount implements Accounting {
     public String IBAN = "";
     public String accountAlias = "";
     public double balance = 0.0;
-    int numNewAccount = 0;
-    Scanner sc = new Scanner(System.in);
-    Data dataAccess = new Data();
 
     /**
      * Constructor completo para inicializar una cuenta bancaria
@@ -123,7 +121,7 @@ public abstract class BankAccount implements Accounting {
         //Obtiene los datos que ya tenemos
         entity = getEntity();
         office = getOffice();
-        accNumber = accountNumber();
+        accNumber = accountNumber(persons);
 
         //Usa los datos base obtenidos para hacer el calculo del resto
         dc = calcDC(entity, office, accNumber);
@@ -138,18 +136,14 @@ public abstract class BankAccount implements Accounting {
      * @return El alias elegido o uno por defecto si se rechaza la opción.
      */
     public String accountAlias() {
+        Scanner sc = new Scanner(System.in);
         String alias = "";
-        System.out.println("Do you want to give an alias to your account?");
-        String check = sc.nextLine();
-        if (check.equalsIgnoreCase("yes") || check.equalsIgnoreCase("si")) {
-            System.out.println("Introduce the account alias: ");
-            alias = sc.nextLine();
-        //Comportamiento por defecto si el usuario rechaza poner alias
-        } else if (alias.isEmpty() || check.equalsIgnoreCase("no")) {
-            System.out.println("The account name will default to its number.");
-            alias = "Account " + IBAN;
-        } else {
-            alias = check;
+        System.out.println("Introduce the Account Alias (Empty for Default)");
+        alias = sc.nextLine();
+        //comportamiento por defecto del alias si este está vacio
+        if(alias.isEmpty()){
+            System.out.println("The account Alias will default to its number");
+            alias = "Account "+ IBAN;
         }
         return alias;
     }
@@ -159,10 +153,9 @@ public abstract class BankAccount implements Accounting {
      * Busca en el archivo binario el número de cuenta más alto actual e incrementa en 1.
      * * @return Un String de 10 dígitos representando el nuevo número de cuenta.
      */
-    public String accountNumber () {
+    public String accountNumber (ArrayList<Person> persons) {
         String accNum = "";
         ArrayList<BankAccount> bankAccounts = new ArrayList<BankAccount>();
-        ArrayList<Person> persons = dataAccess.chargeData();
         //recopila todas las cuentas bancarias
         for(Person person : persons){
             if(person instanceof User){
