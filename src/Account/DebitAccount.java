@@ -121,7 +121,6 @@ public class DebitAccount extends BankAccount {
                 }
                 else{
                     System.out.println("Destination account does not exist");
-                    return;
                 }
             }
         }
@@ -160,34 +159,6 @@ public class DebitAccount extends BankAccount {
             System.out.println("Operation successful");
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
             this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, this.balance, transactionDate));
-        }
-    }
-
-    /**
-     * Muestra las cuentas vinculadas a un usuario y permite seleccionar una para operar.
-     * @param user El usuario cliente cuya cuenta se desea seleccionar.
-     */
-    @Override
-    public void selectAccount(User user) {
-
-        Scanner sc = new Scanner(System.in);
-        //mostramos por pantalla las cuentas bancarias asociadas para que el usuario pueda seleccionarla
-        BankAccount foundBankAccount = null;
-        System.out.println("Select the account you want to use by typing the number of the option");
-        for(int i = 0; i < user.bankAccounts.size(); i++) {
-            String aliasBA = user.bankAccounts.get(i).accountAlias;
-            System.out.println("Option " + (i + 1) + ": " + aliasBA);
-        }
-        try {
-            int option = sc.nextInt();
-            sc.nextLine();
-            //seleccionamos la cuenta que el usuario quiere utilizar
-            foundBankAccount = user.bankAccounts.get(option - 1);
-            System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance);
-
-        }
-        catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
         }
     }
 

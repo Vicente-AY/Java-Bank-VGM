@@ -2,9 +2,11 @@ package Account;
 import Person.*;
 import Utils.*;
 import Person.User;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Date;
 
 /**
  * Clase que representa una cuenta de crédito bancaria.
@@ -12,6 +14,8 @@ import java.util.Scanner;
  * la gestión de límites de crédito y tasas de interés/porcentaje.
  */
 public class CreditAccount extends BankAccount {
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
     double creditLimit = 0.0;
     double creditPercentage = 0.0;
@@ -40,6 +44,19 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void deposit(double amount) {
+
+        //guardamos la fecha actual con el formato
+        String transactionDate = dateFormat.format(new Date());
+        //almacenamos el balance previo a la operacion
+        double previousBalance = this.getBalance();
+
+        this.balance += amount;
+        //informamos al usuario del movimiento realizado
+        System.out.println("Deposited " + amount);
+        System.out.println("New Balance: " + this.balance);
+
+        //guardamos en el historial de movimientos de la cuenta la operación realizada
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, this.balance, transactionDate));
     }
 
     /**
@@ -49,6 +66,17 @@ public class CreditAccount extends BankAccount {
     @Override
     public void withdraw(double amount) {
 
+        if(amount > creditLimit || this.balance - amount < creditLimit){
+            System.out.println("Not enough credit");
+        }
+        else{
+            String transactionDate = dateFormat.format(new Date());
+            double previousBalance =  this.getBalance();
+            this.balance -= amount;
+            System.out.println("Withdrawn " + amount);
+            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", amount, this.balance, transactionDate));
+        }
     }
 
     /**
@@ -58,6 +86,51 @@ public class CreditAccount extends BankAccount {
     @Override
     public void transfer(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
+        String transactionDate = dateFormat.format(new Date());
+        double previousBalance = this.getBalance();
+        try {
+            String sourceAcc = this.accNumber;
+            System.out.println("Please enter the destination account number");
+            String destinationAcc = sc.nextLine();
+            System.out.println("Please enter the amount to be transferred");
+            double amount = sc.nextDouble();
+            sc.nextLine();
+            //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
+            if (amount > creditLimit || this.balance - amount < creditLimit) {
+                System.out.println("Not enought credit");
+            }
+            else{
+                BankAccount destAcc = null;
+                //buscamos la cuenta introducida por el usuario previamente
+                for(int i = 0; i < persons.size(); i++){
+                    if(persons.get(i) instanceof User){
+                        for (BankAccount bankAccount : ((User) persons.get(i)).getBankAccounts()) {
+                            if (bankAccount.accNumber.equals(destinationAcc)) {
+                                destAcc = bankAccount;
+                            }
+                        }
+                    }
+                }
+                //si encontramos la cuenta en el porceo anterior realizamos la operacion
+                if(destAcc != null){
+                    double destAcPreviousBalance =  destAcc.getBalance();
+                    this.balance -= amount;
+                    destAcc.balance += amount;
+                    System.out.println("Operation successful");
+                    System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
+                    System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
+                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference", amount, this.balance, transactionDate, destAcc));
+                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Transference", amount, destAcc.balance, transactionDate, destAcc));
+                }
+                else{
+                    System.out.println("Destination account does not exist");
+                }
+            }
+        }
+        catch(InputMismatchException e){
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -67,15 +140,29 @@ public class CreditAccount extends BankAccount {
     @Override
     public void rechargeSIM(double amount) {
 
-    }
-
-    /**
-     * Permite al usuario interactuar con la cuenta seleccionada.
-     * @param user Usuario que realiza la acción.
-     */
-    @Override
-    public void selectAccount(User user) {
-
+        Scanner sc = new Scanner(System.in);
+        String transactionDate = dateFormat.format(new Date());
+        System.out.println("Input the destination phone number");
+        try{
+            //pedimos al usuario un numero de telefono de 9 digitos
+            String number =  sc.nextLine();
+            while(number.length() != 9){
+                System.out.println("Please enter a valid phone number (9 digits)");
+                number = sc.nextLine();
+            }
+        } catch (InputMismatchException e) {
+            System.out.println(e.getMessage());
+        }
+        if(amount >= this.creditLimit || this.balance - amount < this.creditLimit){
+            System.out.println("Insufficient funds");
+        }
+        else{
+            double previousBalance = this.balance;
+            this.balance -= amount;
+            System.out.println("Operation successful");
+            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, this.balance, transactionDate));
+        }
     }
 
     /**
