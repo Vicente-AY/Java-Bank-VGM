@@ -27,6 +27,8 @@ public class Data implements Serializable{
                 System.err.println("Error charging data " + e.getMessage());
             }
         }
+        /*Gerente gerente = new Gerente("Alberto Acosta Aguilar", "123456zZ%", "01/01/1991", "00000001");
+        personsArray.add(gerente);*/
         return personsArray;
     }
 

@@ -71,7 +71,7 @@ public class DebitAccount extends BankAccount {
             this.balance -= amount;
             System.out.println("Withdrawn " + amount);
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", amount, this.balance, transactionDate));
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
         }
     }
 
@@ -116,8 +116,8 @@ public class DebitAccount extends BankAccount {
                     System.out.println("Operation successful");
                     System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
                     System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
-                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference", amount, this.balance, transactionDate, destAcc));
-                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Transference", amount, destAcc.balance, transactionDate, destAcc));
+                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference", -amount, this.balance, transactionDate, destAcc));
+                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Transference", amount, destAcc.balance, transactionDate, this));
                 }
                 else{
                     System.out.println("Destination account does not exist");
@@ -158,7 +158,7 @@ public class DebitAccount extends BankAccount {
             this.balance -= amount;
             System.out.println("Operation successful");
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, this.balance, transactionDate));
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
         }
     }
 

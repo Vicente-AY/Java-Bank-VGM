@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class EmployeeMenu {
 
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
-    BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);
+    BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0);
     Scanner scanner = new Scanner(System.in);
 
     /**

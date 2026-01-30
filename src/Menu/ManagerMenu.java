@@ -19,7 +19,7 @@ public class ManagerMenu {
     Gerente dummyManager = new Gerente(null, null, null, null);
     Scanner scanner = new Scanner(System.in);
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
-    BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0, 0.0);
+    BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0);
 
     /**
      * Proporciona acceso al menú administrativo del gerente.

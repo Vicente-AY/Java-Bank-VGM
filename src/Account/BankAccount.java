@@ -143,7 +143,7 @@ public abstract class BankAccount implements Accounting, Serializable {
         //comportamiento por defecto del alias si este está vacio
         if(alias.isEmpty()){
             System.out.println("The account Alias will default to its number");
-            alias = "Account "+ IBAN;
+            alias = "Account "+ this.IBAN;
         }
         return alias;
     }
@@ -242,5 +242,9 @@ public abstract class BankAccount implements Accounting, Serializable {
 
     public ArrayList<BankAccountHistory> getHistory(){
         return history;
+    }
+
+    public String getAccountAlias() {
+        return accountAlias;
     }
 }

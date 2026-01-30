@@ -11,7 +11,6 @@ import java.util.Scanner;
  * Permite al usuario final administrar sus cuentas bancarias
  */
 public class UsersMenu {
-    DebitAccount dummyDebitAccount = new DebitAccount(null, null, null, null, null, null);
     BankAccount selectedBankAccount = null;
     Scanner sc = new Scanner(System.in);
     double amount;
@@ -131,7 +130,7 @@ public class UsersMenu {
                 System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Debit Account");
             }
             else{
-                System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Credit Account");
+                System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Credit Account. Limit: " + -((CreditAccount)foundBankAccount).getCreditLimit());
             }
         }
         catch (InputMismatchException e) {
