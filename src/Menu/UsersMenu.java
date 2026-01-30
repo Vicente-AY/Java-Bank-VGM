@@ -39,7 +39,8 @@ public class UsersMenu {
             System.out.println("3. Withdraw");
             System.out.println("4. Transfer Money");
             System.out.println("5. Recharge SIM card");
-            System.out.println("6. Log Out");
+            System.out.println("6. See Bank Account History");
+            System.out.println("7. Log Out");
             System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
             Scanner scanner = new Scanner(System.in);
             option = scanner.nextInt();
@@ -85,6 +86,13 @@ public class UsersMenu {
                     selectedBankAccount.rechargeSIM(amount);
                     break;
                 case 6:
+                    if(selectedBankAccount == null){
+                        System.out.println("Please select and account first");
+                        break;
+                    }
+                    bankAccountHistory(selectedBankAccount);
+                    break;
+                case 7:
                     return;
                 default: System.out.println("Opción no valida");
                 break;
@@ -130,5 +138,27 @@ public class UsersMenu {
             System.out.println(e.getMessage());
         }
         return foundBankAccount;
+    }
+
+    public void bankAccountHistory(BankAccount bankAccount) {
+        System.out.println("- - - Bank Account History - - -");
+        System.out.println("Date | Previous Balance | Operation | Amount | Balance");
+        for(BankAccountHistory history : bankAccount.getHistory()){
+            if(history.getDestinationAccount() == null) {
+                System.out.println(history.getTransactionDate()
+                        + " : " + history.getPreviousBalance()
+                        + " : " + history.getOperationType()
+                        + " : " + history.getTransactionAmount()
+                        + " : " + history.getNewBalance());
+            }
+            else{
+                System.out.println(history.getTransactionDate()
+                        + " | " + history.getPreviousBalance()
+                        + " | " + history.getOperationType()
+                        + " | " + history.getTransactionAmount()
+                        + " | " + history.getNewBalance()
+                        + " | " + history.getDestinationAccount().getAccNumber());
+            }
+        }
     }
 }
