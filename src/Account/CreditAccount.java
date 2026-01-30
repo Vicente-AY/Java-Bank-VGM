@@ -112,4 +112,31 @@ public class CreditAccount extends BankAccount {
         System.out.println("Your account has been created");
         return newCreditAccount;
     }
+    public String createCreditCard(BankAccount entity, ArrayList<Person> persons) {
+        String VisaNumber = "4";
+        String bin = VisaNumber + entity + "200";
+        StringBuilder panParcial = new StringBuilder(bin);
+        for (int i = 0; i < 7; i++) {
+            panParcial.append((int)(Math.random() * 10));
+        }
+        int digitoControl = calcularDigitoLuhn(panParcial.toString());
+
+        return panParcial.append(digitoControl).toString();
+    }
+
+    @Override
+    public int calcularDigitoLuhn(String cadena) {
+        int suma = 0;
+        boolean duplicar = true;
+        for (int i = cadena.length() - 1; i >= 0; i--) {
+            int digito = Character.getNumericValue(cadena.charAt(i));
+            if (duplicar) {
+                digito *= 2;
+                if (digito > 9) digito -= 9;
+            }
+            suma += digito;
+            duplicar = !duplicar;
+        }
+        return (10 - (suma % 10)) % 10;
+    }
 }

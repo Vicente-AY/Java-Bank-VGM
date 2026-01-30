@@ -246,4 +246,19 @@ public abstract class BankAccount implements Accounting {
     public void setBalance ( double balance){
         this.balance = balance;
     }
+
+    public int calcularDigitoLuhn(String cadena) {
+        int suma = 0;
+        boolean duplicar = true;
+        for (int i = cadena.length() - 1; i >= 0; i--) {
+            int digito = Character.getNumericValue(cadena.charAt(i));
+            if (duplicar) {
+                digito *= 2;
+                if (digito > 9) digito -= 9;
+            }
+            suma += digito;
+            duplicar = !duplicar;
+        }
+        return (10 - (suma % 10)) % 10;
+    }
 }
