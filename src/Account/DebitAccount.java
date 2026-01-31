@@ -1,7 +1,5 @@
 package Account;
-import Utils.Data;
 import Person.*;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,7 +123,8 @@ public class DebitAccount extends BankAccount {
             }
         }
         catch(InputMismatchException e){
-            System.out.println(e.getMessage());
+            System.out.println("Error | Invalid amount format. Cancelling opearion");
+            sc.nextLine();
         }
     }
 

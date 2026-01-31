@@ -24,77 +24,78 @@ public class UsersMenu {
         //Imprimimos el menú, si tiene cuenta seleccionada la mostramos por consola también
         int option = 0;
         while (true) {
-            System.out.println("Welcome " + currentUser.name);
-            if(selectedBankAccount != null){
-                if(selectedBankAccount instanceof DebitAccount) {
-                    System.out.println("Selected account: " + selectedBankAccount.accNumber + " Balance: " + selectedBankAccount.balance + " Type: Debit Account");
+            try {
+                System.out.println("Welcome " + currentUser.name);
+                if (selectedBankAccount != null) {
+                    if (selectedBankAccount instanceof DebitAccount) {
+                        System.out.println("Selected account: " + selectedBankAccount.accNumber + " Balance: " + selectedBankAccount.balance + " Type: Debit Account");
+                    } else {
+                        System.out.println("Selected account: " + selectedBankAccount.accNumber + " Balance: " + selectedBankAccount.balance + " Type: Credit Account");
+                    }
                 }
-                else {
-                    System.out.println("Selected account: " + selectedBankAccount.accNumber + " Balance: " + selectedBankAccount.balance + " Type: Credit Account");
+                System.out.println("1. Select a BankAccount");
+                System.out.println("2. Make a deposit");
+                System.out.println("3. Withdraw");
+                System.out.println("4. Transfer Money");
+                System.out.println("5. Recharge SIM card");
+                System.out.println("6. See Bank Account History");
+                System.out.println("7. Log Out");
+                System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
+                option = sc.nextInt();
+                sc.nextLine();
+                switch (option) {
+                    case 1:
+                        selectedBankAccount = selectAccount((User) currentUser);
+                        break;
+                    case 2, 3, 5:
+                        if (selectedBankAccount == null) {
+                            System.out.println("Please select and account first");
+                            break;
+                        }
+                        System.out.println("Enter the amount you want to perform the operation");
+                        amount = sc.nextDouble();
+                        sc.nextLine();
+                        if(option == 2) {
+                            selectedBankAccount.deposit(amount);
+                        }
+                        if(option == 3) {
+                            selectedBankAccount.withdraw(amount);
+                        }
+                        if(option == 5) {
+                            selectedBankAccount.rechargeSIM(amount);
+                        }
+                        break;
+                    case 4:
+                        if (selectedBankAccount == null) {
+                            System.out.println("Please select and account first");
+                            break;
+                        }
+                        selectedBankAccount.transfer(persons);
+                        break;
+                    case 6:
+                        if (selectedBankAccount == null) {
+                            System.out.println("Please select and account first");
+                            break;
+                        }
+                        bankAccountHistory(selectedBankAccount);
+                        break;
+                    case 7:
+                        return;
+                    default:
+                        System.out.println("Opción no valida");
+                        break;
                 }
             }
-            System.out.println("1. Select a BankAccount");
-            System.out.println("2. Make a deposit");
-            System.out.println("3. Withdraw");
-            System.out.println("4. Transfer Money");
-            System.out.println("5. Recharge SIM card");
-            System.out.println("6. See Bank Account History");
-            System.out.println("7. Log Out");
-            System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
-            option = sc.nextInt();
-            sc.nextLine();
-            switch (option) {
-                case 1:
-                    selectedBankAccount = selectAccount((User) currentUser);
-                    break;
-                case 2:
-                    if(selectedBankAccount == null){
-                        System.out.println("Please select and account first");
-                        break;
-                    }
-                    System.out.println("Enter the amount you want to Deposit");
-                    amount = sc.nextDouble();
-                    sc.nextLine();
-                    selectedBankAccount.deposit(amount);
-                    break;
-                case 3:
-                    if(selectedBankAccount == null){
-                        System.out.println("Please select and account first");
-                        break;
-                    }
-                    System.out.println("Enter the amount you want to Withdraw");
-                    amount = sc.nextDouble();
-                    sc.nextLine();
-                    selectedBankAccount.withdraw(amount);
-                    break;
-                case 4:
-                    if(selectedBankAccount == null){
-                        System.out.println("Please select and account first");
-                        break;
-                    }
-                    selectedBankAccount.transfer(persons);
-                    break;
-                case 5:
-                    if(selectedBankAccount == null){
-                        System.out.println("Please select and account first");
-                        break;
-                    }
-                    System.out.println("Enter the amount you want to Recharge");
-                    amount = sc.nextDouble();
-                    sc.nextLine();
-                    selectedBankAccount.rechargeSIM(amount);
-                    break;
-                case 6:
-                    if(selectedBankAccount == null){
-                        System.out.println("Please select and account first");
-                        break;
-                    }
-                    bankAccountHistory(selectedBankAccount);
-                    break;
-                case 7:
-                    return;
-                default: System.out.println("Opción no valida");
-                break;
+            catch (InputMismatchException e) {
+                System.err.println("Please enter a valid number");
+                sc.nextLine();
+                option = 0;
+            }
+            catch (NullPointerException e) {
+                System.err.println("System Error");
+            }
+            catch (Exception e) {
+                System.err.println("Unexpected Error");
             }
         }
     }
@@ -121,20 +122,26 @@ public class UsersMenu {
                 System.out.println("Option " + (i + 1) + ": " + aliasBA + " Type: Credit Account Balance: " + user.getBankAccounts().get(i).getBalance());
             }
         }
-        try {
-            int option = sc.nextInt();
-            sc.nextLine();
-            //seleccionamos la cuenta que el usuario quiere utilizar
-            foundBankAccount = user.bankAccounts.get(option - 1);
-            if(foundBankAccount instanceof DebitAccount){
-                System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Debit Account");
+        while(true) {
+            try {
+                int option = sc.nextInt();
+                sc.nextLine();
+                //seleccionamos la cuenta que el usuario quiere utilizar
+                foundBankAccount = user.bankAccounts.get(option - 1);
+                if (foundBankAccount instanceof DebitAccount) {
+                    System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Debit Account");
+                    break;
+                } else {
+                    System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Credit Account. Limit: " + -((CreditAccount) foundBankAccount).getCreditLimit());
+                    break;
+                }
             }
-            else{
-                System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance + " Type: Credit Account. Limit: " + -((CreditAccount)foundBankAccount).getCreditLimit());
+            catch (InputMismatchException e) {
+                System.err.println("Error please introduce a number");
             }
-        }
-        catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
+            catch (IndexOutOfBoundsException e) {
+                System.err.println("Error please introduce a valid option");
+            }
         }
         return foundBankAccount;
     }

@@ -1,8 +1,9 @@
 package Access;
 import Menu.*;
 import java.awt.*;
-import java.util.Objects;
 import Person.*;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import Account.*;
 import java.util.ArrayList;
@@ -30,27 +31,34 @@ public class AccessScreen {
         //Carga los datos en un ArrayList
         personsArray = dataAccess.chargeData();
         int option=0;
-        while(option!=3){
-            System.out.println("Welcome to JavaBank ");
-            System.out.println("1. Create Account");
-            System.out.println("2. Log In");
-            System.out.println("3. Close Application");
-            System.out.println("Please enter your numbered choice (1, 2 or 3)");
-            option = sc.nextInt();
-            sc.nextLine();
-            switch (option){
-                case 1:
-                    dummyUserC.register(personsArray);
-                    break;
-                case 2:
-                    login(personsArray);
-                    break;
-                case 3:
-                    dataAccess.saveData(personsArray);
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again");
-                    break;
+        while (option != 3) {
+            try {
+                System.out.println("Welcome to JavaBank ");
+                System.out.println("1. Create Account");
+                System.out.println("2. Log In");
+                System.out.println("3. Close Application");
+                System.out.println("Please enter your numbered choice (1, 2 or 3)");
+                option = sc.nextInt();
+                sc.nextLine();
+                switch (option) {
+                    case 1:
+                        dummyUserC.register(personsArray);
+                        break;
+                    case 2:
+                        login(personsArray);
+                        break;
+                    case 3:
+                        dataAccess.saveData(personsArray);
+                        return;
+                    default:
+                        System.out.println("Invalid option. Please try again");
+                        break;
+                }
+            }
+            catch (InputMismatchException e) {
+                System.err.println("Error please introduce a number");
+                sc.nextLine();
+                option = 0;
             }
         }
     }

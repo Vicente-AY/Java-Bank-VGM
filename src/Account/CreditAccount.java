@@ -94,6 +94,10 @@ public class CreditAccount extends BankAccount {
             String sourceAcc = this.accNumber;
             System.out.println("Please enter the destination account number");
             String destinationAcc = sc.nextLine();
+            if(destinationAcc.equals(sourceAcc)){
+                System.out.println("You cannot transfer to the active account");
+                return;
+            }
             System.out.println("Please enter the amount to be transferred");
             double amount = sc.nextDouble();
             sc.nextLine();
@@ -129,8 +133,9 @@ public class CreditAccount extends BankAccount {
                 }
             }
         }
-        catch(InputMismatchException e){
-            System.err.println(e.getMessage());
+        catch(InputMismatchException e) {
+            System.err.println("Error |Invalid Amount format. Cancelling operation");
+            sc.nextLine();
         }
     }
 
@@ -154,10 +159,9 @@ public class CreditAccount extends BankAccount {
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-        if(this.balance - amount < this.creditLimit){
+        if (this.balance - amount < this.creditLimit) {
             System.out.println("Not enought credit");
-        }
-        else{
+        } else {
             double previousBalance = this.balance;
             this.balance -= amount;
             System.out.println("Operation successful");
@@ -165,6 +169,7 @@ public class CreditAccount extends BankAccount {
             this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
         }
     }
+
 
     /**
      * Metodo para registrar una nueva cuenta de crédito en el sistema.
@@ -220,23 +225,32 @@ public class CreditAccount extends BankAccount {
         double thousand = -1000;
         double fiveT = -5000;
 
-        while(true){
-            System.out.println("Choose the limit for this account");
-            System.out.println("1. 500");
-            System.out.println("2. 1000");
-            System.out.println("3. 5000");
-            int option = sc.nextInt();
-            sc.nextLine();
-            switch(option){
-                case 1:
-                    return fiveH;
-                case 2:
-                    return thousand;
-                case 3:
-                    return fiveT;
-                default:
-                    System.out.println("Invalid option");
-                    break;
+        while(true) {
+            int option = 0;
+            try {
+                System.out.println("Choose the limit for this account");
+                System.out.println("1. 500");
+                System.out.println("2. 1000");
+                System.out.println("3. 5000");
+                option = sc.nextInt();
+                sc.nextLine();
+                switch (option) {
+                    case 1:
+                        return fiveH;
+                    case 2:
+                        return thousand;
+                    case 3:
+                        return fiveT;
+                    default:
+                        System.out.println("Invalid option");
+                        break;
+                }
+            }
+            catch(InputMismatchException e) {
+                System.err.println("Error, please introduce a number");
+                sc.nextLine();
+                option = 0;
+
             }
         }
     }

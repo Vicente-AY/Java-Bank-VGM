@@ -3,10 +3,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import Person.*;
-import Utils.Data;
-
 import static java.lang.Integer.parseInt;
 
 /**
