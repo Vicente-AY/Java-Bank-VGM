@@ -41,8 +41,8 @@ public class UsersMenu {
             System.out.println("6. See Bank Account History");
             System.out.println("7. Log Out");
             System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
-            Scanner scanner = new Scanner(System.in);
-            option = scanner.nextInt();
+            option = sc.nextInt();
+            sc.nextLine();
             switch (option) {
                 case 1:
                     selectedBankAccount = selectAccount((User) currentUser);
@@ -140,24 +140,28 @@ public class UsersMenu {
     }
 
     public void bankAccountHistory(BankAccount bankAccount) {
-        System.out.println("- - - Bank Account History - - -");
-        System.out.println("Date | Previous Balance | Operation | Amount | Balance");
-        for(BankAccountHistory history : bankAccount.getHistory()){
-            if(history.getDestinationAccount() == null) {
-                System.out.println(history.getTransactionDate()
-                        + " : " + history.getPreviousBalance()
-                        + " : " + history.getOperationType()
-                        + " : " + history.getTransactionAmount()
-                        + " : " + history.getNewBalance());
-            }
-            else{
-                System.out.println(history.getTransactionDate()
-                        + " | " + history.getPreviousBalance()
-                        + " | " + history.getOperationType()
-                        + " | " + history.getTransactionAmount()
-                        + " | " + history.getNewBalance()
-                        + " | " + history.getDestinationAccount().getAccNumber());
-            }
+
+        if (bankAccount.getHistory().isEmpty()) {
+            System.out.println("This account does not have any history yet");
+        }
+        else {
+            System.out.println("- - - Bank Account History - - -");
+            String headerFormat = "%-20s | %16s | %-30s | %12s | %12s%n";
+            String rowFormat = "%-20s | %16.2f | %-30s | %12.2f | %12.2f%n";
+            System.out.printf(headerFormat, "Date", "Previous Balance", "Operation Type", "Amount", "Balance");
+            for (BankAccountHistory history : bankAccount.getHistory()) {
+                String operation = history.getOperationType();
+                if (history.getDestinationAccount() != null) {
+                    operation += ": " + history.getDestinationAccount().getAccNumber();
+                }
+                    System.out.printf(rowFormat,
+                            history.getTransactionDate(),
+                            history.getPreviousBalance(),
+                            operation,
+                            history.getTransactionAmount(),
+                            history.getNewBalance());
+                }
+            System.out.println("- - - - - - - - - - - - -  - - -");
         }
     }
 }

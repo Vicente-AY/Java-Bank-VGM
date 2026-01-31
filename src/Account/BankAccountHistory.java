@@ -39,6 +39,7 @@ public class BankAccountHistory implements Serializable {
     public BankAccountHistory(double previousBalance, String operationType, double transactionAmount, double newBalance, String transactionDate, BankAccount destinationAccount){
         this.previousBalance = previousBalance;
         this.operationType = operationType;
+        this.transactionAmount = transactionAmount;
         this.newBalance = newBalance;
         this.transactionDate = transactionDate;
         this.destinationAccount = destinationAccount;
