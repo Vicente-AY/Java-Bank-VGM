@@ -15,6 +15,7 @@ import java.util.Scanner;
  */
 public class DebitAccount extends BankAccount {
 
+    private static final long serialVersionUID = 1L;
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 

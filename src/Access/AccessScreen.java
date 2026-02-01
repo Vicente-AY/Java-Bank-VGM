@@ -85,6 +85,9 @@ public class AccessScreen {
             if (!currentPerson.active) {
                 System.out.println("The account associated with this ID is blocked.\n Contact a system admin for more information.");
             }
+            else if(currentPerson instanceof  User && !currentPerson.active && ((User) currentPerson).getBloquedAccounts()){
+                System.out.println("A court order has been issiud to seize your assets");
+            }
             else {
                 int tries = 0;
                 while (tries != 3) {

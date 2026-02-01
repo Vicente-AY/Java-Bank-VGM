@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public abstract class Person implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     public String name="", birthDate ="", password="";
     public boolean active=true;
 
@@ -23,6 +24,8 @@ public abstract class Person implements Serializable {
         this.password = password;
         this.birthDate = birthDate;
     }
+
+
 
     /**
      * Metodo abstracto que debe implementar la lógica de registro

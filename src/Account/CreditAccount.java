@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class CreditAccount extends BankAccount {
 
-    private static final long serialVersionUID = 1744944698033905474L;
+    private static final long serialVersionUID = 1L;
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
     double creditLimit = 0.0;

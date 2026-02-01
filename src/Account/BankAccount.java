@@ -12,6 +12,7 @@ import static java.lang.Integer.parseInt;
  */
 public abstract class BankAccount implements Accounting, Serializable {
 
+    private static final long serialVersionUID = 1L;
     ArrayList<BankAccountHistory>  history = new ArrayList<BankAccountHistory>();
     public String entity = "9999", office = "8888";
     public String dc = "", accNumber = "";
