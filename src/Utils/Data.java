@@ -54,6 +54,10 @@ public class Data implements Serializable{
         }
     }
 
+    /**
+     * Carga la lista de personas con deudas pendientes en el archivo binario debtors.dat
+     * @return HashMap debtors con el id del deudor y la fecha de inicio de la deuda
+     */
     public HashMap<String, String> chargeDebtors() {
 
         if(debtorsList.exists() && debtorsList.length() > 0) {
@@ -67,6 +71,10 @@ public class Data implements Serializable{
         return debtors;
     }
 
+    /**
+     * Guarda la lista de deudores sobreescribiendo su anterior versión
+     * @param debtors HashMap de deudores
+     */
     public void saveDebtors(HashMap<String, String> debtors) {
 
         try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(debtorsList))){

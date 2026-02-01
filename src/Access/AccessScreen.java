@@ -82,11 +82,13 @@ public class AccessScreen {
             System.out.println("Stated ID is not found, please enter a valid id");
         }
         else {
+            //si la cuenta no esta activa no podrá entrar
             if (!currentPerson.active) {
                 System.out.println("The account associated with this ID is blocked.\n Contact a system admin for more information.");
             }
+            //si la cuenta no esta activa y además tiene deudas pendientes de hace tiempo no podrá entrar y tendra un aviso de embargo
             else if(currentPerson instanceof  User && !currentPerson.active && ((User) currentPerson).getBloquedAccounts()){
-                System.out.println("A court order has been issiud to seize your assets");
+                System.out.println("A court order has been issued to seize your assets");
             }
             else {
                 int tries = 0;
