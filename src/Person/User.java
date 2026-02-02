@@ -13,6 +13,7 @@ import java.util.Scanner;
  */
 public class User extends Person {
 
+    transient Data dataAccess = new Data();
     private static final long serialVersionUID = 1L;
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
@@ -67,8 +68,14 @@ public class User extends Person {
             birthdate = sc.nextLine();
             checkD = checkDate(birthdate);
         }
-
-        int id = 0;
+        ArrayList<Person> personsArray = dataAccess.chargeData();
+        ArrayList<Person> clientArray = new ArrayList<>();
+        for(Person person : personsArray) {
+            if(person instanceof User){
+                clientArray.add(person);
+            }
+        }
+        int id = 1;
         int currentIdInt;
         if(!persons.isEmpty()) {
             for (Person customer : persons) {
