@@ -108,10 +108,10 @@ public class ManagerMenu {
             int option = scanner.nextInt();
             switch (option) {
                 case 1:
-                    ((DebitAccount) dummyDebitAcount).createDebitAccount(persons);
+                    ((DebitAccount) dummyDebitAcount).createDebitAccount(persons, true);
                     break;
                 case 2:
-                    ((CreditAccount) dummyCreditAcount).createCreditAccount(persons);
+                    ((CreditAccount) dummyCreditAcount).createCreditAccount(persons, true);
                     break;
                 case 3:
                     System.out.println("Cancelling new Bank Account creation");

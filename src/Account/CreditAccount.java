@@ -83,11 +83,12 @@ public class CreditAccount extends BankAccount {
      * Calcula los datos bancarios necesarios y vincula la cuenta al perfil del usuario actual.
      * * @param newCreditAccount Instancia temporal de la cuenta con los datos de configuración.
      */
-    public void  createCreditAccount(ArrayList<Person> persons) {
+    public void  createCreditAccount(ArrayList<Person> persons, Boolean credit) {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
+        setCredit (credit);
         Person currentUser = null;
         CreditAccount newCreditAccount = new CreditAccount("9999", "8888", null, null, null, null, 0.0, 0.0);
         for(Person person : persons) {
@@ -123,7 +124,7 @@ public class CreditAccount extends BankAccount {
         ((User) currentUser).getBankAccounts().add(newCreditAccount);
         System.out.println("The account has been created");
     }
-    public String createCreditCard(BankAccount entity, ArrayList<Person> persons) {
+    public String createCreditCard(String entity) {
         String VisaNumber = "4";
         String bin = VisaNumber + entity + "200";
         StringBuilder panParcial = new StringBuilder(bin);

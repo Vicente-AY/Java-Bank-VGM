@@ -86,6 +86,12 @@ public class UsersMenu {
                     selectedBankAccount.rechargeSIM(amount);
                     break;
                 case 6:
+                    if(selectedBankAccount == null){
+                        System.out.println("Please select and account first");
+                        break;
+                    }
+                    System.out.println("Which type of card you want to request?");
+                    selectedBankAccount.selectCard();
                     return;
                 case 7:
                     return;

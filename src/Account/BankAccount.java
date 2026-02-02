@@ -21,6 +21,10 @@ public abstract class BankAccount implements Accounting, Serializable {
     public String IBAN = "";
     public String accountAlias = "";
     public double balance = 0.0;
+    public boolean debit = false;
+    DebitAccount debt;
+    public boolean credit = false;
+    CreditAccount cred;
 
     /**
      * Constructor completo para inicializar una cuenta bancaria
@@ -239,6 +243,12 @@ public abstract class BankAccount implements Accounting, Serializable {
     public void setBalance ( double balance){
         this.balance = balance;
     }
+    public void setCredit (boolean credit){
+        this.credit = true;
+    }
+    public void setDebit (boolean debit){
+        this.debit = true;
+    }
 
     public ArrayList<BankAccountHistory> getHistory(){
         return history;
@@ -257,5 +267,34 @@ public abstract class BankAccount implements Accounting, Serializable {
             duplicar = !duplicar;
         }
         return (10 - (suma % 10)) % 10;
+    }
+    public void selectCard() {
+        int option = 0;
+        while (true) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("1. Debit Card");
+            System.out.println("2. Credit Card");
+            System.out.println("3. Return to menu");
+            option = sc.nextInt();
+            switch (option) {
+                case 1:
+                    if (!debit) {
+                        System.out.println("Your account isn't debit");
+                    }
+                    debt.createDebitCard(entity);
+                    break;
+                    case 2:
+                        if (!credit) {
+                            System.out.println("Your account isn't credit");
+                        }
+                        cred.createCreditCard(entity);
+                        break;
+                        case 3:
+                            return;
+                default:
+                    System.out.println("Invalid option");
+                    break;
+            }
+        }
     }
 }

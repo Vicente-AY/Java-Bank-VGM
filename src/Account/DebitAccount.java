@@ -196,11 +196,12 @@ public class DebitAccount extends BankAccount {
      * Calcula los parámetros bancarios y persiste la información en el sistema.
      * @return La nueva cuenta de débito creada y vinculada.
      */
-    public void  createDebitAccount(ArrayList<Person> persons) {
+    public void  createDebitAccount(ArrayList<Person> persons, Boolean debit) {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
+        setDebit (debit);
         Person currentUser = null;
         DebitAccount newDebitAccount = new DebitAccount("9999", "8888", null, null, null, null);
         for(Person person : persons) {
@@ -232,7 +233,7 @@ public class DebitAccount extends BankAccount {
         ((User) currentUser).getBankAccounts().add(debitAcc);
         System.out.println("The Debit account " + debitAcc.getAccNumber() + "has been created for " + currentUser.getName());
     }
-    public String createDebitCard(BankAccount entity, ArrayList<Person> persons) {
+    public String createDebitCard(String entity) {
         String VisaNumber = "4";
         String bin = VisaNumber + entity + "100";
         StringBuilder panParcial = new StringBuilder(bin);
