@@ -23,19 +23,18 @@ public class UsersMenu {
      */
     public void menuAccess(Person currentUser, ArrayList<Person> persons){
         double outstandingDebt = 0;
-        boolean userDebtor = ((User) currentUser).getDebtor();
-        boolean userBloquedAccounts = ((User) currentUser).getBloquedAccounts();
-
-        for(BankAccount bankAccount : ((User) currentUser).getBankAccounts()){
-            if(bankAccount.getBalance() < 0){
-                outstandingDebt += selectedBankAccount.getBalance();
-            }
-        }
 
         selectedBankAccount = null;
         //Imprimimos el menú, si tiene cuenta seleccionada la mostramos por consola también
         int option = 0;
         while (true) {
+
+            for(BankAccount bankAccount : ((User) currentUser).getBankAccounts()){
+                if(bankAccount.getBalance() < 0){
+                    outstandingDebt += bankAccount.getBalance();
+                }
+            }
+
             try {
                 System.out.println("Welcome " + currentUser.name);
                 if (selectedBankAccount != null) {
@@ -45,7 +44,7 @@ public class UsersMenu {
                         System.out.println("Selected account: " + selectedBankAccount.accNumber + " Balance: " + selectedBankAccount.balance + " Type: Credit Account");
                     }
                 }
-                if(userDebtor && outstandingDebt < 0){
+                if(((User) currentUser).getDebtor() && outstandingDebt < 0){
                     System.out.println("0. PAY DEBT");
                 }
                 System.out.println("1. Select a BankAccount");
@@ -60,6 +59,10 @@ public class UsersMenu {
                 sc.nextLine();
                 switch (option) {
                     case 1:
+                        if(((User) currentUser).getBloquedAccounts()){
+                            System.out.println("Your accounts have been bloqued. Pay your debt to gain complete access again");
+                            break;
+                        }
                         selectedBankAccount = selectAccount((User) currentUser);
                         break;
                     case 2, 3, 5:
@@ -67,12 +70,8 @@ public class UsersMenu {
                             System.out.println("Please select and account first");
                             break;
                         }
-                        if(userBloquedAccounts){
-                            System.out.println("Your accounts have been bloqued. Please contact an Employee");
-                            break;
-                        }
-                        if(userDebtor && selectedBankAccount instanceof CreditAccount && option != 2){
-                            System.out.println("Your account has credit suspended. Please contact an Employee");
+                        if(((User) currentUser).getDebtor() && selectedBankAccount instanceof CreditAccount && option != 2){
+                            System.out.println("Your account has credit suspended. Pay your debt to gain complete access again");
                             break;
                         }
                         System.out.println("Enter the amount you want to perform the operation");
@@ -89,12 +88,12 @@ public class UsersMenu {
                         }
                         break;
                     case 4:
-                        if(userBloquedAccounts){
-                            System.out.println("Your accounts have been bloqued. Please contact an Employee");
+                        if(((User) currentUser).getBloquedAccounts()){
+                            System.out.println("Your accounts have been bloqued. Pay your debt to gain complete access again");
                             break;
                         }
-                        if(userDebtor && selectedBankAccount instanceof CreditAccount){
-                            System.out.println("Your account has credit suspended. Contact an Employee");
+                        if(((User) currentUser).getDebtor() && selectedBankAccount instanceof CreditAccount){
+                            System.out.println("Your account has credit suspended. Pay your debt to gain complete access again");
                             break;
                         }
                         if (selectedBankAccount == null) {
@@ -113,13 +112,12 @@ public class UsersMenu {
                     case 7:
                         return;
                     case 0:
-                        if(!userDebtor){
+                        if(!((User) currentUser).getDebtor()){
                             System.out.println("Invalid option");
                             break;
                         }
                         else{
-                            System.out.println("Do you want to pay with a deposito or with a transfer?");
-                            selectedBankAccount.payDebts(currentUser);
+                            payDebts(currentUser);
                             break;
                         }
                     default:
@@ -210,6 +208,101 @@ public class UsersMenu {
                             history.getNewBalance());
                 }
             System.out.println("- - - - - - - - - - - - -  - - -");
+        }
+    }
+
+    /**
+     * Metodo que permite al usuario  pagar sus deudas
+     * @param currentUser usuario que paga la deuda
+     */
+    public void payDebts(Person currentUser){
+
+        Scanner sc = new Scanner(System.in);
+
+        ArrayList<BankAccount> debtAccounts = new ArrayList<>();
+        ArrayList<BankAccount> positiveAccounts = new ArrayList<>();
+
+        //filtramos las listas enter las que tienen deudas y las que tienen balance positivo
+        for(BankAccount bankAccount : ((User) currentUser).getBankAccounts()){
+            if(bankAccount.getBalance() > 0){
+                positiveAccounts.add(bankAccount);
+            }
+            if(bankAccount.getBalance() < 0){
+                debtAccounts.add(bankAccount);
+            }
+        }
+
+        //mostramos las dudas pendientes del usuario
+        System.out.println("Select the account you want to pay the debt");
+        for(int i = 0; i < debtAccounts.size(); i++){
+                System.out.println("Option: " + (i +1) + ": " + debtAccounts.get(i).getAccNumber()
+                        + " Balance: " + debtAccounts.get(i).getBalance());
+            }
+        int choice = sc.nextInt();
+        sc.nextLine();
+        BankAccount debtBankAccount = debtAccounts.get(choice -1);
+
+        int option = 0;
+        while(true) {
+            try {
+                System.out.println("Select the option of how do you want to pay the debt");
+                //el usuario podra usar un deposito para pagar la deuda o una transferencia de otra cuenta
+                System.out.println("1. Deposit | 2. Transfer | 3. Cancell");
+                option = sc.nextInt();
+                sc.nextLine();
+                switch (option) {
+                    case 1:
+                        System.out.println("Introduce the amount you want to deposit");
+                        int amount = sc.nextInt();
+                        sc.nextLine();
+                        debtBankAccount.setBalance(debtBankAccount.getBalance() + amount);
+                        System.out.println("You repayed: " + amount + ". New balance: " + debtBankAccount.getBalance());
+                        if (debtBankAccount.getBalance() >= 0) {
+                            System.out.println("You have successfully payed the debt. Next month you will be able to access the credit again");
+                        }
+                        return;
+                    //Mostramos las cuentas donde el usuario tiene balance positivo
+                    case 2:
+                        if (positiveAccounts.isEmpty()) {
+                            System.out.println("You dont have any Bank Account with positive balance");
+                            return;
+                        }
+                        System.out.println("Introduce the option to select the Bank account");
+                        for (int i = 0; i < positiveAccounts.size(); i++) {
+                            System.out.println("Option: " + (i + 1) + ": " + positiveAccounts.get(i).getAccNumber()
+                                    + " Balance: " + positiveAccounts.get(i).getBalance());
+                        }
+                        int choice2 = sc.nextInt();
+                        sc.nextLine();
+                        //Al elegir cuenta, extraerá la mayor cantidad posible para pagar la deuda
+                        BankAccount selectedBankAccount = positiveAccounts.get(choice2 - 1);
+
+                        if (selectedBankAccount.getBalance() < Math.abs(debtBankAccount.getBalance())) {
+                            debtBankAccount.setBalance(debtBankAccount.getBalance() + selectedBankAccount.getBalance());
+                            System.out.println("You repayed: " + selectedBankAccount.getBalance());
+                            System.out.println("New debt: " + debtBankAccount.getBalance());
+                            selectedBankAccount.setBalance(0);
+                            return;
+
+                        } else if (selectedBankAccount.getBalance() >= Math.abs(debtBankAccount.getBalance())) {
+                            selectedBankAccount.setBalance(selectedBankAccount.getBalance() + debtBankAccount.getBalance());
+                            debtBankAccount.setBalance(0);
+                            System.out.println("You have successfully payed the debt. Next month you will be able to access the credit again");
+                            return;
+                        }
+                    case 3:
+                        System.out.println("Cancelling operation");
+                        return;
+                    default:
+                        System.out.println("Invalid option");
+                        break;
+                }
+            }
+            catch(InputMismatchException e){
+                System.out.println("Please introduce a number");
+                sc.nextLine();
+                option = 0;
+            }
         }
     }
 }

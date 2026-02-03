@@ -79,7 +79,7 @@ public class Data implements Serializable{
 
         try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(debtorsList))){
             output.reset();
-            output.writeObject(debtorsList);
+            output.writeObject(debtors);
             output.flush();
         }
         catch(IOException e){

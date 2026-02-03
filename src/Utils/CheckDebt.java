@@ -48,6 +48,7 @@ public class CheckDebt {
                                 else{
                                     debtAccount.setBalance(debtAccount.getBalance() + amount);
                                     payBankAccount.setBalance(0);
+                                    debtAmount = -(debtAccount.getBalance());
                                 }
                             }
                         }
@@ -88,8 +89,8 @@ public class CheckDebt {
                 }
                 //de tener deuda y no estar en la lista de dudores, lo introducimos en el HashMap y marcamos como deudor
                 if(hasActiveDebt){
-                    if(!debtors.containsKey(user.getId())){
                     user.setDebtor(true);
+                    if(!debtors.containsKey(user.getId())){
                     debtors.put(user.getId(), date);
                     }
                     /*de ya estar la en la lista sacamos la fecha en la que se contrajo la deuda y realizamos el calculo
@@ -102,12 +103,14 @@ public class CheckDebt {
 
                         //si la antiguedad de la deuda es de 2 meses bloqueamos sus cuentas
                         if(monthsPassed == 1){
+                            user.setDebtor(true);
                             user.setBloquedAccounts(true);
                         }
                         //si la antiguedad tiene tres meses o mas bloqueamos sus cuentas ya acceso al sistema
                         if(monthsPassed >= 2){
+                            user.setDebtor(true);
                             user.setBloquedAccounts(true);
-                            user.setActive(true);
+                            user.setActive(false);
                         }
                     }
                 }
