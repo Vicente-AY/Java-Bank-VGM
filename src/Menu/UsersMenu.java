@@ -3,6 +3,7 @@ import Person.*;
 import Account.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -18,8 +19,19 @@ public class UsersMenu {
     /**
      * Proporciona acceso a las funcionalidades disponibles para el cliente.
      * @param currentUser El cliente que ha iniciado sesión.
+     * @param persons Lista de clientes de la aplicacion
      */
     public void menuAccess(Person currentUser, ArrayList<Person> persons){
+        double outstandingDebt = 0;
+        boolean userDebtor = ((User) currentUser).getDebtor();
+        boolean userBloquedAccounts = ((User) currentUser).getBloquedAccounts();
+
+        for(BankAccount bankAccount : ((User) currentUser).getBankAccounts()){
+            if(bankAccount.getBalance() < 0){
+                outstandingDebt += selectedBankAccount.getBalance();
+            }
+        }
+
         selectedBankAccount = null;
         //Imprimimos el menú, si tiene cuenta seleccionada la mostramos por consola también
         int option = 0;
@@ -33,6 +45,9 @@ public class UsersMenu {
                         System.out.println("Selected account: " + selectedBankAccount.accNumber + " Balance: " + selectedBankAccount.balance + " Type: Credit Account");
                     }
                 }
+                if(userDebtor && outstandingDebt < 0){
+                    System.out.println("0. PAY DEBT");
+                }
                 System.out.println("1. Select a BankAccount");
                 System.out.println("2. Make a deposit");
                 System.out.println("3. Withdraw");
@@ -40,7 +55,7 @@ public class UsersMenu {
                 System.out.println("5. Recharge SIM card");
                 System.out.println("6. See Bank Account History");
                 System.out.println("7. Log Out");
-                System.out.println("Please enter your numbered choice (1, 2, 3, 4, 5 or 6)");
+
                 option = sc.nextInt();
                 sc.nextLine();
                 switch (option) {
@@ -50,6 +65,14 @@ public class UsersMenu {
                     case 2, 3, 5:
                         if (selectedBankAccount == null) {
                             System.out.println("Please select and account first");
+                            break;
+                        }
+                        if(userBloquedAccounts){
+                            System.out.println("Your accounts have been bloqued. Please contact an Employee");
+                            break;
+                        }
+                        if(userDebtor && selectedBankAccount instanceof CreditAccount && option != 2){
+                            System.out.println("Your account has credit suspended. Please contact an Employee");
                             break;
                         }
                         System.out.println("Enter the amount you want to perform the operation");
@@ -66,6 +89,14 @@ public class UsersMenu {
                         }
                         break;
                     case 4:
+                        if(userBloquedAccounts){
+                            System.out.println("Your accounts have been bloqued. Please contact an Employee");
+                            break;
+                        }
+                        if(userDebtor && selectedBankAccount instanceof CreditAccount){
+                            System.out.println("Your account has credit suspended. Contact an Employee");
+                            break;
+                        }
                         if (selectedBankAccount == null) {
                             System.out.println("Please select and account first");
                             break;
@@ -81,8 +112,18 @@ public class UsersMenu {
                         break;
                     case 7:
                         return;
+                    case 0:
+                        if(!userDebtor){
+                            System.out.println("Invalid option");
+                            break;
+                        }
+                        else{
+                            System.out.println("Do you want to pay with a deposito or with a transfer?");
+                            selectedBankAccount.payDebts(currentUser);
+                            break;
+                        }
                     default:
-                        System.out.println("Opción no valida");
+                        System.out.println("Invalid option");
                         break;
                 }
             }

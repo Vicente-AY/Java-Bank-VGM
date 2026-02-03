@@ -147,8 +147,9 @@ public class DebitAccount extends BankAccount {
                 System.out.println("Please enter a valid phone number (9 digits)");
                 number = sc.nextLine();
             }
-        } catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
+        }
+        catch (InputMismatchException e) {
+            System.err.println("Please introduce a valid number");
         }
         if(amount >= this.balance || this.balance - amount < 0){
             System.out.println("Insufficient funds");

@@ -3,10 +3,10 @@ import Menu.*;
 import java.awt.*;
 import Person.*;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import Account.*;
-import java.util.ArrayList;
 import Utils.*;
 
 /**
@@ -23,13 +23,29 @@ public class AccessScreen {
     UsersMenu menuUser = new UsersMenu();
     EmployeeMenu menuEmpployee = new EmployeeMenu();
     ManagerMenu menuManager = new ManagerMenu();
+    CheckDebt checkUsersDebt = new CheckDebt();
+    HashMap<String, String> debtors = new HashMap<String, String>();
 
     /**
      * Inicia la interfaz de usuario principal.
      */
     public void menu(){
+
         //Carga los datos en un ArrayList
         personsArray = dataAccess.chargeData();
+
+        //Si es dia 1 comprobamos las posibles deudas de los usuarios
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String today = dateFormat.format(new Date());
+        String regex = "[,//.\\s]";
+        String[] splitDate = today.split(regex);
+        int day = Integer.parseInt(splitDate[0]);
+        if(day == 1){
+            checkUsersDebt.collectDebts(personsArray, today);
+        }
+        //Cargamos los datos de los deudores
+        debtors = dataAccess.chargeDebtors();
+
         int option=0;
         while (option != 3) {
             try {

@@ -101,11 +101,11 @@ public class CheckDebt {
                         int monthsPassed = (year - yearDebt) * 12 +  (month - monthDebt);
 
                         //si la antiguedad de la deuda es de 2 meses bloqueamos sus cuentas
-                        if(monthsPassed == 2){
+                        if(monthsPassed == 1){
                             user.setBloquedAccounts(true);
                         }
                         //si la antiguedad tiene tres meses o mas bloqueamos sus cuentas ya acceso al sistema
-                        if(monthsPassed >= 3){
+                        if(monthsPassed >= 2){
                             user.setBloquedAccounts(true);
                             user.setActive(true);
                         }
