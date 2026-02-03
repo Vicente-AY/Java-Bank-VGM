@@ -12,6 +12,7 @@ public class Data implements Serializable{
     HashMap<String, String> debtors = new HashMap<String, String>();
     private static final File personsList = new File("Persons.dat");
     private static final File debtorsList = new File("Debtors.dat");
+    private static final File executionDay = new File("Execution.dat");
     private static final long serialVersionUID = 1L;
 
 
@@ -84,6 +85,28 @@ public class Data implements Serializable{
         }
         catch(IOException e){
             System.err.println("Error writing data " + e.getMessage());
+        }
+    }
+
+    public String chargeLastExecutionDay(){
+
+        try(BufferedReader br = new BufferedReader(new FileReader(executionDay))){
+            String lastDayExecution = br.readLine();
+            return lastDayExecution;
+        }
+        catch(IOException ioe) {
+            System.err.println("Error reading File " + ioe.getMessage());
+            return "";
+        }
+    }
+
+    public void saveLastExecutionDay(String lastExecutionDay){
+
+        try(PrintWriter out = new PrintWriter(new FileWriter(executionDay, false))){
+            out.print(lastExecutionDay);
+        }
+        catch(IOException ioe) {
+            System.err.println("Error writing data " + ioe.getMessage());
         }
     }
 }

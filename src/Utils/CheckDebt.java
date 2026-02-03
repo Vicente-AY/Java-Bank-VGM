@@ -125,5 +125,6 @@ public class CheckDebt {
         }
         //guardamos la lista de dudores
         dataAcc.saveDebtors(debtors);
+        dataAcc.saveLastExecutionDay(date);
     }
 }
