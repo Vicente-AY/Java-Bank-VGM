@@ -12,7 +12,7 @@ public class Data implements Serializable{
     HashMap<String, String> debtors = new HashMap<String, String>();
     private static final File personsList = new File("Persons.dat");
     private static final File debtorsList = new File("Debtors.dat");
-    private static final File executionDay = new File("Execution.dat");
+    private static final File executionDay = new File("Execution.txt");
     private static final long serialVersionUID = 1L;
 
 
