@@ -3,6 +3,8 @@ import Utils.Data;
 import Person.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
@@ -16,6 +18,10 @@ import java.util.Scanner;
  * @see BankAccount
  */
 public class DebitAccount extends BankAccount {
+    String numero;
+    String titular;
+    String fechaCaducidad;
+    String codigoSeguridad;
 
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
@@ -233,7 +239,11 @@ public class DebitAccount extends BankAccount {
         ((User) currentUser).getBankAccounts().add(debitAcc);
         System.out.println("The Debit account " + debitAcc.getAccNumber() + "has been created for " + currentUser.getName());
     }
-    public String createDebitCard(String entity) {
+    /**
+     * Metodo que forma los 16 dígitos que conforman el PAN
+     * @return valor del PAN
+     */
+    public String getPAN() {
         String VisaNumber = "4";
         String bin = VisaNumber + entity + "100";
         StringBuilder panParcial = new StringBuilder(bin);
@@ -241,8 +251,9 @@ public class DebitAccount extends BankAccount {
             panParcial.append((int)(Math.random() * 10));
         }
         int digitoControl = calcularDigitoLuhn(panParcial.toString());
+        String PAN = panParcial.append(digitoControl).toString();
 
-        return panParcial.append(digitoControl).toString();
+        return PAN;
     }
     @Override
     public int calcularDigitoLuhn(String cadena) {
@@ -258,5 +269,38 @@ public class DebitAccount extends BankAccount {
             duplicar = !duplicar;
         }
         return (10 - (suma % 10)) % 10;
+    }
+    /**
+     * Metodo que calcula el tiempo restante que tardará la tarjeta en caducar
+     * @return valor de la fecha de caducidad
+     */
+    public String getFechaCaducidad() {
+        LocalDate caducidad = LocalDate.now().plusYears(5);
+        return caducidad.format(DateTimeFormatter.ofPattern("MM/yy"));
+    }
+    /**
+     * Metodo que calcula los 3 dígitos de seguridad
+     * @param PAN
+     * @param fechaCaducidad
+     * @return valor del código de seguridad
+     */
+    public String getCodigoSeguridad(String PAN, String fechaCaducidad) {
+        String claveSecreta ="CLAVE_SECRETA";
+        String data = PAN + fechaCaducidad + claveSecreta;
+        int hash = data.hashCode();
+        return String.format("%03d", Math.abs(hash % 1000));
+    }
+    /**
+     * Metodo que agrupa toda la información de la tarjeta
+     * @param PAN
+     * @param accountAlias
+     * @return información de la tarjeta
+     */
+    public String getInfoDebito(String PAN, String accountAlias) {
+        this.numero = getPAN();
+        this.titular = accountAlias.toUpperCase();
+        this.fechaCaducidad = getFechaCaducidad();
+        this.codigoSeguridad = getCodigoSeguridad(PAN, this.fechaCaducidad);
+        return String.format(numero+" "+" "+titular+" "+" "+fechaCaducidad+" "+" "+codigoSeguridad);
     }
 }

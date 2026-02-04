@@ -3,6 +3,8 @@ import Person.*;
 import Utils.*;
 import Person.User;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,6 +17,10 @@ public class CreditAccount extends BankAccount {
 
     double creditLimit = 0.0;
     double creditPercentage = 0.0;
+    String numero;
+    String titular;
+    String fechaCaducidad;
+    String codigoSeguridad;
 
     /**
      * Constructor para inicializar una cuenta de crédito con todos sus parámetros.
@@ -124,16 +130,23 @@ public class CreditAccount extends BankAccount {
         ((User) currentUser).getBankAccounts().add(newCreditAccount);
         System.out.println("The account has been created");
     }
-    public String createCreditCard(String entity) {
+
+    /**
+     * Metodo que forma los 16 dígitos que conforman el PAN
+     * @return valor del PAN
+     */
+    public String getPAN() {
         String VisaNumber = "4";
+
         String bin = VisaNumber + entity + "200";
         StringBuilder panParcial = new StringBuilder(bin);
         for (int i = 0; i < 7; i++) {
             panParcial.append((int)(Math.random() * 10));
         }
         int digitoControl = calcularDigitoLuhn(panParcial.toString());
+        String PAN = panParcial.append(digitoControl).toString();
 
-        return panParcial.append(digitoControl).toString();
+        return PAN;
     }
 
     @Override
@@ -150,5 +163,41 @@ public class CreditAccount extends BankAccount {
             duplicar = !duplicar;
         }
         return (10 - (suma % 10)) % 10;
+    }
+
+    /**
+     * Metodo que calcula el tiempo restante que tardará la tarjeta en caducar
+     * @return valor de la fecha de caducidad
+     */
+    public String getFechaCaducidad() {
+        LocalDate caducidad = LocalDate.now().plusYears(5);
+        return caducidad.format(DateTimeFormatter.ofPattern("MM/yy"));
+    }
+
+    /**
+     * Metodo que calcula los 3 dígitos de seguridad
+     * @param PAN
+     * @param fechaCaducidad
+     * @return valor del código de seguridad
+     */
+    public String getCodigoSeguridad(String PAN, String fechaCaducidad) {
+        String claveSecreta ="CLAVE_SECRETA";
+        String data = PAN + fechaCaducidad + claveSecreta;
+        int hash = data.hashCode();
+        return String.format("%03d", Math.abs(hash % 1000));
+    }
+
+    /**
+     * Metodo que agrupa toda la información de la tarjeta
+     * @param PAN
+     * @param accountAlias
+     * @return información de la tarjeta
+     */
+    public String getInfoCredito(String PAN, String accountAlias) {
+        this.numero = getPAN();
+        this.titular = accountAlias.toUpperCase();
+        this.fechaCaducidad = getFechaCaducidad();
+        this.codigoSeguridad = getCodigoSeguridad(PAN, this.fechaCaducidad);
+        return String.format(numero+" "+" "+titular+" "+" "+fechaCaducidad+" "+" "+codigoSeguridad);
     }
 }

@@ -281,13 +281,13 @@ public abstract class BankAccount implements Accounting, Serializable {
                     if (!debit) {
                         System.out.println("Your account isn't debit");
                     }
-                    debt.createDebitCard(entity);
+                    debt.getInfoDebito(entity, accountAlias);
                     break;
                     case 2:
                         if (!credit) {
                             System.out.println("Your account isn't credit");
                         }
-                        cred.createCreditCard(entity);
+                        cred.getInfoCredito(entity, accountAlias);
                         break;
                         case 3:
                             return;
