@@ -28,27 +28,48 @@ public class CheckDebt {
         //buscamos entre los usuarios a los clientes con deudas
         for(Person person : persons) {
             if(person instanceof User){
-                for(BankAccount bankAccount : ((User) person).getBankAccounts()){
-                    if(bankAccount.getBalance() < 0){
-                        debtAccount = bankAccount;
-                        //de encontrar deuda almacenamos la misma en positivo
-                        double debtAmount = -(debtAccount.getBalance());
-                        //volvemos a buscar cuentas bancarias, esta vez con balance positivo y almacenamos su valor
-                        for(BankAccount bankAccount2 : ((User) person).getBankAccounts()){
-                            if(bankAccount2.getBalance() > 0){
-                                payBankAccount = bankAccount2;
-                                double amount = payBankAccount.getBalance();
-                                //si la deuda es menor que el balance positivo se ejecuta directamente
-                                if(debtAmount <= amount){
-                                    payBankAccount.setBalance(amount - debtAmount);
-                                    debtAccount.setBalance(0);
-                                    break;
+                User user = (User) person;
+
+                //buscamos cuentas de crédito que hayan sido usadas
+                for(BankAccount bankAccount : user.getBankAccounts()){
+                    if(bankAccount instanceof CreditAccount){
+                        CreditAccount creditAcc = (CreditAccount) bankAccount;
+                        double debtToPay = creditAcc.getCreditLimit() - creditAcc.getAvailableCredit();
+
+                        //intentamos pagar la deuda con el balance de la propia cuenta
+                        if(debtToPay > 0){
+                            double ownBalance = creditAcc.getBalance();
+                            if(ownBalance > 0){
+                                if(ownBalance >= debtToPay){
+                                    creditAcc.setBalance(ownBalance - debtToPay);
+                                    creditAcc.setAvailableCredit(creditAcc.getCreditLimit());
+                                    debtToPay = 0;
                                 }
-                                //si la deuda es mayor, se calcula la diferencia
                                 else{
-                                    debtAccount.setBalance(debtAccount.getBalance() + amount);
-                                    payBankAccount.setBalance(0);
-                                    debtAmount = -(debtAccount.getBalance());
+                                    creditAcc.setAvailableCredit(creditAcc.getAvailableCredit() + ownBalance);
+                                    creditAcc.setBalance(0);
+                                    debtToPay = creditAcc.getCreditLimit() - creditAcc.getAvailableCredit();
+                                }
+                            }
+
+                            //si aun queda deuda buscamos balance del resto de cuentas
+                            if(debtToPay > 0){
+                                for(BankAccount otherAcc : user.getBankAccounts()){
+                                    if(otherAcc != creditAcc && otherAcc.getBalance() > 0){
+                                        double otherBalance = otherAcc.getBalance();
+
+                                        if(otherBalance >= debtToPay){
+                                            creditAcc.setBalance(otherBalance - debtToPay);
+                                            creditAcc.setAvailableCredit(creditAcc.getAvailableCredit());
+                                            debtToPay = 0;
+                                            break;
+                                        }
+                                        else{
+                                            creditAcc.setAvailableCredit(creditAcc.getAvailableCredit() + otherBalance);
+                                            otherAcc.setBalance(0);
+                                            debtToPay = creditAcc.getCreditLimit() - creditAcc.getAvailableCredit();
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -81,17 +102,21 @@ public class CheckDebt {
             if(person instanceof User){
                 User user = (User) person;
                 boolean hasActiveDebt = false;
+
                 for(BankAccount bankAccount : user.getBankAccounts()){
-                    if(bankAccount.getBalance() < 0){
-                        hasActiveDebt = true;
-                        break;
+                    if(bankAccount instanceof CreditAccount){
+                        CreditAccount creditAcc = (CreditAccount) bankAccount;
+                        if(creditAcc.getAvailableCredit() < creditAcc.getCreditLimit()) {
+                            hasActiveDebt = true;
+                            break;
+                        }
                     }
                 }
                 //de tener deuda y no estar en la lista de dudores, lo introducimos en el HashMap y marcamos como deudor
                 if(hasActiveDebt){
                     user.setDebtor(true);
                     if(!debtors.containsKey(user.getId())){
-                    debtors.put(user.getId(), date);
+                        debtors.put(user.getId(), date);
                     }
                     /*de ya estar la en la lista sacamos la fecha en la que se contrajo la deuda y realizamos el calculo
                     de los meses pasados*/

@@ -2,8 +2,6 @@ package Account;
 import Person.*;
 import Utils.*;
 import Person.User;
-
-import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -20,8 +18,8 @@ public class CreditAccount extends BankAccount {
     private static final long serialVersionUID = 1L;
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-    double creditLimit = 0.0;
-    double creditPercentage = 0.0;
+    double creditLimit;
+    double availableCredit;
 
     /**
      * Constructor para inicializar una cuenta de crédito con todos sus parámetros.
@@ -37,6 +35,7 @@ public class CreditAccount extends BankAccount {
     public CreditAccount(String entity, String office, String accNumber, String dc, String IBAN, String accountAlias, double creditLimit){
         super(entity, office, accNumber, dc, IBAN, accountAlias);
         this.creditLimit = creditLimit;
+        this.availableCredit = creditLimit;
     }
 
     /**
@@ -66,14 +65,24 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void withdraw(double amount) {
+        double totalAvailable = this.balance + this.availableCredit;
 
-        if(this.balance - amount < creditLimit){
+        if(amount > totalAvailable){
             System.out.println("Not enough credit");
         }
         else{
+
             String transactionDate = dateFormat.format(new Date());
-            double previousBalance =  this.getBalance();
-            this.balance -= amount;
+
+            double previousBalance =  this.balance;
+            if(amount <= this.balance) {
+                this.balance -= amount;
+            }
+            else{
+                double remaining = amount - this.balance;
+                this.balance = 0;
+                this.availableCredit -= remaining;
+            }
             System.out.println("Withdrawn " + amount);
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
             this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
@@ -89,7 +98,7 @@ public class CreditAccount extends BankAccount {
 
         Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
-        double previousBalance = this.getBalance();
+        double previousBalance = this.balance;
         try {
             String sourceAcc = this.accNumber;
             System.out.println("Please enter the destination account number");
@@ -102,7 +111,7 @@ public class CreditAccount extends BankAccount {
             double amount = sc.nextDouble();
             sc.nextLine();
             //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
-            if (this.balance - amount < this.creditLimit) {
+            if (amount > (this.balance + this.availableCredit)) {
                 System.out.println("Not enought credit");
             }
             else{
@@ -120,7 +129,14 @@ public class CreditAccount extends BankAccount {
                 //si encontramos la cuenta en el porceo anterior realizamos la operacion
                 if(destAcc != null){
                     double destAcPreviousBalance =  destAcc.getBalance();
-                    this.balance -= amount;
+                    if(amount <= this.balance) {
+                        this.balance -= amount;
+                    }
+                    else{
+                        double remaining = amount - this.balance;
+                        this.balance = 0;
+                        this.availableCredit -= remaining;
+                    }
                     destAcc.balance += amount;
                     System.out.println("Operation successful");
                     System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
@@ -159,15 +175,21 @@ public class CreditAccount extends BankAccount {
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-        if (this.balance - amount < this.creditLimit) {
-            System.out.println("Not enought credit");
-        } else {
-            double previousBalance = this.balance;
+        if (amount <= this.balance) {
             this.balance -= amount;
-            System.out.println("Operation successful");
-            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
         }
+        else {
+            double remaining = amount - this.balance;
+            this.balance = 0;
+            this.availableCredit -= remaining;
+        }
+
+        double previousBalance = this.balance;
+        this.balance -= amount;
+        System.out.println("Operation successful");
+        System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
     }
 
 
@@ -221,9 +243,9 @@ public class CreditAccount extends BankAccount {
     public double selectLimit(){
 
         Scanner sc = new Scanner(System.in);
-        double fiveH = -500;
-        double thousand = -1000;
-        double fiveT = -5000;
+        double fiveH = 500;
+        double thousand = 1000;
+        double fiveT = 5000;
 
         while(true) {
             int option = 0;
@@ -257,5 +279,14 @@ public class CreditAccount extends BankAccount {
 
     public double getCreditLimit(){
         return creditLimit;
+    }
+    public void setCreditLimit(double creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+    public double getAvailableCredit(){
+        return availableCredit;
+    }
+    public void setAvailableCredit(double availableCredit) {
+        this.availableCredit = availableCredit;
     }
 }
