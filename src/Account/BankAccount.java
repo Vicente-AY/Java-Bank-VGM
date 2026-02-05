@@ -21,6 +21,7 @@ public abstract class BankAccount implements Accounting, Serializable {
     public String IBAN = "";
     public String accountAlias = "";
     public double balance = 0.0;
+    ArrayList<Card> cards = new ArrayList<>();
 
     /**
      * Constructor completo para inicializar una cuenta bancaria
@@ -245,5 +246,9 @@ public abstract class BankAccount implements Accounting, Serializable {
 
     public String getAccountAlias() {
         return accountAlias;
+    }
+
+    public ArrayList<Card> getCards(){
+        return cards;
     }
 }
