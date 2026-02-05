@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class BankAccountHistory implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     double previousBalance;
     String operationType;
     double transactionAmount;

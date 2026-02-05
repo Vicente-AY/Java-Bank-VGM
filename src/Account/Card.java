@@ -1,13 +1,15 @@
 package Account;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * Clase que representa una tarjeta bancaria. Vincula las operaciones y restricciones
  * de la cuenta que tiene asociada
  */
-public class Card{
+public class Card implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String accountIBAN;
     private String cardNumber;
     private String cvv;
