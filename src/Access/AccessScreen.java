@@ -38,7 +38,6 @@ public class AccessScreen {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String today = dateFormat.format(new Date());
 
-
         //cargamos el ultimo dia que ejecutamos la deuda
         String lastExecution = dataAccess.chargeLastExecutionDay();
 

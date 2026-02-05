@@ -22,9 +22,6 @@ public class CheckDebt {
      */
     public void collectDebts(ArrayList<Person> persons, String date) {
 
-        BankAccount debtAccount = null;
-        BankAccount payBankAccount = null;
-
         //buscamos entre los usuarios a los clientes con deudas
         for(Person person : persons) {
             if(person instanceof User){
@@ -59,8 +56,8 @@ public class CheckDebt {
                                         double otherBalance = otherAcc.getBalance();
 
                                         if(otherBalance >= debtToPay){
-                                            creditAcc.setBalance(otherBalance - debtToPay);
-                                            creditAcc.setAvailableCredit(creditAcc.getAvailableCredit());
+                                            otherAcc.setBalance(otherBalance - debtToPay);
+                                            creditAcc.setAvailableCredit(creditAcc.getCreditLimit());
                                             debtToPay = 0;
                                             break;
                                         }
