@@ -1,7 +1,5 @@
 package Account;
-import Utils.Data;
 import Person.*;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +15,7 @@ import java.util.Scanner;
  */
 public class DebitAccount extends BankAccount {
 
+    private static final long serialVersionUID = 1L;
     //formateamos la fecha para guardar el historial de movimientos bancarios
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
@@ -71,7 +70,7 @@ public class DebitAccount extends BankAccount {
             this.balance -= amount;
             System.out.println("Withdrawn " + amount);
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", amount, this.balance, transactionDate));
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
         }
     }
 
@@ -116,17 +115,17 @@ public class DebitAccount extends BankAccount {
                     System.out.println("Operation successful");
                     System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
                     System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
-                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference", amount, this.balance, transactionDate, destAcc));
-                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Transference", amount, destAcc.balance, transactionDate, destAcc));
+                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference", -amount, this.balance, transactionDate, destAcc));
+                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Transference", amount, destAcc.balance, transactionDate, this));
                 }
                 else{
                     System.out.println("Destination account does not exist");
-                    return;
                 }
             }
         }
         catch(InputMismatchException e){
-            System.out.println(e.getMessage());
+            System.out.println("Error | Invalid amount format. Cancelling opearion");
+            sc.nextLine();
         }
     }
 
@@ -148,8 +147,9 @@ public class DebitAccount extends BankAccount {
                 System.out.println("Please enter a valid phone number (9 digits)");
                 number = sc.nextLine();
             }
-        } catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
+        }
+        catch (InputMismatchException e) {
+            System.err.println("Please introduce a valid number");
         }
         if(amount >= this.balance || this.balance - amount < 0){
             System.out.println("Insufficient funds");
@@ -159,35 +159,7 @@ public class DebitAccount extends BankAccount {
             this.balance -= amount;
             System.out.println("Operation successful");
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", amount, this.balance, transactionDate));
-        }
-    }
-
-    /**
-     * Muestra las cuentas vinculadas a un usuario y permite seleccionar una para operar.
-     * @param user El usuario cliente cuya cuenta se desea seleccionar.
-     */
-    @Override
-    public void selectAccount(User user) {
-
-        Scanner sc = new Scanner(System.in);
-        //mostramos por pantalla las cuentas bancarias asociadas para que el usuario pueda seleccionarla
-        BankAccount foundBankAccount = null;
-        System.out.println("Select the account you want to use by typing the number of the option");
-        for(int i = 0; i < user.bankAccounts.size(); i++) {
-            String aliasBA = user.bankAccounts.get(i).accountAlias;
-            System.out.println("Option " + (i + 1) + ": " + aliasBA);
-        }
-        try {
-            int option = sc.nextInt();
-            sc.nextLine();
-            //seleccionamos la cuenta que el usuario quiere utilizar
-            foundBankAccount = user.bankAccounts.get(option - 1);
-            System.out.println("Selected account: " + foundBankAccount.accNumber + " Balance: " + foundBankAccount.balance);
-
-        }
-        catch (InputMismatchException e) {
-            System.out.println(e.getMessage());
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
         }
     }
 

@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class BankAccountHistory implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     double previousBalance;
     String operationType;
     double transactionAmount;
@@ -43,5 +44,26 @@ public class BankAccountHistory implements Serializable {
         this.newBalance = newBalance;
         this.transactionDate = transactionDate;
         this.destinationAccount = destinationAccount;
+    }
+
+    //getters y setters
+
+    public  double getPreviousBalance() {
+        return previousBalance;
+    }
+    public double getTransactionAmount() {
+        return transactionAmount;
+    }
+    public String getOperationType() {
+        return operationType;
+    }
+    public double getNewBalance() {
+        return newBalance;
+    }
+    public String getTransactionDate() {
+        return transactionDate;
+    }
+    public BankAccount getDestinationAccount() {
+        return destinationAccount;
     }
 }

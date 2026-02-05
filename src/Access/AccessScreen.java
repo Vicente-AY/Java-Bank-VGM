@@ -2,9 +2,11 @@ package Access;
 import Menu.*;
 import java.awt.*;
 import Person.*;
-import java.util.Scanner;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import Account.*;
-import java.util.ArrayList;
 import Utils.*;
 
 /**
@@ -21,35 +23,64 @@ public class AccessScreen {
     UsersMenu menuUser = new UsersMenu();
     EmployeeMenu menuEmpployee = new EmployeeMenu();
     ManagerMenu menuManager = new ManagerMenu();
+    CheckDebt checkUsersDebt = new CheckDebt();
+    HashMap<String, String> debtors = new HashMap<String, String>();
 
     /**
      * Inicia la interfaz de usuario principal.
      */
     public void menu(){
+
         //Carga los datos en un ArrayList
         personsArray = dataAccess.chargeData();
+
+        //Si es dia 1 comprobamos las posibles deudas de los usuarios
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String today = dateFormat.format(new Date());
+
+        //cargamos el ultimo dia que ejecutamos la deuda
+        String lastExecution = dataAccess.chargeLastExecutionDay();
+
+        String regex = "[,//.\\s]";
+
+        String[] splitDate = today.split(regex);
+        int day = Integer.parseInt(splitDate[0]);
+        //si el dia es uno y es diferente a la fecha que ya ejecutamos la deuda llamamos la metodo para cobrarlas
+        if(day == 1 && !today.equals(lastExecution)){
+            checkUsersDebt.collectDebts(personsArray, today);
+        }
+        //Cargamos los datos de los deudores
+        debtors = dataAccess.chargeDebtors();
+
         int option=0;
-        while(option!=3){
-            System.out.println("Welcome to JavaBank ");
-            System.out.println("1. Create Account");
-            System.out.println("2. Log In");
-            System.out.println("3. Close Application");
-            System.out.println("Please enter your numbered choice (1, 2 or 3)");
-            option = sc.nextInt();
-            sc.nextLine();
-            switch (option){
-                case 1:
-                    dummyUserC.register(personsArray);
-                    break;
-                case 2:
-                    login(personsArray);
-                    break;
-                case 3:
-                    dataAccess.saveData(personsArray);
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again");
-                    break;
+        while (option != 3) {
+            try {
+                System.out.println("Welcome to JavaBank ");
+                System.out.println("1. Create Account");
+                System.out.println("2. Log In");
+                System.out.println("3. Close Application");
+                System.out.println("Please enter your numbered choice (1, 2 or 3)");
+                option = sc.nextInt();
+                sc.nextLine();
+                switch (option) {
+                    case 1:
+                        dummyUserC.register(personsArray);
+                        break;
+                    case 2:
+                        login(personsArray);
+                        break;
+                    case 3:
+                        dataAccess.saveData(personsArray);
+                        return;
+                    default:
+                        System.out.println("Invalid option. Please try again");
+                        break;
+                }
+            }
+            catch (InputMismatchException e) {
+                System.err.println("Error please introduce a number");
+                sc.nextLine();
+                option = 0;
             }
         }
     }
@@ -73,8 +104,13 @@ public class AccessScreen {
             System.out.println("Stated ID is not found, please enter a valid id");
         }
         else {
+            //si la cuenta no esta activa no podrá entrar
             if (!currentPerson.active) {
                 System.out.println("The account associated with this ID is blocked.\n Contact a system admin for more information.");
+            }
+            //si la cuenta no esta activa y además tiene deudas pendientes de hace tiempo no podrá entrar y tendra un aviso de embargo
+            else if(currentPerson instanceof  User && !currentPerson.active && ((User) currentPerson).getBloquedAccounts()){
+                System.out.println("A court order has been issued to seize your assets");
             }
             else {
                 int tries = 0;

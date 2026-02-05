@@ -2,13 +2,17 @@ package Utils;
 import Person.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Clase de utilidad encargada de la persistencia de datos del sistema.
  */
 public class Data implements Serializable{
     ArrayList<Person> personsArray = new ArrayList<Person>();
+    HashMap<String, String> debtors = new HashMap<String, String>();
     private static final File personsList = new File("Persons.dat");
+    private static final File debtorsList = new File("Debtors.dat");
+    private static final File executionDay = new File("Execution.txt");
     private static final long serialVersionUID = 1L;
 
 
@@ -20,17 +24,16 @@ public class Data implements Serializable{
      * @throws ClassNotFoundException Si el objeto leído no coincide con la clase Person.
      */
     public ArrayList<Person> chargeData() {
-        Employee newEmployee = new Employee("Ramón Perez Torregrosa", "123456zZ%", "01/01/1991", "00000001");
-        Gerente newManager = new Gerente("Sofia Romero Calatrava", "123456zZ%", "01/01/1990", "00000002");
-        personsArray.add(newEmployee);
-        personsArray.add(newManager);
+
         if (personsList.exists() && personsList.length() > 0) {
             try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(personsList))) {
                 personsArray = (ArrayList<Person>) input.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                System.err.println("Error charging data " + e.getMessage());
+                System.err.println("Error charging Users " + e.getMessage());
             }
         }
+        /*Gerente gerente = new Gerente("Alberto Acosta Aguilar", "123456zZ%", "01/01/1991", "00000001");
+        personsArray.add(gerente);*/
         return personsArray;
     }
 
@@ -41,6 +44,7 @@ public class Data implements Serializable{
      * @throws IOException Si ocurre un error de escritura en el archivo.
      */
     public void saveData(ArrayList<Person> personsArray){
+
         try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(personsList))){
             output.reset();
             output.writeObject(personsArray);
@@ -48,6 +52,61 @@ public class Data implements Serializable{
         }
         catch(IOException e){
             System.err.println("Error writing data " + e.getMessage());
+        }
+    }
+
+    /**
+     * Carga la lista de personas con deudas pendientes en el archivo binario debtors.dat
+     * @return HashMap debtors con el id del deudor y la fecha de inicio de la deuda
+     */
+    public HashMap<String, String> chargeDebtors() {
+
+        if(debtorsList.exists() && debtorsList.length() > 0) {
+            try(ObjectInputStream input = new ObjectInputStream(new FileInputStream(debtorsList))){
+                debtors = (HashMap<String, String>) input.readObject();
+            }
+            catch(IOException | ClassNotFoundException e) {
+                System.err.println("Error charging Users data " + e.getMessage());
+            }
+        }
+        return debtors;
+    }
+
+    /**
+     * Guarda la lista de deudores sobreescribiendo su anterior versión
+     * @param debtors HashMap de deudores
+     */
+    public void saveDebtors(HashMap<String, String> debtors) {
+
+        try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(debtorsList))){
+            output.reset();
+            output.writeObject(debtors);
+            output.flush();
+        }
+        catch(IOException e){
+            System.err.println("Error writing data " + e.getMessage());
+        }
+    }
+
+    public String chargeLastExecutionDay(){
+
+        try(BufferedReader br = new BufferedReader(new FileReader(executionDay))){
+            String lastDayExecution = br.readLine();
+            return lastDayExecution;
+        }
+        catch(IOException ioe) {
+            System.err.println("Error reading File " + ioe.getMessage());
+            return "";
+        }
+    }
+
+    public void saveLastExecutionDay(String lastExecutionDay){
+
+        try(PrintWriter out = new PrintWriter(new FileWriter(executionDay, false))){
+            out.print(lastExecutionDay);
+        }
+        catch(IOException ioe) {
+            System.err.println("Error writing data " + ioe.getMessage());
         }
     }
 }

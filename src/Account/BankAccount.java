@@ -2,11 +2,10 @@ package Account;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import Person.*;
-import Utils.Data;
-
 import static java.lang.Integer.parseInt;
 
 /**
@@ -15,16 +14,14 @@ import static java.lang.Integer.parseInt;
  */
 public abstract class BankAccount implements Accounting, Serializable {
 
+    private static final long serialVersionUID = 1L;
     ArrayList<BankAccountHistory>  history = new ArrayList<BankAccountHistory>();
     public String entity = "9999", office = "8888";
     public String dc = "", accNumber = "";
     public String IBAN = "";
     public String accountAlias = "";
     public double balance = 0.0;
-    public boolean debit = false;
-    DebitAccount debt;
-    public boolean credit = false;
-    CreditAccount cred;
+    ArrayList<Card> cards = new ArrayList<>();
 
     /**
      * Constructor completo para inicializar una cuenta bancaria
@@ -147,7 +144,7 @@ public abstract class BankAccount implements Accounting, Serializable {
         //comportamiento por defecto del alias si este está vacio
         if(alias.isEmpty()){
             System.out.println("The account Alias will default to its number");
-            alias = "Account "+ IBAN;
+            alias = "Account "+ this.IBAN;
         }
         return alias;
     }
@@ -182,7 +179,6 @@ public abstract class BankAccount implements Accounting, Serializable {
         maxId++;
         return String.format("%010d", maxId);
     }
-
 
     /// Getters y Setters
 
@@ -243,58 +239,16 @@ public abstract class BankAccount implements Accounting, Serializable {
     public void setBalance ( double balance){
         this.balance = balance;
     }
-    public void setCredit (boolean credit){
-        this.credit = true;
-    }
-    public void setDebit (boolean debit){
-        this.debit = true;
-    }
 
     public ArrayList<BankAccountHistory> getHistory(){
         return history;
     }
 
-    public int calcularDigitoLuhn(String cadena) {
-        int suma = 0;
-        boolean duplicar = true;
-        for (int i = cadena.length() - 1; i >= 0; i--) {
-            int digito = Character.getNumericValue(cadena.charAt(i));
-            if (duplicar) {
-                digito *= 2;
-                if (digito > 9) digito -= 9;
-            }
-            suma += digito;
-            duplicar = !duplicar;
-        }
-        return (10 - (suma % 10)) % 10;
+    public String getAccountAlias() {
+        return accountAlias;
     }
-    public void selectCard() {
-        int option = 0;
-        while (true) {
-            Scanner sc = new Scanner(System.in);
-            System.out.println("1. Debit Card");
-            System.out.println("2. Credit Card");
-            System.out.println("3. Return to menu");
-            option = sc.nextInt();
-            switch (option) {
-                case 1:
-                    if (!debit) {
-                        System.out.println("Your account isn't debit");
-                    }
-                    debt.createDebitCard(entity);
-                    break;
-                    case 2:
-                        if (!credit) {
-                            System.out.println("Your account isn't credit");
-                        }
-                        cred.createCreditCard(entity);
-                        break;
-                        case 3:
-                            return;
-                default:
-                    System.out.println("Invalid option");
-                    break;
-            }
-        }
+
+    public ArrayList<Card> getCards(){
+        return cards;
     }
 }

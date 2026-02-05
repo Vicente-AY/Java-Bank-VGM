@@ -17,6 +17,8 @@ public class User extends Person {
     private static final long serialVersionUID = 1L;
     public String userId = "";
     public ArrayList<BankAccount> bankAccounts = new ArrayList<>();
+    boolean debtor = false;
+    boolean bloquedAccounts = false;
 
 
     /**
@@ -31,6 +33,8 @@ public class User extends Person {
         super(name, password, birthDate);
         this.active = true;
         this.userId = userId;
+        this.debtor = false;
+        this.bloquedAccounts = false;
     }
 
     /**
@@ -187,5 +191,18 @@ public class User extends Person {
     /** @return Lista de todas las cuentas bancarias asociadas. */
     public ArrayList<BankAccount> getBankAccounts () {
         return bankAccounts;
+    }
+
+    public void setDebtor(Boolean debtor){
+        this.debtor = debtor;
+    }
+    public boolean getDebtor(){
+        return debtor;
+    }
+    public void setBloquedAccounts(Boolean bloquedAccounts){
+        this.bloquedAccounts = bloquedAccounts;
+    }
+    public boolean getBloquedAccounts(){
+        return bloquedAccounts;
     }
 }

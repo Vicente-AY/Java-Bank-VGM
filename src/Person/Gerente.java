@@ -3,6 +3,7 @@ import Utils.Data;
 import Account.BankAccount;
 
 import java.time.Year;
+import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -193,28 +194,39 @@ public class Gerente extends Person {
                 System.out.println((i + 1) + ". Acc Num: " + selectedUser.getBankAccounts().get(i).getAccNumber());
             }
             System.out.println("Select the account you want to delete. Type 0 to cancell");
-            int accountSelection = sc.nextInt();
-            sc.nextLine();
-            if (accountSelection == 0) {
-                System.out.println("Operation aborted");
-                return;
-            }
-            else {
-                eraseAccount = selectedUser.getBankAccounts().get(accountSelection - 1);
-                //si la cuenta bancaria tiene balance  positivo o negativo no podrá ser eliminada
-                if (eraseAccount.getBalance() != 0) {
-                    System.out.println("Cancelling operation, the account must be at 0 before deletion");
-                }
-                else {
-                    System.out.println("Are you sure do you want to erase" + selectedUser.getName() + "´s bank account " + eraseAccount.getAccNumber() + "? (Y/N)");
-                    String choice = sc.nextLine().toLowerCase();
-                    if (choice.equals("y") || choice.equals("yes")) {
-                        selectedUser.getBankAccounts().remove(accountSelection - 1);
-                        System.out.println("Bank Account Deleted successfully");
+            int accountSelection;
+            while(true) {
+                try {
+                    accountSelection = sc.nextInt();
+                    sc.nextLine();
+                    if (accountSelection == 0) {
+                        System.out.println("Operation aborted");
+                        return;
                     }
                     else {
-                        System.out.println("Operation aborted");
+                        eraseAccount = selectedUser.getBankAccounts().get(accountSelection - 1);
+                        //si la cuenta bancaria tiene balance  positivo o negativo no podrá ser eliminada
+                        if (eraseAccount.getBalance() != 0) {
+                            System.out.println("Cancelling operation, the account must be at 0 before deletion");
+                            break;
+                        }
+                        else {
+                            System.out.println("Are you sure do you want to erase" + selectedUser.getName() + "´s bank account " + eraseAccount.getAccNumber() + "? (Y/N)");
+                            String choice = sc.nextLine().toLowerCase();
+                            if (choice.equals("y") || choice.equals("yes")) {
+                                selectedUser.getBankAccounts().remove(accountSelection - 1);
+                                System.out.println("Bank Account Deleted successfully");
+                                break;
+                            }
+                            else {
+                                System.out.println("Operation aborted");
+                                break;
+                            }
+                        }
                     }
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input");
+                    sc.nextLine();
                 }
             }
         }

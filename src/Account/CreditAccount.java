@@ -2,9 +2,11 @@ package Account;
 import Person.*;
 import Utils.*;
 import Person.User;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Date;
 
 /**
  * Clase que representa una cuenta de crédito bancaria.
@@ -13,8 +15,11 @@ import java.util.Scanner;
  */
 public class CreditAccount extends BankAccount {
 
-    double creditLimit = 0.0;
-    double creditPercentage = 0.0;
+    private static final long serialVersionUID = 1L;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+
+    double creditLimit;
+    double availableCredit;
 
     /**
      * Constructor para inicializar una cuenta de crédito con todos sus parámetros.
@@ -25,13 +30,12 @@ public class CreditAccount extends BankAccount {
      * @param IBAN             Código IBAN completo.
      * @param accountAlias     Apodo de la cuenta.
      * @param creditLimit      Límite de crédito otorgado.
-     * @param creditPercentage Porcentaje de interés o comisión aplicable.
      * @see BankAccount
      */
-    public CreditAccount(String entity, String office, String accNumber, String dc, String IBAN, String accountAlias, double creditLimit, double creditPercentage){
+    public CreditAccount(String entity, String office, String accNumber, String dc, String IBAN, String accountAlias, double creditLimit){
         super(entity, office, accNumber, dc, IBAN, accountAlias);
         this.creditLimit = creditLimit;
-        this.creditPercentage = creditPercentage;
+        this.availableCredit = creditLimit;
     }
 
     /**
@@ -40,6 +44,19 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void deposit(double amount) {
+
+        //guardamos la fecha actual con el formato
+        String transactionDate = dateFormat.format(new Date());
+        //almacenamos el balance previo a la operacion
+        double previousBalance = this.getBalance();
+
+        this.balance += amount;
+        //informamos al usuario del movimiento realizado
+        System.out.println("Deposited " + amount);
+        System.out.println("New Balance: " + this.balance);
+
+        //guardamos en el historial de movimientos de la cuenta la operación realizada
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, this.balance, transactionDate));
     }
 
     /**
@@ -48,7 +65,28 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void withdraw(double amount) {
+        double totalAvailable = this.balance + this.availableCredit;
 
+        if(amount > totalAvailable){
+            System.out.println("Not enough credit");
+        }
+        else{
+
+            String transactionDate = dateFormat.format(new Date());
+
+            double previousBalance =  this.balance;
+            if(amount <= this.balance) {
+                this.balance -= amount;
+            }
+            else{
+                double remaining = amount - this.balance;
+                this.balance = 0;
+                this.availableCredit -= remaining;
+            }
+            System.out.println("Withdrawn " + amount);
+            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
+        }
     }
 
     /**
@@ -58,6 +96,63 @@ public class CreditAccount extends BankAccount {
     @Override
     public void transfer(ArrayList<Person> persons) {
 
+        Scanner sc = new Scanner(System.in);
+        String transactionDate = dateFormat.format(new Date());
+        double previousBalance = this.balance;
+        try {
+            String sourceAcc = this.accNumber;
+            System.out.println("Please enter the destination account number");
+            String destinationAcc = sc.nextLine();
+            if(destinationAcc.equals(sourceAcc)){
+                System.out.println("You cannot transfer to the active account");
+                return;
+            }
+            System.out.println("Please enter the amount to be transferred");
+            double amount = sc.nextDouble();
+            sc.nextLine();
+            //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
+            if (amount > (this.balance + this.availableCredit)) {
+                System.out.println("Not enought credit");
+            }
+            else{
+                BankAccount destAcc = null;
+                //buscamos la cuenta introducida por el usuario previamente
+                for(int i = 0; i < persons.size(); i++){
+                    if(persons.get(i) instanceof User){
+                        for (BankAccount bankAccount : ((User) persons.get(i)).getBankAccounts()) {
+                            if (bankAccount.accNumber.equals(destinationAcc)) {
+                                destAcc = bankAccount;
+                            }
+                        }
+                    }
+                }
+                //si encontramos la cuenta en el porceo anterior realizamos la operacion
+                if(destAcc != null){
+                    double destAcPreviousBalance =  destAcc.getBalance();
+                    if(amount <= this.balance) {
+                        this.balance -= amount;
+                    }
+                    else{
+                        double remaining = amount - this.balance;
+                        this.balance = 0;
+                        this.availableCredit -= remaining;
+                    }
+                    destAcc.balance += amount;
+                    System.out.println("Operation successful");
+                    System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
+                    System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
+                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference to", -amount, this.balance, transactionDate, destAcc));
+                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Receibed transference from", amount, destAcc.balance, transactionDate, this));
+                }
+                else{
+                    System.out.println("Destination account does not exist");
+                }
+            }
+        }
+        catch(InputMismatchException e) {
+            System.err.println("Error |Invalid Amount format. Cancelling operation");
+            sc.nextLine();
+        }
     }
 
     /**
@@ -67,30 +162,49 @@ public class CreditAccount extends BankAccount {
     @Override
     public void rechargeSIM(double amount) {
 
+        Scanner sc = new Scanner(System.in);
+        String transactionDate = dateFormat.format(new Date());
+        System.out.println("Input the destination phone number");
+        try{
+            //pedimos al usuario un numero de telefono de 9 digitos
+            String number =  sc.nextLine();
+            while(number.length() != 9){
+                System.out.println("Please enter a valid phone number (9 digits)");
+                number = sc.nextLine();
+            }
+        } catch (InputMismatchException e) {
+            System.out.println(e.getMessage());
+        }
+        if (amount <= this.balance) {
+            this.balance -= amount;
+        }
+        else {
+            double remaining = amount - this.balance;
+            this.balance = 0;
+            this.availableCredit -= remaining;
+        }
+
+        double previousBalance = this.balance;
+        this.balance -= amount;
+        System.out.println("Operation successful");
+        System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
     }
 
-    /**
-     * Permite al usuario interactuar con la cuenta seleccionada.
-     * @param user Usuario que realiza la acción.
-     */
-    @Override
-    public void selectAccount(User user) {
-
-    }
 
     /**
      * Metodo para registrar una nueva cuenta de crédito en el sistema.
      * Calcula los datos bancarios necesarios y vincula la cuenta al perfil del usuario actual.
      * * @param newCreditAccount Instancia temporal de la cuenta con los datos de configuración.
      */
-    public void  createCreditAccount(ArrayList<Person> persons, Boolean credit) {
+    public void  createCreditAccount(ArrayList<Person> persons) {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
-        setCredit (credit);
         Person currentUser = null;
-        CreditAccount newCreditAccount = new CreditAccount("9999", "8888", null, null, null, null, 0.0, 0.0);
+        CreditAccount newCreditAccount = new CreditAccount("9999", "8888", null, null, null, null, 0.0);
         for(Person person : persons) {
             if (id.equals(person.getId())) {
                 currentUser = person;
@@ -117,38 +231,62 @@ public class CreditAccount extends BankAccount {
         IBAN = newCreditAccount.calcIBAN(entity, office, accNumber);
         alias = newCreditAccount.accountAlias();
 
-        limit = newCreditAccount.creditLimit;
-        percentage = newCreditAccount.creditPercentage;
+        limit = selectLimit();
 
-        newCreditAccount = new CreditAccount(entity, office, accNumber, dc, IBAN, alias, limit, percentage);
+        newCreditAccount = new CreditAccount(entity, office, accNumber, dc, IBAN, alias, limit);
         ((User) currentUser).getBankAccounts().add(newCreditAccount);
-        System.out.println("The account has been created");
-    }
-    public String createCreditCard(String entity) {
-        String VisaNumber = "4";
-        String bin = VisaNumber + entity + "200";
-        StringBuilder panParcial = new StringBuilder(bin);
-        for (int i = 0; i < 7; i++) {
-            panParcial.append((int)(Math.random() * 10));
-        }
-        int digitoControl = calcularDigitoLuhn(panParcial.toString());
-
-        return panParcial.append(digitoControl).toString();
+        System.out.println("The account has been created. Data: ");
+        System.out.println("Alias: " + newCreditAccount.getAccountAlias());
+        System.out.println("IBAN: " + newCreditAccount.getIBAN());
     }
 
-    @Override
-    public int calcularDigitoLuhn(String cadena) {
-        int suma = 0;
-        boolean duplicar = true;
-        for (int i = cadena.length() - 1; i >= 0; i--) {
-            int digito = Character.getNumericValue(cadena.charAt(i));
-            if (duplicar) {
-                digito *= 2;
-                if (digito > 9) digito -= 9;
+    public double selectLimit(){
+
+        Scanner sc = new Scanner(System.in);
+        double fiveH = 500;
+        double thousand = 1000;
+        double fiveT = 5000;
+
+        while(true) {
+            int option = 0;
+            try {
+                System.out.println("Choose the limit for this account");
+                System.out.println("1. 500");
+                System.out.println("2. 1000");
+                System.out.println("3. 5000");
+                option = sc.nextInt();
+                sc.nextLine();
+                switch (option) {
+                    case 1:
+                        return fiveH;
+                    case 2:
+                        return thousand;
+                    case 3:
+                        return fiveT;
+                    default:
+                        System.out.println("Invalid option");
+                        break;
+                }
             }
-            suma += digito;
-            duplicar = !duplicar;
+            catch(InputMismatchException e) {
+                System.err.println("Error, please introduce a number");
+                sc.nextLine();
+                option = 0;
+
+            }
         }
-        return (10 - (suma % 10)) % 10;
+    }
+
+    public double getCreditLimit(){
+        return creditLimit;
+    }
+    public void setCreditLimit(double creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+    public double getAvailableCredit(){
+        return availableCredit;
+    }
+    public void setAvailableCredit(double availableCredit) {
+        this.availableCredit = availableCredit;
     }
 }

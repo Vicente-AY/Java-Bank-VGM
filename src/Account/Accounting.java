@@ -9,7 +9,6 @@ interface Accounting
     void withdraw(double amount);
     void transfer(ArrayList<Person> persons);
     void rechargeSIM(double amount);
-    void selectAccount(User user);
 }
 /**
  * Interfaz con métodos
