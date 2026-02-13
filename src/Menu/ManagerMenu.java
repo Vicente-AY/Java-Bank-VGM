@@ -7,6 +7,8 @@ import Account.CreditAccount;
 import Account.DebitAccount;
 import Person.*;
 import Person.Gerente;
+import Seguro.Coche;
+import Seguro.Hogar;
 
 import java.util.ArrayList;
 
@@ -21,6 +23,8 @@ public class ManagerMenu {
     Scanner scanner = new Scanner(System.in);
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
     BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0);
+    Hogar gestorHogar = new Hogar();
+    Coche gestorCoche = new Coche();
 
     /**
      * Proporciona acceso al menú administrativo del gerente.
@@ -40,7 +44,8 @@ public class ManagerMenu {
                 System.out.println("4. Delete Bank Account");
                 System.out.println("5. Reactivate Account");
                 System.out.println("6. List of Users");
-                System.out.println("7. Log Out");
+                System.out.println("7. Request Insurance ");
+                System.out.println("8. Log Out");
                 option = scanner.nextInt();
                 switch (option) {
                     case 1:
@@ -62,6 +67,9 @@ public class ManagerMenu {
                         listOfPeople(persons);
                         break;
                     case 7:
+                        seguros(persons, currentManager);
+                        break;
+                    case 8:
                         System.out.println("Login out");
                         return;
                     default:
@@ -200,6 +208,44 @@ public class ManagerMenu {
             }
             catch (InputMismatchException e) {
                 System.out.println("Error please introduce a number");
+                scanner.nextLine();
+                option = 0;
+            }
+        }
+    }
+
+    public void seguros(ArrayList<Person> persons, Person currentManager){
+        int option = 0;
+        while(true) {
+            try {
+                System.out.println("What type of insurance do you want?");
+                System.out.println("1. Life Insurance");
+                System.out.println("2. Home Insurance");
+                System.out.println("3. Car Insurance");
+                System.out.println("4. Private Heal Insurance");
+                System.out.println("5. Back");
+                option = scanner.nextInt();
+                scanner.nextLine();
+                switch (option) {
+                    case 1:
+                        break;
+                    case 2:
+                        gestorHogar.Hogar(currentManager, persons);
+                        break;
+                    case 3:
+                        gestorCoche.Coche(currentManager, persons);
+                    case 4:
+                        break;
+                    case 5:
+                        System.out.println("Returning");
+                        return;
+                    default:
+                        System.out.println("Please enter a valid option");
+                        break;
+                }
+            }
+            catch (InputMismatchException e) {
+                System.err.println("Error, please introduce a number");
                 scanner.nextLine();
                 option = 0;
             }

@@ -168,12 +168,11 @@ public class DebitAccount extends BankAccount {
      * Calcula los parámetros bancarios y persiste la información en el sistema.
      * @return La nueva cuenta de débito creada y vinculada.
      */
-    public void  createDebitAccount(ArrayList<Person> persons, Boolean debit) {
+    public void createDebitAccount(ArrayList<Person> persons) {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
         String id = sc.nextLine();
-        setDebit (debit);
         Person currentUser = null;
         DebitAccount newDebitAccount = new DebitAccount("9999", "8888", null, null, null, null);
         for(Person person : persons) {
@@ -205,30 +204,5 @@ public class DebitAccount extends BankAccount {
         ((User) currentUser).getBankAccounts().add(debitAcc);
         System.out.println("The Debit account " + debitAcc.getAccNumber() + "has been created for " + currentUser.getName());
     }
-    public String createDebitCard(String entity) {
-        String VisaNumber = "4";
-        String bin = VisaNumber + entity + "100";
-        StringBuilder panParcial = new StringBuilder(bin);
-        for (int i = 0; i < 7; i++) {
-            panParcial.append((int)(Math.random() * 10));
-        }
-        int digitoControl = calcularDigitoLuhn(panParcial.toString());
 
-        return panParcial.append(digitoControl).toString();
-    }
-    @Override
-    public int calcularDigitoLuhn(String cadena) {
-        int suma = 0;
-        boolean duplicar = true;
-        for (int i = cadena.length() - 1; i >= 0; i--) {
-            int digito = Character.getNumericValue(cadena.charAt(i));
-            if (duplicar) {
-                digito *= 2;
-                if (digito > 9) digito -= 9;
-            }
-            suma += digito;
-            duplicar = !duplicar;
-        }
-        return (10 - (suma % 10)) % 10;
-    }
 }
