@@ -39,12 +39,15 @@ public class CheckDebt {
                             if(ownBalance > 0){
                                 if(ownBalance >= debtToPay){
                                     creditAcc.setBalance(ownBalance - debtToPay);
+                                    double newBalance = creditAcc.getBalance();
+                                    creditAcc.getHistory().add(new BankAccountHistory(ownBalance, "Debt payment", -debtToPay, newBalance, date));
                                     creditAcc.setAvailableCredit(creditAcc.getCreditLimit());
                                     debtToPay = 0;
                                 }
                                 else{
                                     creditAcc.setAvailableCredit(creditAcc.getAvailableCredit() + ownBalance);
                                     creditAcc.setBalance(0);
+                                    creditAcc.getHistory().add(new BankAccountHistory(ownBalance, "Debt payment", -ownBalance, creditAcc.getBalance(), date));
                                     debtToPay = creditAcc.getCreditLimit() - creditAcc.getAvailableCredit();
                                 }
                             }
@@ -58,12 +61,14 @@ public class CheckDebt {
                                         if(otherBalance >= debtToPay){
                                             otherAcc.setBalance(otherBalance - debtToPay);
                                             creditAcc.setAvailableCredit(creditAcc.getCreditLimit());
+                                            otherAcc.getHistory().add(new BankAccountHistory(otherBalance, "Debt payment", -debtToPay, otherAcc.getBalance(), date, creditAcc));
                                             debtToPay = 0;
                                             break;
                                         }
                                         else{
                                             creditAcc.setAvailableCredit(creditAcc.getAvailableCredit() + otherBalance);
                                             otherAcc.setBalance(0);
+                                            otherAcc.getHistory().add(new BankAccountHistory(otherBalance, "Debt payment", -otherBalance, otherAcc.getBalance(), date, creditAcc));
                                             debtToPay = creditAcc.getCreditLimit() - creditAcc.getAvailableCredit();
                                         }
                                     }

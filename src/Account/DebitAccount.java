@@ -1,5 +1,7 @@
 package Account;
 import Person.*;
+import Shop.ShopItem;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,6 +139,7 @@ public class DebitAccount extends BankAccount {
     @Override
     public void rechargeSIM(double amount) {
 
+        double previousBalance = this.balance;
         Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
         System.out.println("Input the destination phone number");
@@ -151,15 +154,70 @@ public class DebitAccount extends BankAccount {
         catch (InputMismatchException e) {
             System.err.println("Please introduce a valid number");
         }
-        if(amount >= this.balance || this.balance - amount < 0){
+        if(amount > this.balance){
             System.out.println("Insufficient funds");
         }
         else {
-            double previousBalance = this.balance;
             this.balance -= amount;
             System.out.println("Operation successful");
             System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
             this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
+        }
+    }
+
+
+    @Override
+    /**
+     * Metodo que gestiona el pago en la tienda
+     * @param amount cantidad que el usuario paga por el producto
+     * @param shopItem producto que el usuario compra
+     */
+    public void shopPayment(double amount, ShopItem shopItem){
+
+        if (this.balance <= 0 || this.balance - amount < 0){
+            System.out.println("Insufficient funds");
+        }
+        else{
+            String transactionDate = dateFormat.format(new Date());
+            double previousBalance =  this.getBalance();
+            this.balance -= amount;
+            System.out.println("Bought " + shopItem.getName() + " for: " + amount);
+            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Shop Payment", -amount, this.balance, transactionDate));
+        }
+    }
+
+    @Override
+    /**
+     * Metodo qeu gestiona el pago con tarjeta
+     */
+    public void cardPayment(double amount, ShopItem shopItem, Card card){
+
+        Scanner sc = new Scanner(System.in);
+
+        //si la tarjeta esta caducada cancelamos la operacion
+        if(!card.getActive()){
+            System.out.println("Selected Card has expired");
+            return;
+        }
+
+        System.out.println("Please input the CVV of your card");
+        String cvv = sc.nextLine();
+
+        //Preguntamos por el cvv de la tarjeta, de no ser correcto cancelamos la operación
+        if(!cvv.equals(card.getCVV())){
+            System.out.println("Invalid CVV");
+            return;
+        }
+
+        if (this.balance <= 0 || this.balance - amount < 0){
+            System.out.println("Insufficient funds");
+        }
+        else{
+            String transactionDate = dateFormat.format(new Date());
+            double previousBalance =  this.getBalance();
+            this.balance -= amount;
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Card Payment", -amount, this.balance, transactionDate));
         }
     }
 
@@ -168,7 +226,7 @@ public class DebitAccount extends BankAccount {
      * Calcula los parámetros bancarios y persiste la información en el sistema.
      * @return La nueva cuenta de débito creada y vinculada.
      */
-    public void  createDebitAccount(ArrayList<Person> persons) {
+    public static void createDebitAccount(ArrayList<Person> persons) {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");

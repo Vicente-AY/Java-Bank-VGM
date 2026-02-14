@@ -1,5 +1,7 @@
 package Utils;
 import Person.*;
+import Shop.ShopItem;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +12,12 @@ import java.util.HashMap;
 public class Data implements Serializable{
     ArrayList<Person> personsArray = new ArrayList<Person>();
     HashMap<String, String> debtors = new HashMap<String, String>();
-    private static final File personsList = new File("Persons.dat");
-    private static final File debtorsList = new File("Debtors.dat");
+    ArrayList<ShopItem> shopItemsArray = new ArrayList<ShopItem>();
+    private static final File personList = new File("Persons.dat");
+    private static final File debtorList = new File("Debtors.dat");
     private static final File executionDay = new File("Execution.txt");
+    private static final File productList = new File("Products.dat");
     private static final long serialVersionUID = 1L;
-
 
     /**
      * Carga la lista de personas desde el archivo binario "Persons.dat".
@@ -25,8 +28,8 @@ public class Data implements Serializable{
      */
     public ArrayList<Person> chargeData() {
 
-        if (personsList.exists() && personsList.length() > 0) {
-            try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(personsList))) {
+        if (personList.exists() && personList.length() > 0) {
+            try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(personList))) {
                 personsArray = (ArrayList<Person>) input.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println("Error charging Users " + e.getMessage());
@@ -45,7 +48,7 @@ public class Data implements Serializable{
      */
     public void saveData(ArrayList<Person> personsArray){
 
-        try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(personsList))){
+        try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(personList))){
             output.reset();
             output.writeObject(personsArray);
             output.flush();
@@ -61,8 +64,8 @@ public class Data implements Serializable{
      */
     public HashMap<String, String> chargeDebtors() {
 
-        if(debtorsList.exists() && debtorsList.length() > 0) {
-            try(ObjectInputStream input = new ObjectInputStream(new FileInputStream(debtorsList))){
+        if(debtorList.exists() && debtorList.length() > 0) {
+            try(ObjectInputStream input = new ObjectInputStream(new FileInputStream(debtorList))){
                 debtors = (HashMap<String, String>) input.readObject();
             }
             catch(IOException | ClassNotFoundException e) {
@@ -78,7 +81,7 @@ public class Data implements Serializable{
      */
     public void saveDebtors(HashMap<String, String> debtors) {
 
-        try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(debtorsList))){
+        try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(debtorList))){
             output.reset();
             output.writeObject(debtors);
             output.flush();
@@ -88,6 +91,10 @@ public class Data implements Serializable{
         }
     }
 
+    /**
+     * Metodo que carga el ultimo dia que se ejecutaon las deudas
+     * @return
+     */
     public String chargeLastExecutionDay(){
 
         try(BufferedReader br = new BufferedReader(new FileReader(executionDay))){
@@ -100,6 +107,10 @@ public class Data implements Serializable{
         }
     }
 
+    /**
+     * Guarda en archivo texto el ultimo dia que se ejecutó la deuda
+     * @param lastExecutionDay
+     */
     public void saveLastExecutionDay(String lastExecutionDay){
 
         try(PrintWriter out = new PrintWriter(new FileWriter(executionDay, false))){
@@ -107,6 +118,38 @@ public class Data implements Serializable{
         }
         catch(IOException ioe) {
             System.err.println("Error writing data " + ioe.getMessage());
+        }
+    }
+
+    /**
+     * Carga los articulos de la tienda
+     * @return
+     */
+    public ArrayList<ShopItem> chargeItems() {
+
+        if (productList.exists() && productList.length() > 0) {
+            try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(productList))) {
+                shopItemsArray = (ArrayList<ShopItem>) input.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println("Error charging Users " + e.getMessage());
+            }
+        }
+        return shopItemsArray;
+    }
+
+    /**
+     * Guarda los cambios en los articulos de la tienda
+     * @param shopItems
+     */
+    public void saveItems(ArrayList<ShopItem> shopItems){
+
+        try(ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(productList))){
+            output.reset();
+            output.writeObject(shopItems);
+            output.flush();
+        }
+        catch(IOException e){
+            System.err.println("Error writing data " + e.getMessage());
         }
     }
 }

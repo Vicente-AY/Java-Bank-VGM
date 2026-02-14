@@ -38,7 +38,7 @@ public class EmployeeMenu {
                         ((Employee) currentEmployee).deleteBankAccount(persons);
                         break;
                     case 2:
-                        createNewBankAccount(persons, currentEmployee);
+                        createNewBankAccount(persons);
                         break;
                     case 3:
                         ((Employee) currentEmployee).reactivate(persons);
@@ -65,7 +65,11 @@ public class EmployeeMenu {
         }
     }
 
-    public void createNewBankAccount(ArrayList<Person> persons, Person currentEmployee){
+    /**
+     * Metodo que permite a un empleado crear cuentas bancarias a los usuarios
+     * @param persons lista de los usuarios del banco
+     */
+    public void createNewBankAccount(ArrayList<Person> persons){
         int option = 0;
         while(true) {
             try {
@@ -76,10 +80,10 @@ public class EmployeeMenu {
                 option = scanner.nextInt();
                 switch (option) {
                     case 1:
-                        ((DebitAccount) dummyDebitAcount).createDebitAccount(persons);
+                        DebitAccount.createDebitAccount(persons);
                         return;
                     case 2:
-                        ((CreditAccount) dummyCreditAcount).createCreditAccount(persons);
+                        CreditAccount.createCreditAccount(persons);
                         return;
                     case 3:
                         System.out.println("Cancelling new Bank Account creation");
@@ -97,7 +101,10 @@ public class EmployeeMenu {
         }
     }
 
-
+    /**
+     * Metodo que lista a los usuarios del sistema
+     * @param persons lista con los usuarios dados de alta
+     */
     public void listOfPeople(ArrayList<Person> persons){
         int option = 0;
         while(true) {

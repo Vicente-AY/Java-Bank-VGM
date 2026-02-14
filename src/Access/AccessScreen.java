@@ -48,6 +48,7 @@ public class AccessScreen {
         //si el dia es uno y es diferente a la fecha que ya ejecutamos la deuda llamamos la metodo para cobrarlas
         if(day == 1 && !today.equals(lastExecution)){
             checkUsersDebt.collectDebts(personsArray, today);
+            CheckCard.cardCheck(personsArray);
         }
         //Cargamos los datos de los deudores
         debtors = dataAccess.chargeDebtors();

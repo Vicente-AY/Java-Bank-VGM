@@ -1,5 +1,6 @@
 package Account;
 import Person.*;
+import Shop.ShopItem;
 import Utils.*;
 import Person.User;
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ public class CreditAccount extends BankAccount {
 
     double creditLimit;
     double availableCredit;
+    private transient boolean debtor;
 
     /**
      * Constructor para inicializar una cuenta de crédito con todos sus parámetros.
@@ -33,9 +35,19 @@ public class CreditAccount extends BankAccount {
      * @see BankAccount
      */
     public CreditAccount(String entity, String office, String accNumber, String dc, String IBAN, String accountAlias, double creditLimit){
+
         super(entity, office, accNumber, dc, IBAN, accountAlias);
         this.creditLimit = creditLimit;
         this.availableCredit = creditLimit;
+    }
+
+    /**
+     * Metodo que carga la variable debto del usuario para ver si está marcado como deudor y limitar el uso de sus
+     * cuentas de credito
+     * @param debtor booleano que identifica a un usuario deudor
+     */
+    public static void debtorUser(boolean debtor){
+        debtor = debtor;
     }
 
     /**
@@ -65,28 +77,40 @@ public class CreditAccount extends BankAccount {
      */
     @Override
     public void withdraw(double amount) {
+
         double totalAvailable = this.balance + this.availableCredit;
+        double previousBalance = this.getBalance();
+        String transactionDate = dateFormat.format(new Date());
 
-        if(amount > totalAvailable){
-            System.out.println("Not enough credit");
+        //si no es deudor la operacion se realizará normalmente
+        if(!debtor) {
+            if (amount > totalAvailable) {
+                System.out.println("Not enough credit");
+            }
+            else {
+                if (amount <= this.balance) {
+                    this.balance -= amount;
+                }
+                else {
+                    double remaining = amount - this.balance;
+                    this.balance = 0;
+                    this.availableCredit -= remaining;
+                }
+            }
         }
+        //de serlo limitamos la operación al balance
         else{
-
-            String transactionDate = dateFormat.format(new Date());
-
-            double previousBalance =  this.balance;
-            if(amount <= this.balance) {
+            if(amount > this.balance){
+                System.out.println("Insufficient funds");
+            }
+            else {
                 this.balance -= amount;
             }
-            else{
-                double remaining = amount - this.balance;
-                this.balance = 0;
-                this.availableCredit -= remaining;
-            }
-            System.out.println("Withdrawn " + amount);
-            System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
         }
+
+        System.out.println("Withdrawn " + amount);
+        System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
     }
 
     /**
@@ -99,6 +123,10 @@ public class CreditAccount extends BankAccount {
         Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
         double previousBalance = this.balance;
+        double totalAvailable = this.balance + this.availableCredit;
+        BankAccount destAcc = null;
+        double destAcPreviousBalance = destAcc.getBalance();
+
         try {
             String sourceAcc = this.accNumber;
             System.out.println("Please enter the destination account number");
@@ -110,15 +138,24 @@ public class CreditAccount extends BankAccount {
             System.out.println("Please enter the amount to be transferred");
             double amount = sc.nextDouble();
             sc.nextLine();
-            //si la cuenta no tiene suficiente balance no podrá hacer el movimiento
-            if (amount > (this.balance + this.availableCredit)) {
-                System.out.println("Not enought credit");
+            //si la cuenta no tiene suficiente credito no podrá hacer el movimiento
+            if(!debtor) {
+                if(amount > totalAvailable) {
+                    System.out.println("Not enough credit");
+                    return;
+                }
             }
-            else{
-                BankAccount destAcc = null;
+            //de ser deudor además se bloqueara el credito
+            else if(debtor){
+                if(amount > this.balance){
+                    System.out.println("Insufficient funds");
+                    return;
+                }
+            }
+            else {
                 //buscamos la cuenta introducida por el usuario previamente
-                for(int i = 0; i < persons.size(); i++){
-                    if(persons.get(i) instanceof User){
+                for (int i = 0; i < persons.size(); i++) {
+                    if (persons.get(i) instanceof User) {
                         for (BankAccount bankAccount : ((User) persons.get(i)).getBankAccounts()) {
                             if (bankAccount.accNumber.equals(destinationAcc)) {
                                 destAcc = bankAccount;
@@ -127,27 +164,33 @@ public class CreditAccount extends BankAccount {
                     }
                 }
                 //si encontramos la cuenta en el porceo anterior realizamos la operacion
-                if(destAcc != null){
-                    double destAcPreviousBalance =  destAcc.getBalance();
-                    if(amount <= this.balance) {
+                if (destAcc != null) {
+                    //de no ser deudor la operación se ralizara normalmente
+                    if (!debtor) {
+                        if (amount <= this.balance) {
+                            this.balance -= amount;
+                        } else {
+                            double remaining = amount - this.balance;
+                            this.balance = 0;
+                            this.availableCredit -= remaining;
+                        }
+                        destAcc.balance += amount;
+
+                    }
+                    //de no ser deudor limitamos al uso de su balance
+                    else{
                         this.balance -= amount;
                     }
-                    else{
-                        double remaining = amount - this.balance;
-                        this.balance = 0;
-                        this.availableCredit -= remaining;
-                    }
-                    destAcc.balance += amount;
-                    System.out.println("Operation successful");
-                    System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
-                    System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
-                    this.getHistory().add(new BankAccountHistory(previousBalance, "Transference to", -amount, this.balance, transactionDate, destAcc));
-                    destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Receibed transference from", amount, destAcc.balance, transactionDate, this));
                 }
-                else{
+                else {
                     System.out.println("Destination account does not exist");
                 }
             }
+            System.out.println("Operation successful");
+            System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
+            System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Transference to", -amount, this.balance, transactionDate, destAcc));
+            destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Receibed transference from", amount, destAcc.balance, transactionDate, this));
         }
         catch(InputMismatchException e) {
             System.err.println("Error |Invalid Amount format. Cancelling operation");
@@ -162,6 +205,9 @@ public class CreditAccount extends BankAccount {
     @Override
     public void rechargeSIM(double amount) {
 
+        double totalAvailable = this.balance + this.availableCredit;
+        double previousBalance = this.getBalance();
+
         Scanner sc = new Scanner(System.in);
         String transactionDate = dateFormat.format(new Date());
         System.out.println("Input the destination phone number");
@@ -175,21 +221,129 @@ public class CreditAccount extends BankAccount {
         } catch (InputMismatchException e) {
             System.out.println(e.getMessage());
         }
-        if (amount <= this.balance) {
-            this.balance -= amount;
+        //si no es deudor la operacion se realizara con normalidad
+        if(!debtor) {
+            if(amount > totalAvailable){
+                System.out.println("Not enough credit");
+            }
+            else {
+                if (amount <= this.balance) {
+                    this.balance -= amount;
+                }
+                else {
+                    double remaining = amount - this.balance;
+                    this.balance = 0;
+                    this.availableCredit -= remaining;
+                }
+            }
         }
-        else {
-            double remaining = amount - this.balance;
-            this.balance = 0;
-            this.availableCredit -= remaining;
+        //de serlo limitamos la operación a su balance
+        else{
+            if(amount > this.balance){
+                System.out.println("Insufficient funds");
+            }
+            else{
+                this.balance -= amount;
+            }
         }
 
-        double previousBalance = this.balance;
         this.balance -= amount;
         System.out.println("Operation successful");
         System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
 
         this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
+    }
+
+    @Override
+    /**
+     * Metodo que gestiona el pago en la tienda
+     * @param amount cantidad que el usuario paga por el producto
+     * @param shopItem producto que el usuario compra
+     */
+    public void shopPayment(double amount, ShopItem shopItem){
+
+        double totalAvailable = this.balance + this.availableCredit;
+        String transactionDate = dateFormat.format(new Date());
+        double previousBalance = this.balance;
+
+        //si no es deudor la operación se realizara nomalmente
+        if(!debtor) {
+            if (amount > totalAvailable) {
+                System.out.println("Not enough credit");
+            } else {
+                if (amount <= this.balance) {
+                    this.balance -= amount;
+                } else {
+                    double remaining = amount - this.balance;
+                    this.balance = 0;
+                    this.availableCredit -= remaining;
+                }
+            }
+        }
+        //de ser deudor limitamos la operación al balance disponible
+        else{
+            if(amount > this.balance){
+                System.out.println("Insufficient funds");
+            }
+            else{
+                this.balance -= amount;
+            }
+        }
+        System.out.println("Bought " + shopItem.getName() + " for: "+ amount);
+        System.out.println("New balance in " + this.accNumber + " is: " + this.balance + " Available Credit is: " + this.availableCredit);
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Shop payment", -amount, this.balance, transactionDate));
+    }
+
+    @Override
+    /**
+     * Metodo qeu gestiona el pago con tarjeta
+     */
+    public void cardPayment(double amount, ShopItem shopItem, Card card){
+
+        double totalAvailable = this.balance + this.availableCredit;
+        String transactionDate = dateFormat.format(new Date());
+        double previousBalance =  this.balance;
+        Scanner sc = new Scanner(System.in);
+
+        //si la tarjeta esta caducada cancelamos la operacion
+        if(!card.getActive()){
+            System.out.println("Selected Card has expired");
+            return;
+        }
+
+        System.out.println("Please input the CVV of your card");
+        String cvv = sc.nextLine();
+
+        //Preguntamos por el cvv de la tarjeta, de no ser correcto cancelamos la operación
+        if(!cvv.equals(card.getCVV())){
+            System.out.println("Invalid CVV");
+            return;
+        }
+
+        //si no es deudor podrá usar su credito
+        if(!debtor) {
+            if (amount > totalAvailable) {
+                System.out.println("Not enough credit");
+            } else {
+                if (amount <= this.balance) {
+                    this.balance -= amount;
+                } else {
+                    double remaining = amount - this.balance;
+                    this.balance = 0;
+                    this.availableCredit -= remaining;
+                }
+            }
+        }
+        //de serlo se limitara al uso de su propio balance
+        else{
+            if(amount > this.balance){
+                System.out.println("Insufficient funds");
+            }
+            else{
+                this.balance -= amount;
+            }
+        }
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Shop payment", -amount, this.balance, transactionDate));
     }
 
 
@@ -198,7 +352,7 @@ public class CreditAccount extends BankAccount {
      * Calcula los datos bancarios necesarios y vincula la cuenta al perfil del usuario actual.
      * * @param newCreditAccount Instancia temporal de la cuenta con los datos de configuración.
      */
-    public void  createCreditAccount(ArrayList<Person> persons) {
+    public static void  createCreditAccount(ArrayList<Person> persons) {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Please introduce de ID of the client the new bank account is for");
@@ -240,7 +394,7 @@ public class CreditAccount extends BankAccount {
         System.out.println("IBAN: " + newCreditAccount.getIBAN());
     }
 
-    public double selectLimit(){
+    public static double selectLimit(){
 
         Scanner sc = new Scanner(System.in);
         double fiveH = 500;
