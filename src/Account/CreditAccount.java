@@ -394,6 +394,10 @@ public class CreditAccount extends BankAccount {
         System.out.println("IBAN: " + newCreditAccount.getIBAN());
     }
 
+    /**
+     * Metodo que selecciona el limete para las uentas de credito
+     * @return devuelve el valor del limite seleccionado (500, 1000 o 5000);
+     */
     public static double selectLimit(){
 
         Scanner sc = new Scanner(System.in);
@@ -430,6 +434,8 @@ public class CreditAccount extends BankAccount {
             }
         }
     }
+
+    //Getters y setters
 
     public double getCreditLimit(){
         return creditLimit;
