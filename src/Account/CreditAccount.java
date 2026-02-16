@@ -68,7 +68,7 @@ public class CreditAccount extends BankAccount {
         System.out.println("New Balance: " + this.balance);
 
         //guardamos en el historial de movimientos de la cuenta la operación realizada
-        this.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, this.balance, transactionDate));
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Deposit", amount, this.balance, transactionDate,  this.availableCredit));
     }
 
     /**
@@ -110,7 +110,7 @@ public class CreditAccount extends BankAccount {
 
         System.out.println("Withdrawn " + amount);
         System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
-        this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate));
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Withdraw", -amount, this.balance, transactionDate, this.availableCredit));
     }
 
     /**
@@ -189,8 +189,13 @@ public class CreditAccount extends BankAccount {
             System.out.println("Operation successful");
             System.out.println("New balance in " + sourceAcc + " is: " + this.balance);
             System.out.println("New balance in " + destinationAcc + " is: " + destAcc.balance);
-            this.getHistory().add(new BankAccountHistory(previousBalance, "Transference to", -amount, this.balance, transactionDate, destAcc));
-            destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Receibed transference from", amount, destAcc.balance, transactionDate, this));
+            this.getHistory().add(new BankAccountHistory(previousBalance, "Transference to", -amount, this.balance, transactionDate, this.availableCredit));
+            if(destAcc instanceof CreditAccount) {
+                destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Receibed transference from", amount, destAcc.balance, transactionDate, ((CreditAccount) destAcc).getAvailableCredit()));
+            }
+            else{
+                destAcc.getHistory().add(new BankAccountHistory(destAcPreviousBalance, "Receibed transference from", amount, destAcc.balance, transactionDate, 0));
+            }
         }
         catch(InputMismatchException e) {
             System.err.println("Error |Invalid Amount format. Cancelling operation");
@@ -251,7 +256,7 @@ public class CreditAccount extends BankAccount {
         System.out.println("Operation successful");
         System.out.println("New balance in " + this.accNumber + " is: " + this.balance);
 
-        this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate));
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Recharge", -amount, this.balance, transactionDate, this.availableCredit));
     }
 
     @Override
@@ -291,7 +296,7 @@ public class CreditAccount extends BankAccount {
         }
         System.out.println("Bought " + shopItem.getName() + " for: "+ amount);
         System.out.println("New balance in " + this.accNumber + " is: " + this.balance + " Available Credit is: " + this.availableCredit);
-        this.getHistory().add(new BankAccountHistory(previousBalance, "Shop payment", -amount, this.balance, transactionDate));
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Shop payment", -amount, this.balance, transactionDate, this.availableCredit));
     }
 
     @Override
@@ -344,7 +349,7 @@ public class CreditAccount extends BankAccount {
                 this.balance -= amount;
             }
         }
-        this.getHistory().add(new BankAccountHistory(previousBalance, "Shop payment", -amount, this.balance, transactionDate));
+        this.getHistory().add(new BankAccountHistory(previousBalance, "Shop payment", -amount, this.balance, transactionDate, this.availableCredit));
     }
 
 

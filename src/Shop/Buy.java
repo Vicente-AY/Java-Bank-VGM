@@ -33,7 +33,7 @@ public class Buy {
                         cardPayment(currentUser, selectedItem);
                         return;
                     case 3:
-                        //bizumPayment(currentUser, selectedItem);
+                        bizumPayment(currentUser, selectedItem);
                         return;
                     case 4:
                         System.out.println("Cancelling Operation");
@@ -127,7 +127,20 @@ public class Buy {
 
     }
 
-    /*public void bizumPayment(User currentUser, ShopItem selectedItem){
+    public void bizumPayment(User currentUser, ShopItem selectedItem){
 
-    }*/
+        System.out.println("Introduce de phone numer you want to pay with");
+
+        try{
+            //pedimos al usuario un numero de telefono de 9 digitos
+            String number =  sc.nextLine();
+            while(number.length() != 9){
+                System.out.println("Please enter a valid phone number (9 digits)");
+                number = sc.nextLine();
+            }
+        } catch (InputMismatchException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Purchase completed successfully");
+    }
 }

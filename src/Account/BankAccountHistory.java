@@ -15,6 +15,7 @@ public class BankAccountHistory implements Serializable {
     double newBalance;
     String transactionDate;
     BankAccount destinationAccount;
+    double creditUsed;
 
     /**
      * Constructor de la clase con los datos para crear un movimiento bancario.
@@ -22,12 +23,13 @@ public class BankAccountHistory implements Serializable {
      * @param transactionAmount Cantidad involucrada en el movimiento.
      * @param transactionDate Fecha de realización del movimiento bancario.
      */
-    public BankAccountHistory(double previousBalance, String operationType, double transactionAmount, double newBalance, String transactionDate) {
+    public BankAccountHistory(double previousBalance, String operationType, double transactionAmount, double newBalance, String transactionDate, double creditUsed) {
         this.previousBalance = previousBalance;
         this.operationType = operationType;
         this.transactionAmount = transactionAmount;
         this.newBalance = newBalance;
         this.transactionDate = transactionDate;
+        this.creditUsed = creditUsed;
     }
 
     /**
@@ -37,13 +39,14 @@ public class BankAccountHistory implements Serializable {
      * @param transactionDate Fecha de realización de la transferencia.
      * @param destinationAccount Cuenta bancaria a la que se dirige el movimiento.
      */
-    public BankAccountHistory(double previousBalance, String operationType, double transactionAmount, double newBalance, String transactionDate, BankAccount destinationAccount){
+    public BankAccountHistory(double previousBalance, String operationType, double transactionAmount, double newBalance, String transactionDate, BankAccount destinationAccount, double creditUsed) {
         this.previousBalance = previousBalance;
         this.operationType = operationType;
         this.transactionAmount = transactionAmount;
         this.newBalance = newBalance;
         this.transactionDate = transactionDate;
         this.destinationAccount = destinationAccount;
+        this.creditUsed = creditUsed;
     }
 
     //getters y setters

@@ -121,7 +121,7 @@ public class Card implements Serializable {
      */
     private static String generateCVV(){
         Random rand = new Random();
-        return String.format("0%3d", rand.nextInt(1000));
+        return String.format("%03d", rand.nextInt(1000));
     }
 
     //Getters y Setters

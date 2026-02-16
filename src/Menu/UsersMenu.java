@@ -169,26 +169,41 @@ public class UsersMenu {
 
     public void bankAccountHistory(BankAccount bankAccount) {
 
+        String debitLimit = "0/0";
+
         if (bankAccount.getHistory().isEmpty()) {
             System.out.println("This account does not have any history yet");
         }
         else {
             System.out.println("- - - Bank Account History - - -");
-            String headerFormat = "%-20s | %16s | %-30s | %12s | %12s%n";
+            String headerFormat = "%-20s | %16s | %-30s | %12s | %12s | %-20s%n";
             String rowFormat = "%-20s | %16.2f | %-30s | %12.2f | %12.2f%n";
-            System.out.printf(headerFormat, "Date", "Previous Balance", "Operation Type", "Amount", "Balance");
+            System.out.printf(headerFormat, "Date", "Previous Balance", "Operation Type", "Amount", "Balance", "Credit Usage");
             for (BankAccountHistory history : bankAccount.getHistory()) {
                 String operation = history.getOperationType();
                 if (history.getDestinationAccount() != null) {
                     operation += ": " + history.getDestinationAccount().getAccNumber();
                 }
+                if (bankAccount instanceof DebitAccount) {
                     System.out.printf(rowFormat,
                             history.getTransactionDate(),
                             history.getPreviousBalance(),
                             operation,
                             history.getTransactionAmount(),
-                            history.getNewBalance());
+                            history.getNewBalance(),
+                            debitLimit);
                 }
+                else {
+                    System.out.printf(rowFormat,
+                            history.getTransactionDate(),
+                            history.getPreviousBalance(),
+                            operation,
+                            history.getTransactionAmount(),
+                            history.getNewBalance(),
+                            ((CreditAccount) bankAccount).getAvailableCredit() + "/"
+                            + ((CreditAccount) bankAccount).getCreditLimit());
+                }
+            }
             System.out.println("- - - - - - - - - - - - -  - - -");
         }
     }

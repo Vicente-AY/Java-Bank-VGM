@@ -35,16 +35,16 @@ public class AccessScreen {
         personsArray = dataAccess.chargeData();
 
         //Si es dia 1 comprobamos las posibles deudas de los usuarios
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         String today = dateFormat.format(new Date());
 
         //cargamos el ultimo dia que ejecutamos la deuda
         String lastExecution = dataAccess.chargeLastExecutionDay();
 
-        String regex = "[,//.\\s]";
+        String regex = "[:/\\s]";
 
         String[] splitDate = today.split(regex);
-        int day = Integer.parseInt(splitDate[0]);
+        int day = Integer.parseInt(splitDate[3]);
         //si el dia es uno y es diferente a la fecha que ya ejecutamos la deuda llamamos la metodo para cobrarlas
         if(day == 1 && !today.equals(lastExecution)){
             checkUsersDebt.collectDebts(personsArray, today);
