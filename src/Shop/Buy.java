@@ -60,11 +60,11 @@ public class Buy {
 
         for(int i = 0; i < currentUser.getBankAccounts().size(); i++) {
             if(currentUser.getBankAccounts().get(i) instanceof DebitAccount){
-                System.out.println("Option: " + (i + 1) + currentUser.getBankAccounts().get(i).getAccNumber()
+                System.out.println("Option " + (i + 1) + ": "+ currentUser.getBankAccounts().get(i).getAccNumber()
                                   + " Balance: " + currentUser.getBankAccounts().get(i).getBalance());
             }
             else if(currentUser.getBankAccounts().get(i) instanceof CreditAccount){
-                System.out.println("Option: " + (i + 1) + currentUser.getBankAccounts().get(i).getAccNumber()
+                System.out.println("Option " + (i + 1) + ": " + currentUser.getBankAccounts().get(i).getAccNumber()
                                   +  " Balance: " + currentUser.getBankAccounts().get(i).getBalance()
                                   + " Avaiable Credit: " + ((CreditAccount) currentUser.getBankAccounts().get(i)).getAvailableCredit());
             }

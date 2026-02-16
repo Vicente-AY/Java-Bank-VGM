@@ -69,4 +69,7 @@ public class BankAccountHistory implements Serializable {
     public BankAccount getDestinationAccount() {
         return destinationAccount;
     }
+    public double getCreditUsed() {
+        return creditUsed;
+    }
 }

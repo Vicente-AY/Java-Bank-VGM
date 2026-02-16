@@ -167,6 +167,10 @@ public class UsersMenu {
         return foundBankAccount;
     }
 
+    /**
+     * Metodo que muestra en pantalla el historico de cada operacion realizada con la cuenta
+     * @param bankAccount cuenta seleccionada para mostrar el historico
+     */
     public void bankAccountHistory(BankAccount bankAccount) {
 
         String debitLimit = "0/0";
@@ -177,7 +181,7 @@ public class UsersMenu {
         else {
             System.out.println("- - - Bank Account History - - -");
             String headerFormat = "%-20s | %16s | %-30s | %12s | %12s | %-20s%n";
-            String rowFormat = "%-20s | %16.2f | %-30s | %12.2f | %12.2f%n";
+            String rowFormat = "%-20s | %16.2f | %-30s | %12.2f | %12.2f | %-20s%n";
             System.out.printf(headerFormat, "Date", "Previous Balance", "Operation Type", "Amount", "Balance", "Credit Usage");
             for (BankAccountHistory history : bankAccount.getHistory()) {
                 String operation = history.getOperationType();
@@ -200,7 +204,7 @@ public class UsersMenu {
                             operation,
                             history.getTransactionAmount(),
                             history.getNewBalance(),
-                            ((CreditAccount) bankAccount).getAvailableCredit() + "/"
+                            history.getCreditUsed() + "/"
                             + ((CreditAccount) bankAccount).getCreditLimit());
                 }
             }

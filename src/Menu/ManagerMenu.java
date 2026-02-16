@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * exclusivas para los usuarios con rol de Gerente (Manager).
  */
 public class ManagerMenu {
+
     Data dataAccess = new Data();
     Employee dummyEmployee = new Employee(null, null, null, null);
     User dummyUser = new User (null, null, null, null);

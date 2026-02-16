@@ -92,6 +92,7 @@ public class ShopItem implements Serializable {
             }
             catch (InputMismatchException e) {
                 System.err.println("Please, introduce a number");
+                sc.nextLine();
             }
         }
 

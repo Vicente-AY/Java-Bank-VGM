@@ -26,7 +26,7 @@ public class ShopMenu {
             try {
                 System.out.println("Welcome to Java Shop");
                 System.out.println("Please select the section you want to access");
-                System.out.println("1. Electronics | 2. Home | 3. Movility");
+                System.out.println("1. Electronics | 2. Home | 3. Mobility");
                 System.out.println("4. Fitness | 5. Outlet | 6. Exit");
                 option = sc.nextInt();
                 sc.nextLine();
@@ -38,7 +38,7 @@ public class ShopMenu {
                         homeShop(currentUser, shopItems);
                         break;
                     case 3:
-                        movilityShop(currentUser, shopItems);
+                        mobilityShop(currentUser, shopItems);
                         break;
                     case 4:
                         fitnessShop(currentUser, shopItems);
@@ -131,30 +131,30 @@ public class ShopMenu {
      * @param currentUser Usuario actual usando la tienda
      * @param shopItems Lista de todos los objetos de la tienda
      */
-    public void movilityShop(User currentUser, ArrayList<ShopItem> shopItems) {
+    public void mobilityShop(User currentUser, ArrayList<ShopItem> shopItems) {
 
         ShopItem selectedItem = null;
-        ArrayList<ShopItem> movilityItems = new ArrayList<ShopItem>();
+        ArrayList<ShopItem> mobilityItems = new ArrayList<ShopItem>();
 
         //Recorremos todos los articulos y si coincide con la seecion marcada los guardamos
         for(ShopItem item : shopItems) {
-            if(item.getSection().equals("Movility")){
-                movilityItems.add(item);
+            if(item.getSection().equals("Mobility")){
+                mobilityItems.add(item);
             }
         }
 
         //Mostramos por consola los articulos disponibles para la seccion
-        System.out.println("Movility Shop");
+        System.out.println("Mobility Shop");
         System.out.println("Select the Item you want to buy");
-        for(int i = 0; i < movilityItems.size(); i++) {
-            System.out.println("Option " + (i + 1) + ": " + movilityItems.get(i).getName()
-                    + " : " + movilityItems.get(i).getPrice());
+        for(int i = 0; i < mobilityItems.size(); i++) {
+            System.out.println("Option " + (i + 1) + ": " + mobilityItems.get(i).getName()
+                    + " : " + mobilityItems.get(i).getPrice());
         }
 
         int option = sc.nextInt();
         sc.nextLine();
 
-        selectedItem = movilityItems.get(option - 1);
+        selectedItem = mobilityItems.get(option - 1);
 
         buyMenu.menu(currentUser, selectedItem);
     }
