@@ -39,6 +39,7 @@ public class ManagerMenu {
                 System.out.println("7. Create Card | 8. Manage Shop");
                 System.out.println("9. Log Out");
                 option = scanner.nextInt();
+                scanner.nextLine();
                 switch (option) {
                     case 1:
                         menuCreateUsers(persons);
@@ -47,7 +48,7 @@ public class ManagerMenu {
                         ((Gerente) currentManager).deleteSystemAccount(persons);
                         break;
                     case 3:
-                        createNewBankAccount(persons, currentManager);
+                        createNewBankAccount(persons);
                         break;
                     case 4:
                         ((Gerente) currentManager).deleteBankAccount(persons);
@@ -60,6 +61,7 @@ public class ManagerMenu {
                         break;
                     case 7:
                         createCard(persons);
+                        break;
                     case 8:
                         manageShop(shopItems);
                         break;

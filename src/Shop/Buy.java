@@ -106,7 +106,7 @@ public class Buy {
         }
 
         for(int i = 0; i < cards.size(); i++){
-            System.out.println("Option: " + (i + 1) + cards.get(i).getCardNumber());
+            System.out.println("Option " + (i + 1) + " :" + cards.get(i).getCardNumber());
         }
         int option = 0;
         while(true) {

@@ -331,6 +331,7 @@ public class CreditAccount extends BankAccount {
                     double remaining = amount - this.balance;
                     this.balance = 0;
                     this.availableCredit -= remaining;
+                    System.out.println("Bought " + shopItem.getName() + " for: "+ amount);
                 }
             }
         }
