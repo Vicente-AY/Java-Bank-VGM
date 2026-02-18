@@ -1,4 +1,5 @@
 package Seguro;
+import Account.BankAccount;
 import Menu.*;
 import Person.Person;
 import Person.*;
@@ -21,6 +22,8 @@ public class Hogar {
     public int seguroCasa = 0;
     public int precioMinusvalia = 0;
     public String tipoSeguro = "";
+    public String id ="";
+    public Person usuarioActual;
 
     /**
      * constructor vacio de la clase Hogar
@@ -29,15 +32,48 @@ public class Hogar {
     }
 
     /**
-     * Metodo que inicializa la clase hogar que es un menu que nos deja seleccionar que tipo de seguro queremos
-     * @param currentEmployee
-     * @param persons
+     * Metodo que te pregunta el ID del usuario
+     * @param persons Usuario que tiene ID
      */
-    public void Hogar(Person currentEmployee, ArrayList<Person> persons){
+    public void hogarPreguntarID(ArrayList<Person> persons) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter user ID:");
+        id = sc.nextLine();
+        Person currentPerson = null;
+        for (int i = 0; i < persons.size(); i++) {
+            if (id.equals(persons.get(i).getId())) {
+                currentPerson = persons.get(i);
+                break;
+            }
+        }
+        if (currentPerson == null) {
+            System.out.println("Stated ID is not found, please enter a valid id");
+        } else {
+            //si la cuenta no esta activa no podrá entrar
+            if (!currentPerson.active) {
+                System.out.println("The account associated with this ID is blocked.\n Contact a system admin for more information.");
+            }
+            //si la cuenta no esta activa y además tiene deudas pendientes de hace tiempo no podrá entrar y tendra un aviso de embargo
+            else if (currentPerson instanceof User && !currentPerson.active && ((User) currentPerson).getBloquedAccounts()) {
+                System.out.println("A court order has been issued to seize your assets");
+            }
+            else{
+                Hogar(currentPerson);
+            }
+        }
+    }
+
+
+    /**
+     * Metodo que inicializa la clase hogar que es un menu que nos deja seleccionar que tipo de seguro queremos
+     */
+    public void Hogar(Person persons){
+        this.usuarioActual = persons;
         Scanner sc = new Scanner(System.in);
         int option = 0;
         while (option != 4) {
             try {
+                System.out.println("bienvenido " + persons.name);
                 System.out.println("¿Que tipo de seguro quiere?");
                 System.out.println("1. Basic");
                 System.out.println("2. Intermedium");
@@ -277,6 +313,28 @@ public class Hogar {
     }
 
     /**
+     * Metodo que ve si el usuario tiene cuentas bancarias y por defecto usar la primera que tiene
+     * @param monto
+     */
+    public void realizarCobro(double monto) {
+        if (usuarioActual instanceof User) {
+            User cliente = (User) usuarioActual;
+
+            if (cliente.getBankAccounts().isEmpty()) {
+                System.out.println("Error: El usuario no tiene cuentas bancarias vinculadas.");
+                return;
+            }
+
+            BankAccount cuenta = cliente.getBankAccounts().get(0);
+
+            System.out.println("Intentando cobrar " + monto + "€ de la cuenta: " + cuenta.getAccountAlias());
+            cuenta.withdraw(monto);
+        } else {
+            System.out.println("Este tipo de usuario no puede realizar compras.");
+        }
+    }
+
+    /**
      * Metodo que hace que en caso de tener algun tipo nos minusvalia nos manda a este metod y eso le sumara al precio del seguro
      */
     public void minusvalido() {
@@ -327,9 +385,8 @@ public class Hogar {
         System.out.println("Quiere continuar con el pago? Y/N para aceptar o rechazar");
         String conf = sc.nextLine().toUpperCase();
         if (conf.equals("Y")){
-            //primero tendremos comprobar si tiene dinero en la cuenta
+            realizarCobro(seguroPiso);
             System.out.println("Seguro comprado exitosamente");
-            // Se le deberá restar dinero a su cuenta bancaria
         }
         else if (conf.equals("N")){
             System.out.println("Seguro rechazado exitosamente");
@@ -355,6 +412,7 @@ public class Hogar {
         System.out.println("Quiere continuar con el pago? Y/N para aceptar o rechazar");
         String conf = sc.nextLine().toUpperCase();
         if (conf.equals("Y")){
+            realizarCobro(seguroChalet);
             System.out.println("Seguro comprado exitosamente");
         }
         else if (conf.equals("N")){
@@ -381,7 +439,9 @@ public class Hogar {
         System.out.println("Quiere continuar con el pago? Y/N para aceptar o rechazar");
         String conf = sc.nextLine().toUpperCase();
         if (conf.equals("Y")){
+            realizarCobro(seguroCasa);
             System.out.println("Seguro comprado exitosamente");
+            return;
         }
         else if (conf.equals("N")){
             System.out.println("Seguro rechazado exitosamente");

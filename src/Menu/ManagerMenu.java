@@ -230,10 +230,10 @@ public class ManagerMenu {
                     case 1:
                         break;
                     case 2:
-                        gestorHogar.Hogar(currentManager, persons);
+                        gestorHogar.hogarPreguntarID(persons);
                         break;
                     case 3:
-                        gestorCoche.Coche(currentManager, persons);
+                        gestorCoche.cochePreguntarID(persons);
                     case 4:
                         break;
                     case 5:

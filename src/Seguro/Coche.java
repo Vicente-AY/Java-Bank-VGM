@@ -1,6 +1,8 @@
 package Seguro;
 
+import Account.BankAccount;
 import Person.Person;
+import Person.*;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -21,6 +23,8 @@ public class Coche {
     public String modeloCoche = "";
     public int potenciaCoche = 0;
     public String ubicacion = "";
+    public String id ="";
+    public Person usuarioActual;
 
     /**
      * constructor vacio de la clase coche
@@ -29,15 +33,47 @@ public class Coche {
     }
 
     /**
-     * Metodo de la clase Seguro coche que es un menu donde te deja elegir que tipo de seguro quieres
-     * @param currentEmployee
-     * @param persons
+     * Metodo que te pregunta el ID del usuario
+     * @param persons Usuario que tiene ID
      */
-    public void Coche(Person currentEmployee, ArrayList<Person> persons){
+    public void cochePreguntarID(ArrayList<Person> persons) {
         Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter user ID:");
+        id = sc.nextLine();
+        Person currentPerson = null;
+        for (int i = 0; i < persons.size(); i++) {
+            if (id.equals(persons.get(i).getId())) {
+                currentPerson = persons.get(i);
+                break;
+            }
+        }
+        if (currentPerson == null) {
+            System.out.println("Stated ID is not found, please enter a valid id");
+        } else {
+            //si la cuenta no esta activa no podrá entrar
+            if (!currentPerson.active) {
+                System.out.println("The account associated with this ID is blocked.\n Contact a system admin for more information.");
+            }
+            //si la cuenta no esta activa y además tiene deudas pendientes de hace tiempo no podrá entrar y tendra un aviso de embargo
+            else if (currentPerson instanceof User && !currentPerson.active && ((User) currentPerson).getBloquedAccounts()) {
+                System.out.println("A court order has been issued to seize your assets");
+            }
+            else{
+                Coche(currentPerson);
+            }
+        }
+    }
+
+    /**
+     * Metodo de la clase Seguro coche que es un menu donde te deja elegir que tipo de seguro quieres
+     */
+    public void Coche(Person persons){
+        Scanner sc = new Scanner(System.in);
+        this.usuarioActual = persons;
         int option = 0;
         while (option !=4) {
             try {
+                System.out.println("bienvenido " + persons.name);
                 System.out.println("¿Que tipo de seguro quiere?");
                 System.out.println("1. Terceros Básicos");
                 System.out.println("2. Terceros Ampliado");
@@ -236,6 +272,28 @@ public class Coche {
     }
 
     /**
+     * Metodo que ve si el usuario tiene cuentas bancarias y por defecto usar la primera que tiene
+     * @param monto
+     */
+    public void realizarCobro(double monto) {
+        if (usuarioActual instanceof User) {
+            User cliente = (User) usuarioActual;
+
+            if (cliente.getBankAccounts().isEmpty()) {
+                System.out.println("Error: El usuario no tiene cuentas bancarias.");
+                return;
+            }
+
+            BankAccount cuenta = cliente.getBankAccounts().get(0);
+
+            System.out.println("Cobrando " + monto + "€ de la cuenta: " + cuenta.getAccountAlias());
+            cuenta.withdraw(monto);
+        } else {
+            System.out.println("Este usuario no es un Cliente (User) y no tiene cuentas.");
+        }
+    }
+
+    /**
      * metodo final que te dice los datos finales y para confirmar o rechazar el pago del seguro
      * @param sc del scanner
      */
@@ -243,7 +301,7 @@ public class Coche {
         System.out.println("Resumen del seguro");
         System.out.println("Tipo de seguro " + tipoSeguro);
         System.out.println("Conductor " + edadConductor + " años, " + experienciaConductor + " años de experiencia");
-        System.out.println("Vehiculo " + modeloCoche + "" + potenciaCoche);
+        System.out.println("Vehiculo " + modeloCoche + " " + potenciaCoche);
         System.out.println("Ubicacion " + ubicacion);
         System.out.println("Desglose de precio");
         System.out.println("Precio base " + precioBase + "€");
@@ -254,7 +312,7 @@ public class Coche {
         System.out.print("¿Desea contratar este seguro? (Y/N): ");
         String confirmacion = sc.nextLine().toUpperCase();
         if (confirmacion.equals("Y")){
-            //se le restará el dinero de la cuenta
+            realizarCobro(precioFinal);
             System.out.println("Seguro contratado exitosamente");
         }
         else if (confirmacion.equals("N")){

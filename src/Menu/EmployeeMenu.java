@@ -173,10 +173,10 @@ public class EmployeeMenu {
                     case 1:
                         break;
                     case 2:
-                        gestorHogar.Hogar(currentEmployee, persons);
+                        gestorHogar.hogarPreguntarID(persons);
                         break;
                     case 3:
-                        gestorCoche.Coche(currentEmployee, persons);
+                        gestorCoche.cochePreguntarID(persons);
                     case 4:
                         break;
                     case 5:
