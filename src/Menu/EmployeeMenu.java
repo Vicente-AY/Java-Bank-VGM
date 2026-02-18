@@ -1,6 +1,7 @@
 package Menu;
 import Account.*;
 import Person.*;
+import Seguro.*;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -13,6 +14,8 @@ public class EmployeeMenu {
 
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
     BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0);
+    Hogar gestorHogar = new Hogar();
+    Coche gestorCoche = new Coche();
     Scanner scanner = new Scanner(System.in);
 
     /**
@@ -30,7 +33,8 @@ public class EmployeeMenu {
                 System.out.println("3. Reactivate client Account");
                 System.out.println("4. Delete User");
                 System.out.println("5. List of Clients");
-                System.out.println("6. Log off");
+                System.out.println("6. Request Insurance ");
+                System.out.println("7. Log off");
                 option = scanner.nextInt();
                 scanner.nextLine();
                 switch (option) {
@@ -50,6 +54,9 @@ public class EmployeeMenu {
                         listOfPeople(persons);
                         break;
                     case 6:
+                        seguros(persons, currentEmployee);
+                        break;
+                    case 7:
                         System.out.println("Logging off");
                         return;
                     default:
@@ -151,6 +158,44 @@ public class EmployeeMenu {
             }
             catch (InputMismatchException e) {
                 System.err.println("Error please introduce a number");
+                scanner.nextLine();
+                option = 0;
+            }
+        }
+    }
+
+    public void seguros(ArrayList<Person> persons, Person currentEmployee){
+        int option = 0;
+        while(true) {
+            try {
+                System.out.println("What type of insurance do you want?");
+                System.out.println("1. Life Insurance");
+                System.out.println("2. Home Insurance");
+                System.out.println("3. Car Insurance");
+                System.out.println("4. Private Heal Insurance");
+                System.out.println("5. Back");
+                option = scanner.nextInt();
+                scanner.nextLine();
+                switch (option) {
+                    case 1:
+                        break;
+                    case 2:
+                        gestorHogar.hogarPreguntarID(persons);
+                        break;
+                    case 3:
+                        gestorCoche.cochePreguntarID(persons);
+                    case 4:
+                        break;
+                    case 5:
+                        System.out.println("Returning");
+                        return;
+                    default:
+                        System.out.println("Please enter a valid option");
+                        break;
+                }
+            }
+            catch (InputMismatchException e) {
+                System.err.println("Error, please introduce a number");
                 scanner.nextLine();
                 option = 0;
             }

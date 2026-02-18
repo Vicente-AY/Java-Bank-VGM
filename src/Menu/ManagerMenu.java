@@ -6,6 +6,9 @@ import Person.*;
 import Person.Gerente;
 import Shop.ShopItem;
 import Utils.Data;
+import Seguro.Coche;
+import Seguro.Hogar;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +24,8 @@ public class ManagerMenu {
     Scanner scanner = new Scanner(System.in);
     BankAccount dummyDebitAcount = new DebitAccount(null, null, null, null, null, null);
     BankAccount dummyCreditAcount = new CreditAccount(null, null, null, null, null, null, 0.0);
+    Hogar gestorHogar = new Hogar();
+    Coche gestorCoche = new Coche();
 
     /**
      * Proporciona acceso al menú administrativo del gerente.
@@ -36,9 +41,9 @@ public class ManagerMenu {
             try {
                 System.out.println("Welcome to the Manger´s Menu \n" + currentManager.name);
                 System.out.println("1. Create Users | 2. Delete Users | 3. Create BankAccount");
-                System.out.println("4. Delete Bank Account | 5. Reativate Account | 6 List of Users");
-                System.out.println("7. Create Card | 8. Manage Shop");
-                System.out.println("9. Log Out");
+                System.out.println("4. Delete Bank Account | 5. Reactivate Account | 6 List of Users");
+                System.out.println("7. Create Card | 8. Manage Shop | 9. Insurance Contract");
+                System.out.println("10. Log Out");
                 option = scanner.nextInt();
                 scanner.nextLine();
                 switch (option) {
@@ -67,6 +72,9 @@ public class ManagerMenu {
                         manageShop(shopItems);
                         break;
                     case 9:
+                        seguros(persons, currentManager);
+                        break;
+                    case 10:
                         System.out.println("Login out");
                         return;
                     default:
@@ -266,5 +274,43 @@ public class ManagerMenu {
 
         ShopItem.createItem(shopItems);
         dataAccess.saveItems(shopItems);
+    }
+
+    public void seguros(ArrayList<Person> persons, Person currentManager){
+        int option = 0;
+        while(true) {
+            try {
+                System.out.println("What type of insurance do you want?");
+                System.out.println("1. Life Insurance");
+                System.out.println("2. Home Insurance");
+                System.out.println("3. Car Insurance");
+                System.out.println("4. Private Heal Insurance");
+                System.out.println("5. Back");
+                option = scanner.nextInt();
+                scanner.nextLine();
+                switch (option) {
+                    case 1:
+                        break;
+                    case 2:
+                        gestorHogar.hogarPreguntarID(persons);
+                        break;
+                    case 3:
+                        gestorCoche.cochePreguntarID(persons);
+                    case 4:
+                        break;
+                    case 5:
+                        System.out.println("Returning");
+                        return;
+                    default:
+                        System.out.println("Please enter a valid option");
+                        break;
+                }
+            }
+            catch (InputMismatchException e) {
+                System.err.println("Error, please introduce a number");
+                scanner.nextLine();
+                option = 0;
+            }
+        }
     }
 }
